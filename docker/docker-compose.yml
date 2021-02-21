@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - ./database/data:/var/lib/postgresql/data/
+    restart: always
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+    ports:
+      - "${PORT_DB}:5432"
+  web:
+    build:
+      context: ./web
+    command: python /code/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../:/code
+    restart: always
+    depends_on:
+        - db
+  front:
+    build:
+      context: ../
+      dockerfile: ./docker/angular/Dockerfile
+    command: ionic serve --external
+    volumes:
+      - ../frontend:/frontend
+      - /frontend/node_modules
+  reverse-proxy:
+    build:
+      context: ./nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "${PORT}:8888"
+    depends_on:
+      - web
+      - front
