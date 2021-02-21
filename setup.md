@@ -39,6 +39,7 @@ This creates the project on a subdirectory `config/config/` which is **not** wha
 
 ##### 09. Move the content of `config/` so that your entire project looks like this :
 ![project structure](https://puu.sh/Hcn0v/9fb145f30e.png)
+
 :information_source: Don't worry about the \_\_pycache__ folder as it will be generated later.
 
 ##### 10. Creating .env file to secure our environment variables with django-environ
@@ -461,7 +462,3 @@ ____
 
 #### Your project is now readdy to be commited and pushed  !
 `git add . && git commit -m "Initial commit"`
-____
-##### :warning: When it comes time to deploy the project, create a separate docker-compose file that will not be committed.
-
-
