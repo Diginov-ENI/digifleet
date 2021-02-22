@@ -19,7 +19,7 @@ PORT_DB=
 5. Se déplacer dans le répertoir `docker/`
 6. Depuis un terminal exécuter la commande suivante : `docker-compose up --build`
    * Si le container web remonte une erreur de connexion vers la db => fermer **tous** les container avec `CTRL+C` et les relancer (voir: https://docs.docker.com/compose/startup-order/)
-7. Se rendre sur `localhost:8000/admin` pour vérifier que la page de base Django se lance bien
+7. Se rendre sur `localhost:8000/api/admin` pour vérifier que la page de base Django se lance bien
 8. Se rendre sur `localhost:8000/home` pour vérifier que la page de base Angular se lance bien
 
 ## Pour commencer le développement, consulter `getting_started.md`
