@@ -16,7 +16,7 @@ PORT=
 PORT_DB=
 ```
 4. Récupérer les informations des fichiers `.env` dans la **documentation technique** (les *.env* ne doivent **JAMAIS** être push sur le repo)
-5. Se déplacer dans le répertoir root du projet
+5. Se déplacer dans le répertoir `docker/`
 6. Depuis un terminal exécuter la commande suivante : `docker-compose up --build`
    * Si le container web remonte une erreur de connexion vers la db => fermer **tous** les container avec `CTRL+C` et les relancer (voir: https://docs.docker.com/compose/startup-order/)
 7. Se rendre sur `localhost:8000/admin` pour vérifier que la page de base Django se lance bien
