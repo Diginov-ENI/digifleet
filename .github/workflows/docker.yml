@@ -17,8 +17,8 @@ jobs:
     - name: Write docker .env
       run: 
         touch ./docker/.env &&
-        echo "PORT=$PORT_WEB" > ./config/.env &&
-        echo "PORT_DB=$PORT_DB" >> ./config/.env
+        echo "PORT=$PORT_WEB" > ./docker/.env &&
+        echo "PORT_DB=$PORT_DB" >> ./docker/.env
       env:
         PORT_WEB: ${{ secrets.PORT_WEB }}
         PORT_DB: ${{ secrets.PORT_DB }}
