@@ -23,5 +23,5 @@ jobs:
         PORT_WEB: ${{ secrets.PORT_WEB }}
         PORT_DB: ${{ secrets.PORT_DB }}
     - name: Build the Docker image
-      run: docker-compose up --build
+      run: cd ./docker && docker-compose up --build
       #run: docker build . --file ./docker/Dockerfile --tag docker-image:$(date +%s)
