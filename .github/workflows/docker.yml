@@ -14,5 +14,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Write docker .env
+      run: 
+        touch ./docker/.env &&
+        echo "PORT=$PORT_WEB" > ./config/.env &&
+        echo "PORT_DB=$PORT_DB" >> ./config/.env
+      env:
+        PORT_WEB: ${{ secrets.PORT_WEB }}
+        PORT_DB: ${{ secrets.PORT_DB }}
     - name: Build the Docker image
-      run: docker build . --file /docker/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file ./docker/Dockerfile --tag my-image-name:$(date +%s)
