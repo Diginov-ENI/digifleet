@@ -26,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./docker/web/requirements.txt
     - name: Show django secret
-      run: 'echo $DJANGO_SECRET_KEY > key'
+      run: echo '$DJANGO_SECRET_KEY'
       shell: bash
       env:
         DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
