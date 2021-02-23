@@ -86,5 +86,4 @@ Control.system-ca-bundle
 GitHub.sublime-settings
 
 ## Database data
-**/docker/database/data/*
-**/docker/database/data/base/
+/docker/database/data/
