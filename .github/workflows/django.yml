@@ -27,8 +27,8 @@ jobs:
         pip install -r ./docker/web/requirements.txt
     - name: Write django .env
       run: 
-        touch ./config/.env 
-        echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > ./config/.env
+        touch ./config/.env &&
+        echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > ./config/.env &&
         echo "DATABASE_URL=$DATABASE_URL" >> ./config/.env
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
