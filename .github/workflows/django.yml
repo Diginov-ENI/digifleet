@@ -26,9 +26,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./docker/web/requirements.txt
     - name: Write django .env
-      run: touch ./config/.env && echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > ./config/.env
+      run: 
+        touch ./config/.env 
+        echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > ./config/.env
+        echo "DATABASE_URL=$DATABASE_URL" >> ./config/.env
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
     - name: Run Tests
       run: |
         python manage.py test
