@@ -29,7 +29,6 @@ jobs:
       run: echo $DJANGO_SECRET_KEY
       shell: bash
       env:
-        DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
         FIRST_NAME: Bob
     - name: Run Tests
       run: |
