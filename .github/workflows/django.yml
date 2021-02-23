@@ -30,6 +30,7 @@ jobs:
       shell: bash
       env:
         FIRST_NAME: Bob
+        DJANGO_SECRET_KEY: $DJANGO_SECRET_KEY
     - name: Run Tests
       run: |
         python manage.py test
