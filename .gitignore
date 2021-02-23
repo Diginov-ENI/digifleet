@@ -83,4 +83,8 @@ Control.last-run
 Control.ca-list 
 Control.ca-bundle 
 Control.system-ca-bundle 
-GitHub.sublime-settings 
+GitHub.sublime-settings
+
+## Database data
+**/docker/database/data/*
+**/docker/database/data/base/
