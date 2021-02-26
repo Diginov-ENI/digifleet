@@ -87,3 +87,6 @@ GitHub.sublime-settings
 
 ## Database data
 /docker/database/data/
+
+## Database migrations
+/backend/migrations
