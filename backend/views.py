@@ -1,6 +1,7 @@
 from django.db.models import query
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, permissions, mixins, status
+from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
@@ -12,6 +13,11 @@ from backend.permissions import UtilisateurPermission
 
 # Create your views here.
 class UtilisateurViewSet(viewsets.ViewSet):
+    """
+    Contient toutes les opération CRUD pour le modele Utilisateur
+    les méthodes ci-dessous surcharge les méthodes de base du ViewSet pour 
+    appliquer no permissions personnalisées 
+    """
     queryset = Utilisateur.objects.all()
     permission_classes = (UtilisateurPermission,)
     
@@ -26,32 +32,39 @@ class UtilisateurViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        # TODO
         serializer = UtilisateurSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
 
-    def update(self, request, pk=None):
-        # TODO
-        pass
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.queryset.get(pk=kwargs.get('pk'))
+        serializer = UtilisateurSerializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-    def partial_update(self, request, pk=None):
-        # TODO
-        pass
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
-    def destroy(self, request, pk=None):
-        # TODO
-        pass
+    def destroy(self, request, pk=None, *args, **kwargs):
+        instance = self.queryset.get(pk=kwargs.get('pk'))
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
-    # TODO : finish it
+    # TODO
+    """
     @action(detail=False)
-    def archive(self, request, pk=None):
-        #TODO
-        pass
-
-
+    def archive(self, request, pk=None, *args, **kwargs):
+        instance = self.queryset.get(pk=kwargs.get('pk'))
+        serializer = UtilisateurSerializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    """
 
     def get_success_headers(self, data):
         try:

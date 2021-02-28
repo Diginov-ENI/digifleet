@@ -39,8 +39,8 @@ class GestionnaireUtilisateur(BaseUserManager):
 class Utilisateur(AbstractBaseUser,  PermissionsMixin):
     email = models.EmailField(max_length=200, unique=True)
     username = models.CharField(max_length=200, unique=True)
-    nom = models.CharField(max_length=200, unique=True)
-    prenom = models.CharField(max_length=200, unique=True)
+    nom = models.CharField(max_length=200)
+    prenom = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
 
     objects = GestionnaireUtilisateur()
