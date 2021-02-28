@@ -1,6 +1,6 @@
 from django.db.models import query
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, permissions, mixins, status
+from rest_framework import viewsets, status
 from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
@@ -15,8 +15,8 @@ from backend.permissions import UtilisateurPermission
 class UtilisateurViewSet(viewsets.ViewSet):
     """
     Contient toutes les opération CRUD pour le modele Utilisateur
-    les méthodes ci-dessous surcharge les méthodes de base du ViewSet pour 
-    appliquer no permissions personnalisées 
+    les méthodes ci-dessous surchargent les méthodes de base du ViewSet pour 
+    appliquer nos permissions personnalisées 
     """
     queryset = Utilisateur.objects.all()
     permission_classes = (UtilisateurPermission,)
@@ -38,10 +38,10 @@ class UtilisateurViewSet(viewsets.ViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request, pk=None, *args, **kwargs):
         partial = kwargs.pop('partial', False)
-        instance = self.queryset.get(pk=kwargs.get('pk'))
-        serializer = UtilisateurSerializer(instance, data=request.data, partial=partial)
+        user = get_object_or_404(self.queryset, pk=pk)
+        serializer = UtilisateurSerializer(user, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -51,16 +51,16 @@ class UtilisateurViewSet(viewsets.ViewSet):
         return self.update(request, *args, **kwargs)
 
     def destroy(self, request, pk=None, *args, **kwargs):
-        instance = self.queryset.get(pk=kwargs.get('pk'))
-        instance.delete()
+        user = get_object_or_404(self.queryset, pk=pk)
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    # TODO
+    # TODO - à faire fonctionner ou le "partial_update" suffit ?
     """
     @action(detail=False)
-    def archive(self, request, pk=None, *args, **kwargs):
-        instance = self.queryset.get(pk=kwargs.get('pk'))
-        serializer = UtilisateurSerializer(instance, data=request.data, partial=True)
+    def archive(self, request, pk=None *args, **kwargs):
+        user = get_object_or_404(self.queryset, pk=pk)
+        serializer = UtilisateurSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

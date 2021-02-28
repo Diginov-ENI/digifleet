@@ -14,6 +14,7 @@ class UtilisateurPermission(permissions.BasePermission):
 
     """
     Exécuté après has_permission
+    Authorise la lecture et la modification de son propre profil
     """
     def has_object_permission(self, request, view, obj):
         # Deny actions on objects if the user is not authenticated
@@ -22,6 +23,8 @@ class UtilisateurPermission(permissions.BasePermission):
 
         if view.action in ['retrieve', 'update', 'partial_update']:
             return bool(obj == request.user or request.user.is_superuser)
+        elif view.action in ['create', 'list', 'destroy' ,'archive']:
+            return bool(request.user.is_superuser)
         else:
             return False
 
