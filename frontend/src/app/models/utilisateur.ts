@@ -1,0 +1,12 @@
+export class Utilisateur{
+    public Id: number;
+    public Username: string;
+    public Email: string;
+    public MotDePasse: string;
+    public Nom: string;
+    public Prenom: string;
+    public Groups: string[];
+    public UserPermissions: string[];
+    public IsActif: boolean;
+    public LastLogin: Date;
+}
