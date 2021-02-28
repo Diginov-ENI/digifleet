@@ -1,13 +1,14 @@
 from django.db.models import query
-from rest_framework import viewsets, permissions, serializers, mixins
+from django.shortcuts import render, get_object_or_404
+from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import permission_classes, action
+from rest_framework.settings import api_settings
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from rest_framework.serializers import Serializer
-from backend.models import Utilisateur, utilisateur
+from backend.models import Utilisateur
 from backend.serializers import UtilisateurSerializer
 from backend.permissions import UtilisateurPermission
-from django.shortcuts import render
+
 
 # Create your views here.
 class UtilisateurViewSet(viewsets.ViewSet):
@@ -26,7 +27,11 @@ class UtilisateurViewSet(viewsets.ViewSet):
 
     def create(self, request):
         # TODO
-        pass
+        serializer = UtilisateurSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
 
     def update(self, request, pk=None):
         # TODO
@@ -45,3 +50,11 @@ class UtilisateurViewSet(viewsets.ViewSet):
     def archive(self, request, pk=None):
         #TODO
         pass
+
+
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}

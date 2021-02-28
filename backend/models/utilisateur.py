@@ -3,6 +3,11 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 # model GestionnaireUtilisateur
+"""
+modele GestionnaireUtilisateur
+
+Surcouche nécéssaire à la gestion de l'authentification des utilisateurs
+"""
 class GestionnaireUtilisateur(BaseUserManager):
     def create_user(self, email, username, nom, prenom, password):
         """

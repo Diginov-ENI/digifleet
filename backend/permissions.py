@@ -1,6 +1,8 @@
 from rest_framework import permissions
 
-# Permissions custom pour un Utilisateur
+"""
+Permissions custom pour un Utilisateur
+"""
 class UtilisateurPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if view.action in ['create', 'list', 'destroy' ,'archive']:
@@ -10,6 +12,9 @@ class UtilisateurPermission(permissions.BasePermission):
         else:
             return False
 
+    """
+    Exécuté après has_permission
+    """
     def has_object_permission(self, request, view, obj):
         # Deny actions on objects if the user is not authenticated
         if not request.user.is_authenticated:
