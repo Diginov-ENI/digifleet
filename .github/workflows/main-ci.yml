@@ -48,5 +48,9 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+    - name: Run coverage
+      run: 
+        coverage run --source='backend/' manage.py test
+        coverage report --fail-under=85
     - name: Build the Docker image
       run: docker-compose -f ./docker/docker-compose.yml up -d
