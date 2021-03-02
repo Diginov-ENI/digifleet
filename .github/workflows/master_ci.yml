@@ -37,7 +37,7 @@ jobs:
       env:
         PORT_WEB: ${{ secrets.PORT_WEB }}
         PORT_DB: ${{ secrets.PORT_DB }}
-	- name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
