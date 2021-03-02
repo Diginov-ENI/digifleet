@@ -78,6 +78,9 @@ celerybeat-schedule.*
 # sftp configuration file 
 sftp-config.json 
 
+## 
+.vscode/
+
 #### Package control specific files Package 
 Control.last-run 
 Control.ca-list 
@@ -87,3 +90,6 @@ GitHub.sublime-settings
 
 ## Database data
 /docker/database/data/
+
+## 
+/backend/migrations/
