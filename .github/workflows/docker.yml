@@ -32,4 +32,4 @@ jobs:
         PORT_WEB: ${{ secrets.PORT_WEB }}
         PORT_DB: ${{ secrets.PORT_DB }}
     - name: Build the Docker image
-      run: docker-compose -f ./docker/docker-compose.yml up --build
+      run: docker-compose -f ./docker/docker-compose.yml up -d
