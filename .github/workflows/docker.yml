@@ -18,7 +18,7 @@ jobs:
       run: 
         touch ./config/.env &&
         echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > ./config/.env &&
-        echo "DJANGO_DEBUG=True" > ./config/.env &&
+        echo "DJANGO_DEBUG=True" >> ./config/.env &&
         echo "DATABASE_URL=$DATABASE_URL" >> ./config/.env
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
