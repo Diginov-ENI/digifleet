@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ feature/docker_CI ]
+    branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag digifleet-docker-image:$(date +%s)
+      run: docker-compose --up
