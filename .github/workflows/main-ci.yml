@@ -47,6 +47,9 @@ jobs:
         pip install -r ./docker/web/requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        coverage run --source='backend/' manage.py test
+    - name: Check coverage
+      run: |
+        coverage report --fail-under=60
     - name: Build the Docker image
       run: docker-compose -f ./docker/docker-compose.yml up -d
