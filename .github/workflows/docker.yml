@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Write docker.env
+      run: 
+        touch ./docker/.env &&
+        echo "PORT=$PORT_WEB" > ./docker/.env &&
+        echo "PORT_DB=$PORT_DB" >> ./docker/.env
+      env:
+        PORT_WEB: ${{ secrets.PORT_WEB }}
+        PORT_DB: ${{ secrets.PORT_DB }}
+    - name: Build the Docker image
+      run: docker-compose -f ./docker/docker-compose.yml up --build
