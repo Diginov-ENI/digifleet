@@ -103,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Surcharge du model Utilisateur de base de django.contrib.auth
+# https://docs.djangoproject.com/fr/3.1/topics/auth/customizing/#extending-user
+AUTH_USER_MODEL = 'backend.Utilisateur'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

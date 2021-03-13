@@ -85,5 +85,11 @@ Control.ca-bundle
 Control.system-ca-bundle 
 GitHub.sublime-settings
 
+### Visual studio
+.vscode/
+
 ## Database data
 /docker/database/data/
+
+## Database migrations
+/backend/migrations
