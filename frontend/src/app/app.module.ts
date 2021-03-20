@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 
@@ -31,6 +32,7 @@ import { VehiculeComponent } from './components/vehicule/vehicule.component';
     MaterialModule,
     APP_ROUTING,
     RouterModule.forChild(DETAILS_ROUTES),
+    ReactiveFormsModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     UtilisateurBackendService,

@@ -7,6 +7,7 @@ export class Utilisateur{
     public Prenom: string;
     public Groups: string[];
     public UserPermissions: string[];
-    public IsActif: boolean;
+    public IsActive: boolean;
+    public IsSuperuser: boolean;
     public LastLogin: Date;
 }
