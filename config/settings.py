@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 from environ import Env
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = Env()
-env.read_env(env_file='config/.env') 
-
+env.read_env(env_file='config/.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,16 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DJANGO_DEBUG', default=False)
+
+try:
+    SENTRY_DSN = env('SENTRY_DSN')
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
+except Exception:
+    pass
+
 
 ALLOWED_HOSTS = []
 

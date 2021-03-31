@@ -4,7 +4,7 @@ services:
     image: postgres:13
     volumes:
       - ./database/data:/var/lib/postgresql/data/
-    restart: always
+    restart: unless-stopped
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
       - "POSTGRES_DB=postgres"
@@ -18,10 +18,11 @@ services:
     command: ["./docker/wait-for-it.sh", "db:5432", "--timeout=30", "--strict", "--", "python", "/code/manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ../:/code
-    restart: always
+    restart: unless-stopped
     depends_on:
         - db
   front:
+    restart: unless-stopped
     build:
       context: ../
       dockerfile: ./docker/angular/Dockerfile
@@ -30,6 +31,7 @@ services:
       - ../frontend:/frontend
       - /frontend/node_modules
   reverse-proxy:
+    restart: unless-stopped
     build:
       context: ./nginx
     volumes:
@@ -41,3 +43,62 @@ services:
     depends_on:
       - web
       - front
+
+
+  sentry-base:
+    image: 'sentry:latest'
+    container_name: sentry-base
+    restart: unless-stopped
+    depends_on:
+      - sentry-redis
+      - sentry-postgres
+    links:
+      - sentry-redis
+      - sentry-postgres
+    ports:
+      - 880:9000
+    env_file:
+      - sentry.env
+    volumes:
+      - ./sentry/sentry:/var/lib/sentry/files
+#      - /srv/sentry/etc:/etc/sentry
+# Uncomment the line above if using the GitHub plugin
+  sentry-cron:
+    image: 'sentry:latest'
+    restart: unless-stopped
+    depends_on:
+      - sentry-base
+    links:
+      - sentry-redis
+      - sentry-postgres
+    command: "sentry run cron"
+    env_file:
+      - sentry.env
+    volumes:
+      - ./sentry/sentry:/var/lib/sentry/files
+#      - /srv/sentry/etc:/etc/sentry
+# Uncomment the line above if using the GitHub plugin
+  sentry-worker:
+    image: 'sentry:latest'
+    depends_on:
+      - sentry-base
+    links:
+      - sentry-redis
+      - sentry-postgres
+    command: "sentry run worker"
+    env_file:
+      - sentry.env
+    volumes:
+      - ./sentry/sentry:/var/lib/sentry/files
+#      - /srv/sentry/etc:/etc/sentry
+# Uncomment the line above if using the GitHub plugin
+  sentry-redis:
+    image: 'redis:latest'
+  sentry-postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_USER: sentry
+      POSTGRES_PASSWORD: sentry
+      POSTGRES_DB: sentry
+    volumes:
+      - ./sentry/postgres:/var/lib/postgresql/data
