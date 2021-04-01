@@ -4,7 +4,7 @@ services:
     image: postgres:13
     volumes:
       - ./database/data:/var/lib/postgresql/data/
-    restart: unless-stopped
+    restart: always
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
       - "POSTGRES_DB=postgres"
@@ -18,20 +18,24 @@ services:
     command: ["./docker/wait-for-it.sh", "db:5432", "--timeout=30", "--strict", "--", "python", "/code/manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ../:/code
-    restart: unless-stopped
+    restart: always
     depends_on:
         - db
+    environment:
+      - "SENTRY_DSN=${SENTRY_DSN_BACK}"
   front:
-    restart: unless-stopped
+    restart: always
     build:
       context: ../
       dockerfile: ./docker/angular/Dockerfile
-    command: bash -c "ng serve --host=0.0.0.0 --port=8100 --poll"
+    command: bash -c "npm i && npm run dev"
+    environment:
+      - "SENTRY_DSN=${SENTRY_DSN_FRONT}"
     volumes:
       - ../frontend:/frontend
       - /frontend/node_modules
   reverse-proxy:
-    restart: unless-stopped
+    restart: always
     build:
       context: ./nginx
     volumes:
@@ -43,7 +47,6 @@ services:
     depends_on:
       - web
       - front
-
 
   sentry-base:
     image: 'sentry:latest'

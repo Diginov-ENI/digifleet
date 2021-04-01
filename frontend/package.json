@@ -9,7 +9,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "config-env": "ts-node set-env.ts",
+    "config-source": "ionic build --source-map",
+    "dev": "npm run config-env && npm run config-source && ng serve --host=0.0.0.0 --port=8100 --poll"
   },
   "private": true,
   "dependencies": {

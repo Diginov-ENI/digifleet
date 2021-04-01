@@ -1,3 +1,7 @@
+#Sentry
+docker/sentry/postgres
+docker/sentry/sentry
+
 # Django #
 *.log
 *.pot
@@ -94,6 +98,8 @@ GitHub.sublime-settings
 
 ## Database data
 /docker/database/data/
+frontend/www/index.html
+frontend/src/environments/environment.dev.ts
 
 ## 
 /backend/migrations/

@@ -6,9 +6,12 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import * as Sentry from "sentry-cordova";
+import { SentryIonicErrorHandler } from './services/sentry-ionic-error-handler';
+import { environment } from './../environments/environment';
 
 
-
+Sentry.init({ dsn: environment.SENTRY_DSN });
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +19,7 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
   ],
   bootstrap: [AppComponent],
 })
