@@ -31,7 +31,7 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/theme/variables.scss", "src/global.scss"],
             "scripts": []
           },
           "configurations": {
@@ -90,7 +90,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "styles": [],
+            "styles": [ "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css"],
             "scripts": [],
             "assets": [
               {
