@@ -6,7 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import * as Sentry from "sentry-cordova";
+import * as Sentry from "@sentry/angular";
 import { SentryIonicErrorHandler } from './services/sentry-ionic-error-handler';
 import { environment } from './../environments/environment';
 

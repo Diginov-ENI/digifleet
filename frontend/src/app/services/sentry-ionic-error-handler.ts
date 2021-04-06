@@ -1,7 +1,7 @@
 
 import { ErrorHandler } from '@angular/core';
 
-import * as Sentry from 'sentry-cordova';
+import * as Sentry from "@sentry/angular";
 
 export class SentryIonicErrorHandler {
     handleError(error) {
