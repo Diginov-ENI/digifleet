@@ -33,10 +33,21 @@ jobs:
       run: 
         touch ./docker/.env &&
         echo "PORT=$PORT_WEB" > ./docker/.env &&
-        echo "PORT_DB=$PORT_DB" >> ./docker/.env
+        echo "PORT_DB=$PORT_DB" >> ./docker/.env &&
+        echo "SENTRY_DSN_BACK=" >> ./config/.env &&
+        echo "SENTRY_DSN_FRONT=" >> ./config/.env
       env:
         PORT_WEB: ${{ secrets.PORT_WEB }}
         PORT_DB: ${{ secrets.PORT_DB }}
+    - name: Write sentry.env
+      run: 
+        touch ./docker/sentry.env &&
+        echo "SENTRY_POSTGRES_HOST=sentry-postgres" > ./docker/sentry.env &&
+        echo "SENTRY_DB_USER=sentry" >> ./docker/sentry.env &&
+        echo "SENTRY_DB_PASSWORD=sentry" >> ./config/sentry.env &&
+        echo "SENTRY_REDIS_HOST=sentry-redis" >> ./config/sentry.env &&
+        echo "SOCIAL_AUTH_REDIRECT_IS_HTTPS=false" >> ./config/sentry.env &&
+        echo "SENTRY_SECRET_KEY=secret_key" >> ./config/sentry.env
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:

@@ -1,3 +1,7 @@
+#Sentry
+docker/sentry/postgres
+docker/sentry/sentry
+
 # Django #
 *.log
 *.pot
@@ -6,74 +10,78 @@ __pycache__
 db.sqlite3
 media
 
-# Backup files # 
-*.bak 
+frontend/www/*
+# Backup files #
+*.bak
 
-# Python # 
-*.py[cod] 
-*$py.class 
+# Python #
+*.py[cod]
+*$py.class
 
 # node.js #
 node_modules/
 
-# Distribution / packaging 
-.Python build/ 
-develop-eggs/ 
-dist/ 
-downloads/ 
-eggs/ 
-.eggs/ 
-lib/ 
-lib64/ 
-parts/ 
-sdist/ 
-var/ 
-wheels/ 
-*.egg-info/ 
-.installed.cfg 
-*.egg 
-*.manifest 
-*.spec 
+# Distribution / packaging
+.Python build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
 
-# Installer logs 
-pip-log.txt 
-pip-delete-this-directory.txt 
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Unit test / coverage reports 
-htmlcov/ 
-.tox/ 
-.coverage 
-.coverage.* 
-.cache 
-.pytest_cache/ 
-nosetests.xml 
-coverage.xml 
-*.cover 
-.hypothesis/ 
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 
-# Jupyter Notebook 
-.ipynb_checkpoints 
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# pyenv 
-.python-version 
+# pyenv
+.python-version
 
 # venv
 venv/
 
-# celery 
-celerybeat-schedule.* 
+# celery
+celerybeat-schedule.*
 
-# SageMath parsed files 
-*.sage.py 
+# SageMath parsed files
+*.sage.py
 
-# Environments 
+# Environments
 .env
+*.env
+# mkdocs documentation
+/site
 
-# mkdocs documentation 
-/site 
+# mypy
+.mypy_cache/
 
-# mypy 
-.mypy_cache/ 
+# sftp configuration file
+sftp-config.json
 
 # sftp configuration file 
 sftp-config.json 
@@ -90,6 +98,9 @@ GitHub.sublime-settings
 
 ## Database data
 /docker/database/data/
+frontend/www/index.html
+frontend/src/environments/environment.dev.ts
 
 ## 
+/backend/migrations/
 /backend/migrations/
