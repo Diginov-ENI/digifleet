@@ -25,7 +25,7 @@ services:
     build:
       context: ../
       dockerfile: ./docker/angular/Dockerfile
-    command: ionic serve --external
+    command: bash -c "npm i && ng serve --host=0.0.0.0 --port=8100 --poll"
     volumes:
       - ../frontend:/frontend
       - /frontend/node_modules
