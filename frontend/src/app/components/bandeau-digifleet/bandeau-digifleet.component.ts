@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'bandeau-digifleet',
     templateUrl: 'bandeau-digifleet.component.html',
 })
 export class BandeauDigifleetComponent {
+    constructor(private authService: AuthService,
+        private router: Router){}
     logout() {
-        // Se déconnecter de l'application se fera sans doute dans un autre composant.
+        this.authService.logout();
+        this.router.navigate(['/connexion'])
     }
 }
