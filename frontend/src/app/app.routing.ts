@@ -1,5 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 
@@ -15,7 +15,7 @@ export const DETAILS_ROUTES: Routes = [
         component: DigifleetHomeComponent,
         children: [
             { path: 'liste-vehicule', component: VehiculeComponent },
-            { path: 'liste-utilisateur', component: UtilisateurFormComponent },  // ajouter /:id dans le path
+            { path: 'liste-utilisateur', component: UtilisateurListComponent },  // ajouter /:id dans le path
         ]
     },
     {
