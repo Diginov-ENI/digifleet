@@ -15,6 +15,7 @@ import { DigifleetHomeComponent } from './digifleet-home.component';
 import { APP_ROUTING, DETAILS_ROUTES } from './app.routing';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { VehiculeComponent } from './components/vehicule/vehicule.component';
     APP_ROUTING,
     RouterModule.forChild(DETAILS_ROUTES),
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     UtilisateurBackendService,

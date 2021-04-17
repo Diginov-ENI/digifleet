@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
 
@@ -12,7 +13,6 @@ export class UtilisateurFormComponent implements OnInit {
   utilisateur: Utilisateur;
   form;
 
-  // Ne me copier pas s'il vous plaît
   ProfilsUtilisateur = [{
     id: 1,
     valeur: 'Tous les droits'
@@ -28,12 +28,15 @@ export class UtilisateurFormComponent implements OnInit {
   ]
 
   constructor(private _utilisateurBackendService: UtilisateurBackendService,
-    private formBuilder: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+  ) {
+    const utilisateurId = this.route.snapshot.paramMap.get('id');
+    if (utilisateurId)
+      this.chargerUtilisateur(utilisateurId);
+  }
 
   ngOnInit() {
-    console.log('testInit');
-    // ToDo faire le tri
     this.form = this.formBuilder.group({
       Id: [''],
       Username: ['', Validators.required],
@@ -47,7 +50,6 @@ export class UtilisateurFormComponent implements OnInit {
       IsSuperuser: [''],
       LastLogin: [''],
     });
-
 
     this.form.controls.Username.updateValueAndValidity();
     this.form.controls.Username.setValidators([Validators.required,
@@ -63,9 +65,20 @@ export class UtilisateurFormComponent implements OnInit {
   }
 
   sauver() {
-    // Connecter au back ici
-    // this.utilisateur = this.form. ToDo
-    // this._utilisateurBackendService.saveUtilisateur(this.utilisateur);
+    this.utilisateur = new Utilisateur(this.form.value);
+
+    this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
+      console.log(res);
+    });
+  }
+
+  chargerUtilisateur(id) {
+    this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
+      this.utilisateur = new Utilisateur();
+      this.utilisateur = res;
+    });
+    // ToDo : s'assurer que le post fonctionne (notament la déserialization)
+    // ToDo : transformer ne retour du get en formulaire
   }
 
   public noWhitespaceValidator(): ValidatorFn {
@@ -83,5 +96,4 @@ export class UtilisateurFormComponent implements OnInit {
       return isValid ? null : { WhitespaceStartOrEnd: true };
     };
   }
-
 }
