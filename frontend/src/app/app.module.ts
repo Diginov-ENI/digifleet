@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
+import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -21,9 +23,12 @@ import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { AuthInterceptor } from './services/authInterceptor.service';
 
+import { HttpXsrfInterceptor } from './http-interceptors/HttpXsrfInterceptor'
+
 @NgModule({
   declarations: [
     AppComponent,
+    UtilisateurListComponent,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
@@ -33,7 +38,12 @@ import { AuthInterceptor } from './services/authInterceptor.service';
   ],
   entryComponents: [],
   imports: [
-    BrowserModule, 
+    BrowserModule,
+    HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFToken',
+    }),
     IonicModule.forRoot(), 
     BrowserAnimationsModule,
     MaterialModule,
@@ -42,7 +52,9 @@ import { AuthInterceptor } from './services/authInterceptor.service';
     HttpClientModule,
     FormsModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
     UtilisateurBackendService,
     AuthService,
     AuthGuard,

@@ -1,5 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import {ConnexionFormComponent} from './components/connexion/connexion-form.component';
