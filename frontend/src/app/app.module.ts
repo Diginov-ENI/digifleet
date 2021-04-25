@@ -17,7 +17,6 @@ import { APP_ROUTING, DETAILS_ROUTES } from './app.routing';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { ConnexionFormComponent } from './components/connexion/connexion-form.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';

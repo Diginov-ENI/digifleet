@@ -17,7 +17,7 @@ export const DETAILS_ROUTES: Routes = [
         component: DigifleetHomeComponent,
         children: [
             { path: 'liste-vehicule', component: VehiculeComponent },
-            { path: 'liste-utilisateur', component: UtilisateurFormComponent },  // ajouter /:id dans le path
+            { path: 'liste-utilisateur', component: UtilisateurListComponent  },  // ajouter /:id dans le path
         ],
         canActivate:[AuthGuard]
     },
