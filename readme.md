@@ -4,7 +4,8 @@
 ## Mettre en place le projet
 1. Installer docker et le lancer - https://www.docker.com/get-started
 2. Cloner le repo depuis la branche **develop** ou checkout vers une autre branche
-3. Créer le fichier `config/.env`
+3. Au premier clonage, executer `git config --global core.autocrlf false`
+4. Créer le fichier `config/.env`
 ```
 DJANGO_SECRET_KEY=
 DJANGO_DEBUG=
