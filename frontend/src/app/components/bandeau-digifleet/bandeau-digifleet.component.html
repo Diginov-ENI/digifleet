@@ -15,9 +15,10 @@
                     <mat-icon>person_outline</mat-icon>
                 </button>
                 <mat-menu #auth="matMenu">
+                    <div id="connectedUser">{{user.prenom}} {{user.nom}}</div>
                     <button mat-menu-item (click)="logout()">
                         <mat-icon>exit_to_app</mat-icon>
-                        <span>Sign out</span>
+                        <span>Déconnexion</span>
                     </button>
                 </mat-menu>
             </ul>

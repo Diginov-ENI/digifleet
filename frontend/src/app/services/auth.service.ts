@@ -1,25 +1,55 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, shareReplay } from 'rxjs/operators';
-
+import { tap, shareReplay, first, filter } from 'rxjs/operators';
 import jwtDecode from 'jwt-decode';
 import * as moment from 'moment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Utilisateur } from '../models/utilisateur';
 
 @Injectable()
 export class AuthService {
-
   private apiRoot = '/api/auth/';
-
-  constructor(private http: HttpClient) { }
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  constructor(private http: HttpClient) {
+    this.loadUserFromLocalStorage();
+  }
 
   private setSession(authResult) {
-    const token = authResult.token;
-    const payload = <JWTPayload> jwtDecode(token);
+    const token = authResult.token; 
+    const payload = <JWTPayload>jwtDecode(token);
     const expiresAt = moment.unix(payload.exp);
-
+    
     localStorage.setItem('token', authResult.token);
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
+    
+    this.setCurrentUser(payload.user_id);
+  }
+
+  private setCurrentUser(id){
+    var self = this;
+    this.http.get("http://localhost:8080/api/utilisateurs/"+id+"/").subscribe(user => {
+      console.log(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      self.currentUserSubject.next(user);
+     });
+  }
+  
+  private loadUserFromLocalStorage(){
+    var user = JSON.parse(localStorage.getItem('user'));
+    this.currentUserSubject.next(user);
+  }
+
+  public refreshUserData(){
+    var self = this;
+    this.getUser().pipe(first()).subscribe(user=>{
+      self.setCurrentUser(user.id);
+    });
+
+  }
+
+  public getUser(): Observable<any> {
+    return this.currentUserSubject.asObservable().pipe(filter(x => !!x));
   }
 
   get token(): string {
@@ -29,7 +59,7 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http.post(
       this.apiRoot.concat('login/'),
-      { email , password }
+      { email, password }
     ).pipe(
       tap(response => this.setSession(response)),
       shareReplay(),
@@ -40,6 +70,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('expires_at');
+    localStorage.removeItem('user');
   }
 
   refreshToken() {
@@ -53,7 +84,6 @@ export class AuthService {
       ).subscribe();
     }
   }
-
   getExpiration() {
     const expiration = localStorage.getItem('expires_at');
     const expiresAt = JSON.parse(expiration);

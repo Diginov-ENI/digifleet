@@ -4,6 +4,9 @@
     align-items: center;
 
 }
+:host *{
+    transition: all 0.1s ease-out;
+}
 #connexion-logo{
     width: 300px;
     // margin-top: -50px;
@@ -36,14 +39,15 @@
 }
 
 @media only screen and (max-width: 768px) {
-    #connexion-form-container{
-        width: 100%;
-        height: 100%;
-    }
     .connexion-button{
         width: 100%;
     }
     #error-container{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 500px) {
+    #connexion-form-container{
         width: 100%;
     }
 }
