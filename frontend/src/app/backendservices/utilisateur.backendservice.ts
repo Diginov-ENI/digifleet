@@ -1,50 +1,68 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { Utilisateur } from '../models/utilisateur';
-import { HttpClient } from '@angular/common/http'; // , HttpErrorResponse
-
-// import { catchError } from 'rxjs/operators';
-// import { GlobalsConstantsService } from '../services/globalsconstants.service';
-// import { AuthBackendService } from './auth.backendservice';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class UtilisateurBackendService {
-    private readonly _apiname = 'utilisateurs';
+    private readonly _apiroute = 'http://localhost:8000/api/';
+    private readonly _apiname = this._apiroute + 'utilisateurs/';
+    
 
     constructor(
         private _httpClient: HttpClient
     ) {
     }
 
-    // Ajout d'un utilisateur
-    // @params {Objet} utilisateur : l'utilisateur
-    // @return : {Observable}
+    /**
+     * Ajouter un utilisateur
+     * @param utilisateur 
+     * @return : {Observable}
+     */
     addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
 
         let stringifyItem = JSON.stringify(utilisateur);
 
-        const header = new Headers();
-        header.append('Content-Type', 'application/json');
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'X-CSRFToken': 'affdv4w7KcFALMacAsU4FC27iuRZBwJcLEZTDFqjB5w3EkxlZ39Jh56O8mDttmBO'
+            })
+        };
 
-        return this._httpClient.post<Utilisateur>('http://losthost:8000/api/' + this._apiname, stringifyItem);
+        return this._httpClient.post<Utilisateur>(this._apiname, stringifyItem, httpOptions);
     }
 
     /**
-    * Récupération de la liste des utilisateurs
-    * 
+     * Modifier un utilisateur
+     * @param utilisateur 
+     */
+    updateUtilisateur(utilisateur: object): Observable<Utilisateur> {
+        let stringifyItem = JSON.stringify(utilisateur);
+
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'X-CSRFToken': 'affdv4w7KcFALMacAsU4FC27iuRZBwJcLEZTDFqjB5w3EkxlZ39Jh56O8mDttmBO'
+            })
+        };
+
+        return this._httpClient.patch<Utilisateur>(this._apiname + utilisateur['Id'] + '/', stringifyItem, httpOptions);
+    }
+
+    /**
+    * Obtenir les utilisateurs
     * @returns : Observable<Utilisateur[]>
     */
     getUtilisateurs(): Observable<Utilisateur[]> {
-        return this._httpClient.get<Utilisateur[]>('http://localhost:8000/api/utilisateurs');
+        return this._httpClient.get<Utilisateur[]>(this._apiname);
     }
 
+    /**
+     * Obtenir un utilisateur
+     * @param id 
+     */
     getUtilisateur(id): Observable<Utilisateur> {
-        return this._httpClient.get<Utilisateur>('http://localhost:8000/api/utilisateurs/' + id);
+        return this._httpClient.get<Utilisateur>(this._apiname + id);
     }
-
-    // En cours
-    // postApi(apiName: string, body: any, options?: any): Observable<any> {
-    // 	return this._httpClient.post(this._globalsConstants.apiUrl + apiName, body, this._authService.getOptions(options))
-    // 		.pipe(catchError((err, caught) => AuthBackendService.handleError(err, caught)));
-    // }
 }

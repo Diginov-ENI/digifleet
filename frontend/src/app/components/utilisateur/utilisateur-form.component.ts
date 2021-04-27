@@ -20,10 +20,6 @@ export class UtilisateurFormComponent implements OnInit {
   {
     id: 2,
     valeur: 'Back office'
-  },
-  {
-    id: 3,
-    valeur: `Je ne sert qu'à l'affichage`
   }
   ]
 
@@ -41,14 +37,9 @@ export class UtilisateurFormComponent implements OnInit {
       Id: [''],
       Username: ['', Validators.required],
       Email: ['', [Validators.email, Validators.required]],
-      MotDePasse: [''],
       Nom: [''],
       Prenom: [''],
-      Groups: [''],
-      UserPermissions: [''],
-      IsActive: [''],
-      IsSuperuser: [''],
-      LastLogin: [''],
+      Groups: ['']
     });
 
     this.form.controls.Username.updateValueAndValidity();
@@ -67,18 +58,43 @@ export class UtilisateurFormComponent implements OnInit {
   sauver() {
     this.utilisateur = new Utilisateur(this.form.value);
 
-    this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
-      console.log(res);
-    });
+    // ToDo factoriser le passage des champ vide à undefined
+    if (!this.utilisateur.Id) {
+      this.utilisateur.Id = undefined;
+      this.utilisateur.Groups = undefined;
+      this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
+        console.log(res);
+      });
+    } else {
+      let object:object = {
+        'Id' : this.utilisateur.Id,
+        'Username' : this.utilisateur.Username,
+        'Email' : this.utilisateur.Email,
+        'Nom' : this.utilisateur.Nom,
+        'Prenom' : this.utilisateur.Prenom
+      }
+
+      this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
+        console.log(res);
+      });
+      // ToDo retour liste des utilisateurs
+    }
   }
 
   chargerUtilisateur(id) {
     this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
       this.utilisateur = new Utilisateur();
       this.utilisateur = res;
+      this.itemToForm(this.utilisateur);
     });
-    // ToDo : s'assurer que le post fonctionne (notament la déserialization)
-    // ToDo : transformer ne retour du get en formulaire
+  }
+
+  itemToForm(utilisateur: Utilisateur){
+    this.form.controls.Id.setValue(utilisateur.Id);
+    this.form.controls.Username.setValue(utilisateur.Username);
+    this.form.controls.Email.setValue(utilisateur.Email);
+    this.form.controls.Nom.setValue(utilisateur.Nom);
+    this.form.controls.Prenom.setValue(utilisateur.Prenom);
   }
 
   public noWhitespaceValidator(): ValidatorFn {
