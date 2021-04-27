@@ -9,13 +9,26 @@ export const APP_ROUTING = RouterModule.forRoot([
     { path: 'login', component: DigifleetHomeComponent }, // ToDo remplacer DigifleetHomeComponent par le component de connexion
 ], { scrollPositionRestoration: 'enabled' });
 
+export const DETAILS_ROUTES_UTILISATEUR: Routes = [
+    {
+        path: '', component: UtilisateurListComponent
+        // , data: { routeGuards: [DebugGuard, AuthGuard, BannerSizeGuard, RightsGuard] }, canActivate: [CompositeRouteGuard], ToDo
+      },
+      {
+        path: 'utilisateur', component: UtilisateurListComponent // TODO : remplacer par "UtilisateurFormComponent"
+      },
+      {
+        path: 'utilisateur/:id', component: UtilisateurListComponent // TODO : remplacer par "UtilisateurFormComponent"
+      },
+    ];
+
 export const DETAILS_ROUTES: Routes = [
     {
         path: 'Digifleet',
         component: DigifleetHomeComponent,
         children: [
             { path: 'liste-vehicule', component: VehiculeComponent },
-            { path: 'liste-utilisateur', component: UtilisateurListComponent },  // ajouter /:id dans le path
+            { path: 'liste-utilisateur', children: DETAILS_ROUTES_UTILISATEUR },        
         ]
     },
     {

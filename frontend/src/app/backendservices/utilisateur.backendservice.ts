@@ -16,7 +16,6 @@ export class UtilisateurBackendService {
 
     constructor(private http: HttpClient) {}
     
-
     /**
      * Ajout d'un utilisateur
      * 

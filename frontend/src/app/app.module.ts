@@ -6,7 +6,7 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
-import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
+import { ConfirmDeleteDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -23,6 +23,7 @@ import { HttpXsrfInterceptor } from './http-interceptors/HttpXsrfInterceptor'
   declarations: [
     AppComponent,
     UtilisateurListComponent,
+    ConfirmDeleteDialogComponent,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
