@@ -21,6 +21,8 @@ services:
     restart: always
     depends_on:
         - db
+    ports:
+        - "5678:5678"
   front:
     build:
       context: ../
