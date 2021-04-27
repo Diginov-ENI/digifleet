@@ -15,13 +15,24 @@ DATABASE_URL=
 ```
 PORT=
 PORT_DB=
+SENTRY_DSN_BACK=
+SENTRY_DSN_FRONT=
 ```
-4. Récupérer les informations des fichiers `.env` dans la **documentation technique** (les *.env* ne doivent **JAMAIS** être push sur le repo)
-5. Se déplacer dans le répertoir `docker/`
-6. Depuis un terminal exécuter la commande suivante : `docker-compose up --build`
+4. Créer le fichier `docker/sentry.env`
+```
+SENTRY_POSTGRES_HOST=sentry-postgres
+SENTRY_DB_USER=sentry
+SENTRY_DB_PASSWORD=sentry
+SENTRY_REDIS_HOST=sentry-redis
+SOCIAL_AUTH_REDIRECT_IS_HTTPS=false
+SENTRY_SECRET_KEY=
+```
+5. Récupérer les informations des fichiers `.env` dans la **documentation technique** (les *.env* ne doivent **JAMAIS** être push sur le repo)
+6. Se déplacer dans le répertoir `docker/`
+7. Depuis un terminal exécuter la commande suivante : `docker-compose up --build`
    * Si le container web remonte une erreur de connexion vers la db => fermer **tous** les container avec `CTRL+C` et les relancer (voir: https://docs.docker.com/compose/startup-order/)
-7. Se rendre sur `localhost:8000/api/admin` pour vérifier que la page de base Django se lance bien
-8. Se rendre sur `localhost:8000/home` pour vérifier que la page de base Angular se lance bien
+8. Se rendre sur `localhost:8000/api/admin` pour vérifier que la page de base Django se lance bien
+9. Se rendre sur `localhost:8000/home` pour vérifier que la page de base Angular se lance bien
 
 ## Pour commencer le développement, consulter `getting_started.md`
 ## Pour mettre en place le projet depuis zéro, consulter `setup.md`
