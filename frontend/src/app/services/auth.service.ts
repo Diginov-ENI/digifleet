@@ -6,12 +6,13 @@ import jwtDecode from 'jwt-decode';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Utilisateur } from '../models/utilisateur';
+import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 
 @Injectable()
 export class AuthService {
   private apiRoot = '/api/auth/';
   private currentUserSubject = new BehaviorSubject<any>(null);
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private _utilisateurBackendService: UtilisateurBackendService) {
     this.loadUserFromLocalStorage();
   }
 
@@ -28,15 +29,18 @@ export class AuthService {
 
   private setCurrentUser(id){
     var self = this;
-    this.http.get("http://localhost:8080/api/utilisateurs/"+id+"/").subscribe(user => {
+    this._utilisateurBackendService.getUtilisateurById(id).subscribe(user => {
       console.log(user);
       localStorage.setItem('user', JSON.stringify(user));
       self.currentUserSubject.next(user);
      });
   }
-  
+
   private loadUserFromLocalStorage(){
     var user = JSON.parse(localStorage.getItem('user'));
+    if(user === null){
+      this.logout();
+    }
     this.currentUserSubject.next(user);
   }
 

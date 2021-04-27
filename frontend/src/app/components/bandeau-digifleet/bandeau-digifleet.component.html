@@ -20,7 +20,7 @@
                 </button>
 
                 <mat-menu #auth="matMenu">
-                    <div id="connectedUser">{{user.prenom}} {{user.nom}}</div>
+                    <div id="connectedUser"><ng-template [ngIf]="user" [ngIfElse]="loading">{{user.prenom}} {{user.nom}}</ng-template> <ng-template #loading>Chargement..</ng-template></div>
                     <button mat-menu-item (click)="logout()">
                         <mat-icon>exit_to_app</mat-icon>
                         <span>Déconnexion</span>

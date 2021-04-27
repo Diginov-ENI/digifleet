@@ -7,10 +7,10 @@ export class AuthGuard implements CanActivate {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  canActivate() {
+  canActivate(route,state) {
     if (this.authService.isLoggedIn()) {
       this.authService.refreshToken();
-
+      console.log(route);
       return true;
     } else {
       this.authService.logout();
