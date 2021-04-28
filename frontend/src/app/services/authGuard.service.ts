@@ -10,7 +10,6 @@ export class AuthGuard implements CanActivate {
   canActivate(route,state) {
     if (this.authService.isLoggedIn()) {
       this.authService.refreshToken();
-      console.log(route);
       return true;
     } else {
       this.authService.logout();
