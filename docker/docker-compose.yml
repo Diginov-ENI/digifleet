@@ -22,6 +22,8 @@ services:
     depends_on:
         - db
         - sentry-base
+    ports:
+        - "5678:5678"
     environment:
       - "SENTRY_DSN=${SENTRY_DSN_BACK}"
   front:
