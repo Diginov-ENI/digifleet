@@ -1,0 +1,30 @@
+<img id="connexion-logo" src="/assets/diginov_transparent.png" />
+<mat-card id="connexion-form-container">   
+    <h1>Connexion</h1> 
+
+    <div *ngIf="errors" id="error-container">
+        <alert type="danger" *ngFor="let message of errors">{{message}}</alert>
+    </div>
+
+    <form id="connexion-form" (ngSubmit)="handleSubmit($event)">
+      <div class="connexion-input-container">
+          <mat-form-field appearance="outline" class="connexion-input">
+            <mat-label>Adresse email</mat-label>
+            <input [(ngModel)]="username" name="username" matInput>
+            <mat-icon matSuffix>mail_outline</mat-icon>
+          </mat-form-field>
+      </div>
+      
+      <div class="connexion-input-container">
+          <mat-form-field appearance="outline" class="connexion-input">
+              <mat-label>Mot de passe</mat-label>
+              <input  [(ngModel)]="password" name="password" matInput [type]="hidePassword ? 'password' : 'text'">
+              <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+      </div>
+      
+      <button type="submit" mat-flat-button color="primary" class="connexion-button">Se connecter </button>
+    </form>
+</mat-card>
