@@ -18,15 +18,18 @@ class UtilisateurViewSet(viewsets.ViewSet):
     les méthodes ci-dessous surchargent les méthodes de base du ViewSet pour 
     appliquer nos permissions personnalisées 
     """
+    
     queryset = Utilisateur.objects.all()
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
-        serializer = UtilisateurSerializer(self.queryset, many=True)
+        queryset = Utilisateur.objects.all()
+        serializer = UtilisateurSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        user = get_object_or_404(self.queryset, pk=pk)
+        queryset = Utilisateur.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
         serializer = UtilisateurSerializer(user)
         self.check_object_permissions(request, user)
         return Response(serializer.data)
@@ -39,8 +42,9 @@ class UtilisateurViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
 
     def update(self, request, pk=None, *args, **kwargs):
+        queryset = Utilisateur.objects.all()
         partial = kwargs.pop('partial', False)
-        user = get_object_or_404(self.queryset, pk=pk)
+        user = get_object_or_404(queryset, pk=pk)
         serializer = UtilisateurSerializer(user, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -51,7 +55,8 @@ class UtilisateurViewSet(viewsets.ViewSet):
         return self.update(request, *args, **kwargs)
 
     def destroy(self, request, pk=None, *args, **kwargs):
-        user = get_object_or_404(self.queryset, pk=pk)
+        queryset = Utilisateur.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
@@ -59,7 +64,8 @@ class UtilisateurViewSet(viewsets.ViewSet):
     """
     @action(detail=False)
     def archive(self, request, pk=None *args, **kwargs):
-        user = get_object_or_404(self.queryset, pk=pk)
+        queryset = Utilisateur.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
         serializer = UtilisateurSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

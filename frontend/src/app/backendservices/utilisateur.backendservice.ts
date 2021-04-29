@@ -6,45 +6,55 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class UtilisateurBackendService {
-    private readonly _apiname = 'Utilisateur';
-    private readonly _utilisateurUrl = 'http://localhost:8000/api/utilisateurs/';
+    private readonly _apiroute = 'http://localhost:8000/api/';
+    private readonly _apiname = this._apiroute + 'utilisateurs/';
     private readonly _httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',
         })
     };
 
-    constructor(private http: HttpClient) {}
-    
+    constructor(private _httpClient: HttpClient) {}
 
     /**
-     * Ajout d'un utilisateur
-     * 
-     * @param {Object} utilisateur : l'utilisateur
-     * @returns : {Observable}
+     * Ajouter un utilisateur
+     * @param utilisateur 
+     * @return : {Observable}
      */
-    addUtilisateur(utilisateur: Utilisateur) { //: Observable<Utilisateur>{
-        JSON.stringify(utilisateur); // ToDo
+    addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
+
+        let stringifyItem = JSON.stringify(utilisateur);
+        return this._httpClient.post<Utilisateur>(this._apiname, stringifyItem, this._httpOptions);
     }
 
     /**
-     * Récupération de la liste des utilisateurs
-     * 
-     * @returns : Observable<Utilisateur[]>
+     * Modifier un utilisateur
+     * @param utilisateur 
      */
+    updateUtilisateur(utilisateur: object): Observable<Utilisateur> {
+        let stringifyItem = JSON.stringify(utilisateur);
+
+
+
+        return this._httpClient.patch<Utilisateur>(this._apiname + utilisateur['Id'] + '/', stringifyItem, this._httpOptions);
+    }
+
+    /**
+    * Obtenir les utilisateurs
+    * @returns : Observable<Utilisateur[]>
+    */
     getUtilisateurs(): Observable<Utilisateur[]> {
-        return this.http.get<Utilisateur[]>(this._utilisateurUrl);
+        return this._httpClient.get<Utilisateur[]>(this._apiname);
     }
 
     /**
-     * Récupération d'un utilisateur par id
-     * 
-     * @returns : Observable<Utilisateur[]>
+     * Obtenir un utilisateur
+     * @param id 
      */
-    getUtilisateurById(utilisateurId): Observable<Utilisateur> {
-        return this.http.get<Utilisateur>(this._utilisateurUrl + utilisateurId);
+    getUtilisateur(id): Observable<Utilisateur> {
+        return this._httpClient.get<Utilisateur>(this._apiname + id);
     }
-
+    
     /**
      * Suppression d'un utilisateur par son id
      * 
@@ -52,6 +62,6 @@ export class UtilisateurBackendService {
      * @returns 
      */
     deleteUtilisateur(idUtilisateur) {
-        return this.http.delete(this._utilisateurUrl + idUtilisateur, this._httpOptions);
-}
+        return this._httpClient.delete(this._apiname + idUtilisateur, this._httpOptions);
+    }
 }

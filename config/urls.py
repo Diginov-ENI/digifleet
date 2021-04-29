@@ -33,3 +33,4 @@ urlpatterns = [
     path('api/auth/refresh-token/', refresh_jwt_token),
     
 ]
+]
