@@ -42,4 +42,3 @@ class UtilisateurSerializer(serializers.ModelSerializer):
                 'required' : False,
             }
         }
-        }

@@ -29,8 +29,7 @@ export class AuthService {
 
   private setCurrentUser(id){
     var self = this;
-    this._utilisateurBackendService.getUtilisateurById(id).subscribe(user => {
-      console.log(user);
+    this._utilisateurBackendService.getUtilisateur(id).subscribe(user => {
       localStorage.setItem('user', JSON.stringify(user));
       self.currentUserSubject.next(user);
      });

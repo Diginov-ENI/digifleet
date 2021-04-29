@@ -31,6 +31,4 @@ urlpatterns = [
     path('api/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/auth/login/', obtain_jwt_token),
     path('api/auth/refresh-token/', refresh_jwt_token),
-    
-]
 ]
