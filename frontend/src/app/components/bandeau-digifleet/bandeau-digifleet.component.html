@@ -3,17 +3,22 @@
         <span>Digifleet</span>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
-                <button mat-icon-button routerLink="liste-utilisateur">
-                    <mat-icon>person</mat-icon>
+                <button mat-icon-button 
+                        matTooltip="Utilisateurs"
+                        routerLink="liste-utilisateur">
+                    <mat-icon>people</mat-icon>
                 </button>
 
-                <button mat-icon-button routerLink="liste-vehicule">
+                <button mat-icon-button
+                        matTooltip="Véhicules"
+                        routerLink="liste-vehicule">
                     <mat-icon>directions_car</mat-icon>
                 </button>
 
                 <button mat-icon-button [matMenuTriggerFor]="auth">
                     <mat-icon>person_outline</mat-icon>
                 </button>
+
                 <mat-menu #auth="matMenu">
                     <button mat-menu-item (click)="logout()">
                         <mat-icon>exit_to_app</mat-icon>

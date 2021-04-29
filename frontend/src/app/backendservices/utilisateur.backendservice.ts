@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
+import { UtilisateurListComponent } from '../components/utilisateur/utilisateur-list.component';
 import { Utilisateur } from '../models/utilisateur';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -7,12 +8,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class UtilisateurBackendService {
     private readonly _apiroute = 'http://localhost:8000/api/';
     private readonly _apiname = this._apiroute + 'utilisateurs/';
-    
+    private readonly _httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+        })
+    };
 
-    constructor(
-        private _httpClient: HttpClient
-    ) {
-    }
+    constructor(private _httpClient: HttpClient) {}
 
     /**
      * Ajouter un utilisateur
@@ -22,15 +24,7 @@ export class UtilisateurBackendService {
     addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
 
         let stringifyItem = JSON.stringify(utilisateur);
-
-        let httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-                'X-CSRFToken': 'affdv4w7KcFALMacAsU4FC27iuRZBwJcLEZTDFqjB5w3EkxlZ39Jh56O8mDttmBO'
-            })
-        };
-
-        return this._httpClient.post<Utilisateur>(this._apiname, stringifyItem, httpOptions);
+        return this._httpClient.post<Utilisateur>(this._apiname, stringifyItem, this._httpOptions);
     }
 
     /**
@@ -40,14 +34,9 @@ export class UtilisateurBackendService {
     updateUtilisateur(utilisateur: object): Observable<Utilisateur> {
         let stringifyItem = JSON.stringify(utilisateur);
 
-        let httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-                'X-CSRFToken': 'affdv4w7KcFALMacAsU4FC27iuRZBwJcLEZTDFqjB5w3EkxlZ39Jh56O8mDttmBO'
-            })
-        };
 
-        return this._httpClient.patch<Utilisateur>(this._apiname + utilisateur['Id'] + '/', stringifyItem, httpOptions);
+
+        return this._httpClient.patch<Utilisateur>(this._apiname + utilisateur['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
@@ -64,5 +53,15 @@ export class UtilisateurBackendService {
      */
     getUtilisateur(id): Observable<Utilisateur> {
         return this._httpClient.get<Utilisateur>(this._apiname + id);
+    }
+    
+    /**
+     * Suppression d'un utilisateur par son id
+     * 
+     * @param idUtilisateur 
+     * @returns 
+     */
+    deleteUtilisateur(idUtilisateur) {
+        return this._httpClient.delete(this._apiname + idUtilisateur, this._httpOptions);
     }
 }
