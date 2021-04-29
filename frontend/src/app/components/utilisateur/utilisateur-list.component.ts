@@ -29,7 +29,7 @@ export class UtilisateurListComponent implements OnInit{
   }
 
   getUtilisateurById(id){
-    this._utilisateurBackendService.getUtilisateurById(id).subscribe((response => {
+    this._utilisateurBackendService.getUtilisateur(id).subscribe((response => {
       this.utilisateur = response;
     }))
   }
