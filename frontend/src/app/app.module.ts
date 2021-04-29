@@ -1,4 +1,4 @@
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule, ErrorHandler, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -18,8 +18,15 @@ import { HttpXsrfInterceptor } from './http-interceptors/HttpXsrfInterceptor'
 import * as Sentry from '@sentry/angular';
 import { SentryIonicErrorHandler } from './services/sentry-ionic-error-handler';
 import { environment } from './../environments/environment';
+import { ConnexionFormComponent } from './components/connexion/connexion-form.component';
+import { AlertComponent } from './components/alert/alert.component';
+import { AuthService} from './services/auth.service';
+import { AuthGuard } from './services/authGuard.service';
+import { AuthInterceptor } from './services/authInterceptor.service';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
+
+
 
 @NgModule({
   declarations: [
@@ -30,6 +37,8 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
     VehiculeComponent,
+    ConnexionFormComponent,
+    AlertComponent
   ],
   entryComponents: [],
   imports: [
@@ -46,12 +55,20 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     RouterModule.forChild(DETAILS_ROUTES),
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
+    AuthService,
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
   exports: [

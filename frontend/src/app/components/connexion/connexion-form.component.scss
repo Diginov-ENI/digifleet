@@ -1,0 +1,53 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+:host *{
+    transition: all 0.1s ease-out;
+}
+#connexion-logo{
+    width: 300px;
+    // margin-top: -50px;
+    // margin-bottom: 50px;
+}
+#connexion-form-container{
+    display: inline-flex;
+    width: 400px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+#connexion-form{
+    display: inline-flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.connexion-input{
+    width:100%;
+}
+.connexion-input-container{
+    width: 100%;
+}
+
+#error-container{
+    
+}
+
+@media only screen and (max-width: 768px) {
+    .connexion-button{
+        width: 100%;
+    }
+    #error-container{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 500px) {
+    #connexion-form-container{
+        width: 100%;
+    }
+}
