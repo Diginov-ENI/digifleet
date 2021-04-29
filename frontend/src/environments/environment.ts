@@ -4,6 +4,7 @@
 
 export const environment = {
   SENTRY_DSN: "",
+  API_URL: "",
   production: false
 };
 

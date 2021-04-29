@@ -22,7 +22,7 @@ import { ConnexionFormComponent } from './components/connexion/connexion-form.co
 import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
-import { AuthInterceptor } from './services/authInterceptor.service';
+import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
