@@ -6,6 +6,7 @@ import { RouteReuseStrategy, RouterModule, Router } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmDeleteDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { MaterialModule } from './material.module';
@@ -38,6 +39,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     DigifleetHomeComponent,
     VehiculeComponent,
     ConnexionFormComponent,
+    UtilisateurSecuriteComponent,
     AlertComponent
   ],
   entryComponents: [],

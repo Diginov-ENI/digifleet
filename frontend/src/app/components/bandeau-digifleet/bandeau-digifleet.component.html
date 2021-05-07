@@ -15,18 +15,28 @@
                     <mat-icon>directions_car</mat-icon>
                 </button>
 
-                <button mat-icon-button [matMenuTriggerFor]="auth">
-                    <mat-icon>person_outline</mat-icon>
-                </button>
-
-                <mat-menu #auth="matMenu">
-                    <div id="connectedUser"><ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom}} {{user.Nom}}</ng-template> <ng-template #loading>Chargement..</ng-template></div>
-                    <button mat-menu-item (click)="logout()">
-                        <mat-icon>exit_to_app</mat-icon>
-                        <span>Déconnexion</span>
-                    </button>
-                </mat-menu>
             </ul>
         </div>
+        
+        <span class="navbar-spacer"></span>
+        <span>
+
+            <button mat-button [matMenuTriggerFor]="auth">
+                <mat-icon>person_outline</mat-icon>
+                <ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom}} {{user.Nom}}</ng-template> <ng-template #loading>Chargement..</ng-template>
+            </button>
+        </span>
+
+        <mat-menu #auth="matMenu">
+            
+            <button routerLink="/Digifleet/mon-compte/securite" mat-menu-item>
+                <mat-icon>security</mat-icon>
+                <span>Sécurité</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <span>Déconnexion</span>
+            </button>
+        </mat-menu>
     </mat-toolbar-row>
 </mat-toolbar>

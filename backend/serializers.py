@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from backend.models import Utilisateur
+from django.contrib.auth.password_validation import validate_password
 
 class UtilisateurSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id', required=False, allow_blank=True)
@@ -42,3 +43,21 @@ class UtilisateurSerializer(serializers.ModelSerializer):
                 'required' : False,
             }
         }
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    Password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+
+    class Meta:
+        model = Utilisateur
+        fields = ('Password',)
+
+    def validate(self, attrs):
+
+        return attrs
+
+    def update(self, instance, validated_data):
+
+        instance.set_password(validated_data['Password'])
+        instance.save()
+
+        return instance

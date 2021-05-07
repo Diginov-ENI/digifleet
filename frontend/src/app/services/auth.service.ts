@@ -83,7 +83,7 @@ export class AuthService {
     });
 
     this.getUser().pipe(first()).subscribe(user=>{
-      self.setCurrentUser(user.id);
+      self.setCurrentUser(user.Id);
     });
 
   }

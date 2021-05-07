@@ -1,0 +1,14 @@
+<h1>Mon Compte - Sécurité</h1>
+
+<h2>Mot de passe</h2>
+<form [formGroup]="passwordForm" (ngSubmit)="onFormPasswordChange()">
+    <mat-form-field appearance="fill">
+        <mat-label>Nouveau mot de passe</mat-label>
+        <input formControlName="password" type="password" matInput>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Répétez le nouveau mot de passe</mat-label>
+        <input formControlName="passwordAgain" type="password" matInput>
+    </mat-form-field>
+    <button type="submit" mat-raised-button color="primary">Modifier mon mot de passe</button>
+</form>

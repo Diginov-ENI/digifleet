@@ -1,6 +1,6 @@
 from django.db.models import query
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from backend.models import Utilisateur
 from backend.serializers import UtilisateurSerializer
+from backend.serializers import ChangePasswordSerializer
 from backend.permissions import UtilisateurPermission
 
 
@@ -77,3 +78,14 @@ class UtilisateurViewSet(viewsets.ViewSet):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+
+    queryset = Utilisateur.objects.all()
+    serializer_class = ChangePasswordSerializer
+    #def filter_queryset(self, queryset):
+           # queryset = queryset.filter(pk=self.request.user.id)
+           #Todo filter connected user, perm ?
