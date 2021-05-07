@@ -1,0 +1,70 @@
+<form [formGroup]="form">
+    <h1 *ngIf="this.form.controls.Id.value === null || this.form.controls.Id.value === ''">Ajout d'un utilisateur</h1>
+    <h1 *ngIf="this.form.controls.Id.value !== null && this.form.controls.Id.value !== ''">Modification d'un utilisateur
+    </h1>
+    <input type="hidden" formControlName="Id">
+    <p>
+        <mat-form-field>
+            <input matInput type="text" minlength="4" maxLength="20" placeholder="Login *" formControlName="Username"
+                id="textUsername">
+            <mat-error
+                *ngIf="form.controls.Username.errors && (form.controls.Username.dirty || form.controls.Username.touched)">
+                <span *ngIf="form.controls.Username.errors.required">Le login doit être renseigné.</span>
+                <span *ngIf="form.controls.Username.errors.onlyWhitespace">Ne doit pas contenir d'espace.</span>
+            </mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput type="text" minlength="2" maxLength="50" placeholder="Prénom *" formControlName="Prenom"
+                id="textPrenom" autocomplete="off">
+            <mat-error
+                *ngIf="form.controls.Prenom.errors && (form.controls.Prenom.dirty || form.controls.Prenom.touched)">
+                <span *ngIf="form.controls.Prenom.errors.required">Le prénom doit être renseigné.</span>
+                <span *ngIf="form.controls.Prenom.errors.WhitespaceStartOrEnd">Ne doit pas commencer ou terminer par un
+                    espace.</span>
+            </mat-error>
+
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput type="text" strformatnom minlength="2" maxLength="50" placeholder="Nom *"
+                formControlName="Nom" id="textNom" autocomplete="off">
+            <mat-error *ngIf="form.controls.Nom.errors && (form.controls.Nom.dirty || form.controls.Nom.touched)">
+                <span *ngIf="form.controls.Nom.errors.required">Le nom doit être
+                    renseigné.</span>
+                <span *ngIf="form.controls.Nom.errors.WhitespaceStartOrEnd">Ne doit pas commencer
+                    ou
+                    terminer par un espace.</span>
+            </mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput type="text" placeholder="E-Mail *" maxLength="100" formControlName="Email" id="textEmail">
+            <mat-error
+                *ngIf="form.controls.Email.errors && (form.controls.Email.dirty || form.controls.Email.touched) && form.controls.Email.errors.required">
+                L'email doit être renseigné</mat-error>
+            <mat-error *ngIf="form.controls.Email.errors && form.controls.Email.errors.email">
+                L'email doit être valide</mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <mat-label>Profil utilisateur *</mat-label>
+            <mat-select formControlName="Groups">
+                <mat-option *ngFor="let profil of ProfilsUtilisateur" value="profil.id">{{profil.valeur}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p>
+
+    <button mat-stroked-button type="button" routerLink="/" id="btnAnnuler">
+        <span>Annuler</span>
+    </button>
+
+    <button mat-stroked-button color="primary" type="button" (click)="sauver()" id="btnSauver">
+        <span>Enregistrer</span>
+    </button>
+
+</form>
