@@ -4,8 +4,10 @@ import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.b
 import { Utilisateur } from 'src/app/models/utilisateur';
 import {MatDialog} from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 @Component({
   selector: 'utilisateur-securite',
   templateUrl: 'utilisateur-securite.component.html',
@@ -13,11 +15,21 @@ import { AuthService } from '../../services/auth.service';
 
 export class UtilisateurSecuriteComponent implements OnInit{
 
-  private passwordForm = new FormGroup({
-    password: new FormControl(),
-    passwordAgain: new FormControl()
+  passwordForm = new FormGroup({
+    password: new FormControl('',[
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+    passwordAgain: new FormControl('',[
+      Validators.required,
+      Validators.minLength(8),
+      matchOtherValidator("password")
+    ])
   }); 
+  private errors:any;
+  private success:any;
   private user:Utilisateur = null;
+
   constructor(private authService: AuthService,
     private _utilisateurBackendService: UtilisateurBackendService){
           this.authService.getUser().subscribe(user=>this.user = user);
@@ -28,19 +40,84 @@ export class UtilisateurSecuriteComponent implements OnInit{
   }
 
   onFormPasswordChange(){
-    let object:object = {
-      'Id' : this.user.Id,
-      'Password' :this.passwordForm.get('password').value,
+    if(this.formIsValid()){
+      this.errors = null;
+      this.success = null;
+      let object:object = {
+        'Id' : this.user.Id,
+        'Password' :this.passwordForm.get('password').value,
+      }
+      try {
+        this._utilisateurBackendService.updatePasswordUtilisateur(object).subscribe(res => {
+          this.success = ["Votre mot de passe a bien été modifié."];
+        },
+        error=>{
+          this.errors = error.error.Password;
+        });
+      } catch (error) {
+      }
+    
+      this.clearPasswordForm();
     }
-    this._utilisateurBackendService.updatePasswordUtilisateur(object).subscribe(res => {
-      console.log(res);
-    });
-    this.clearPasswordForm();
   }
-  
+
+  formIsValid(){
+    return this.passwordForm.controls.password.errors == null &&  this.passwordForm.controls.passwordAgain.errors == null
+  }
   clearPasswordForm(){
     
       this.passwordForm.setValue({password: '', passwordAgain: '' }); 
 
   }
+
+  passwordMatchValidator(control: AbstractControl) {
+    const password: string = control.get('password').value;
+    const confirmPassword: string = control.get('passwordAgain').value; 
+    // compare is the password math
+    if (password !== confirmPassword) {
+      // if they don't match, set an error in our confirmPassword form control
+      control.get('passwordAgain').setErrors({ NoPassswordMatch: true });
+    }
+  }
+}
+
+
+
+function matchOtherValidator (otherControlName: string) {
+
+  let thisControl: FormControl;
+  let otherControl: FormControl;
+
+  return function matchOtherValidate (control: FormControl) {
+
+    if (!control.parent) {
+      return null;
+    }
+
+    // Initializing the validator.
+    if (!thisControl) {
+      thisControl = control;
+      otherControl = control.parent.get(otherControlName) as FormControl;
+      if (!otherControl) {
+        throw new Error('matchOtherValidator(): other control is not found in parent group');
+      }
+      otherControl.valueChanges.subscribe(() => {
+        thisControl.updateValueAndValidity();
+      });
+    }
+
+    if (!otherControl) {
+      return null;
+    }
+
+    if (otherControl.value !== thisControl.value) {
+      return {
+        matchOther: true
+      };
+    }
+
+    return null;
+
+  }
+
 }

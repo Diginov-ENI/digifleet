@@ -10,6 +10,12 @@ export class AlertComponent{
     @Input('type') typeInput: string;
     type:string
     constructor() {
+    }
+
+    hide(){
+
+    }
+    ngOnInit(){
         switch(this.typeInput){
             case 'danger':
             case 'warning':
@@ -20,9 +26,5 @@ export class AlertComponent{
             default:
                 this.type = "danger";
         }
-    }
-
-    hide(){
-
     }
 }

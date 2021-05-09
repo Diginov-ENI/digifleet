@@ -41,58 +41,62 @@ export class ConnexionFormComponent {
     }
     handleError(error){
       this.errors = []
-      var errorsObj = error.error;
-      var errorsSorted = [];
-      for(let key in errorsObj){
-          for(let message of errorsObj[key]){
-            errorsSorted.push({
-              type:key,
-              message:message
-            })
-          
+      if(error.status >= 500 && error.status <= 599){
+        this.errors.push("Erreur serveur")
+      }else{
+        
+        var errorsObj = error.error;
+        var errorsSorted = [];
+        for(let key in errorsObj){
+            for(let message of errorsObj[key]){
+              errorsSorted.push({
+                type:key,
+                message:message
+              })
+            
+
+            }
+        }
+        for(let error of errorsSorted){
+          switch(error.type){
+            case "email":
+
+              switch(error.message){
+                case "This field may not be blank.":
+                  this.errors.push("L'adresse email ne doit pas etre vide")
+                  break;
+                default:
+                  this.errors.push(error.type+": "+error.message);
+                  break;
+              }
+              break;
+
+            case "password":
+              switch(error.message){
+                case "This field may not be blank.":
+                  this.errors.push("Le mot de passe ne doit pas etre vide")
+                  break;
+                default:
+                  this.errors.push(error.type+": "+error.message);
+                  break;
+              }
+              break;
+            case "global":
+              switch(error.message){
+                case "Unable to log in with provided credentials.":
+                  this.errors.push("Votre adresse email ou mot de passe est incorrect.")
+                  break;
+                default:
+                  this.errors.push(error.type+": "+error.message);
+                  break;
+              }
+              break;
+            default:
+              this.errors.push(error.type+": "+error.message);
+              break;
 
           }
-      }
-      for(let error of errorsSorted){
-        switch(error.type){
-          case "email":
-
-            switch(error.message){
-              case "This field may not be blank.":
-                this.errors.push("L'adresse email ne doit pas etre vide")
-                break;
-              default:
-                this.errors.push(error.type+": "+error.message);
-                break;
-            }
-            break;
-
-          case "password":
-            switch(error.message){
-              case "This field may not be blank.":
-                this.errors.push("Le mot de passe ne doit pas etre vide")
-                break;
-              default:
-                this.errors.push(error.type+": "+error.message);
-                break;
-            }
-            break;
-          case "global":
-            switch(error.message){
-              case "Unable to log in with provided credentials.":
-                this.errors.push("Votre adresse email ou mot de passe est incorrect.")
-                break;
-              default:
-                this.errors.push(error.type+": "+error.message);
-                break;
-            }
-            break;
-          default:
-            this.errors.push(error.type+": "+error.message);
-            break;
-
         }
       }
-
     }
 }
