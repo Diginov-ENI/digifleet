@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from backend.models import Utilisateur
+from backend.models import Vehicule
+
 
 class UtilisateurSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id', required=False, allow_blank=True)
@@ -42,3 +44,13 @@ class UtilisateurSerializer(serializers.ModelSerializer):
                 'required' : False,
             }
         }
+
+class VehiculeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vehicule
+        fields = ('id',
+                  'immatriculation',
+                  'modele',
+                  'marque',
+                  'couleur')
+
