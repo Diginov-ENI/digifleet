@@ -52,5 +52,6 @@ class VehiculeSerializer(serializers.ModelSerializer):
                   'immatriculation',
                   'modele',
                   'marque',
-                  'couleur')
+                  'couleur',
+                  'nb_place')
 

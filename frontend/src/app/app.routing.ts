@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { AuthGuard } from './services/authGuard.service';
@@ -25,12 +26,24 @@ export const DETAILS_ROUTES_UTILISATEUR: Routes = [
       },
     ];
 
+export const DETAILS_ROUTES_VEHICULE: Routes = [
+    {
+        path: '', component: VehiculeListComponent 
+        },
+        {
+        path: 'vehicule', component: VehiculeComponent
+        },
+        {
+        path: 'vehicule/:id', component: VehiculeComponent
+        },
+    ];
+
 export const DETAILS_ROUTES: Routes = [
     {
         path: 'Digifleet',
         component: DigifleetHomeComponent,
         children: [
-            { path: 'liste-vehicule', component: VehiculeComponent },
+            { path: 'liste-vehicule', children: DETAILS_ROUTES_VEHICULE },
             { path: 'liste-utilisateur', children: DETAILS_ROUTES_UTILISATEUR },     
         ],
         canActivate:[AuthGuard]

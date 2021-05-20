@@ -23,6 +23,8 @@ import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { AuthInterceptor } from './services/authInterceptor.service';
+import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
+import { ConfirmDeleteDialogComponentVehicule, VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -33,12 +35,14 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     AppComponent,
     UtilisateurListComponent,
     ConfirmDeleteDialogComponent,
+    ConfirmDeleteDialogComponentVehicule,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
     VehiculeComponent,
     ConnexionFormComponent,
-    AlertComponent
+    AlertComponent,
+    VehiculeListComponent,
   ],
   entryComponents: [],
   imports: [
@@ -64,6 +68,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurBackendService,
     AuthService,
     AuthGuard,
+    VehiculeBackendService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

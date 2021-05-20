@@ -82,6 +82,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
 
 class VehiculeViewSet(viewsets.ViewSet):
 
+    queryset = Vehicule.objects.all()
     def create(self, request):
         serializer = VehiculeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -96,3 +97,21 @@ class VehiculeViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    def list(self, request):
+        queryset = Vehicule.objects.all()
+        serializer = VehiculeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Vehicule.objects.all()
+        vehicule = get_object_or_404(queryset, pk=pk)
+        serializer = VehiculeSerializer(vehicule)
+        self.check_object_permissions(request, vehicule)
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        queryset = Vehicule.objects.all()
+        vehicule = get_object_or_404(queryset, pk=pk)
+        vehicule.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
