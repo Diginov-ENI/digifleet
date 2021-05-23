@@ -116,42 +116,6 @@ class UtilisateurTestCase(APITestCase):
         with self.assertRaises(FieldError):
             self.client.post(url, json_existing_user, format='json')
 
-    # Update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    """ @Maxence - Can't get this to work. Never used in the application context so it can be ignored for now
-    def test_update(self):
-        self.client.force_login(self.admin)
-
-        new_name = 'newName'
-        json_update_user = {
-            'Email': self.user1.email,
-            'Username': self.user1.username,
-            'Nom': new_name,
-            'Prenom': self.user1.prenom,
-            'IsActive': self.user1.is_active,
-            'LastLogin': datetime.now(),
-            'IsSuperuser': self.user1.is_superuser,
-        }
-        serializer = UtilisateurSerializer(self.user1)
-        serializer.data['Nom'] = new_name
-        url = reverse('utilisateur-detail', args=[self.user1.id])
-
-        response = self.client.put(url, json_update_user, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Nom'], new_name)
-        self.assertEqual(response.data['Email'], self.user1.email)
-        self.assertEquals(response.data['Id'], str(self.user1.id))
-    
-    def test_update_should_throw_404(self):
-        pass
-
-    def test_update_should_throw_invalid_serializer(self):
-        pass
-
-    def test_update_should_throw_unicity_constraint(self):
-        pass
-    """
-
     # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_partial_update(self):
         self.client.force_login(self.admin)
