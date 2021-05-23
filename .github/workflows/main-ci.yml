@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: web
     
     strategy:
       max-parallel: 4
@@ -56,9 +55,14 @@ jobs:
         pip install -r ./docker/web/requirements.txt
     - name: Build the Docker image
       run: docker-compose -f ./docker/docker-compose.yml up -d
-    - name: Run Tests
-      run: |
-        coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/*,backend/permissions.py,backend/serializers.py -m pytest        
-    - name: Check coverage
-      run: |
-        coverage report --fail-under=60
+    
+  test:
+    runs-on: ubuntu-latest
+    container: docker_web
+    steps:
+     - name: Run Tests
+       run: |
+         coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/*,backend/permissions.py,backend/serializers.py -m pytest        
+     - name: Check coverage
+       run: |
+         coverage report --fail-under=60
