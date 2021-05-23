@@ -22,7 +22,6 @@ export class UtilisateurBackendService {
      * @return : {Observable}
      */
     addUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
-
         let stringifyItem = JSON.stringify(utilisateur);
         return this._httpClient.post<Utilisateur>(this._apiname, stringifyItem, this._httpOptions);
     }
@@ -33,9 +32,6 @@ export class UtilisateurBackendService {
      */
     updateUtilisateur(utilisateur: object): Observable<Utilisateur> {
         let stringifyItem = JSON.stringify(utilisateur);
-
-
-
         return this._httpClient.patch<Utilisateur>(this._apiname + utilisateur['Id'] + '/', stringifyItem, this._httpOptions);
     }
 

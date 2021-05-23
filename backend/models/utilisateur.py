@@ -17,7 +17,7 @@ class GestionnaireUtilisateur(BaseUserManager):
             raise ValueError('The given email must be set')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username, nom=nom, prenom=prenom, is_active=True)
+        user = self.model(email=email, username=username, nom=nom, prenom=prenom, is_active=True,  is_superuser=False)
         user.set_password(password)
         user.save(using=self._db)
         return user

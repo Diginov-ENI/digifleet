@@ -1,2 +1,0 @@
-__version__ = '1.0.0-SNAPSHOT'
-VERSION = __version__
