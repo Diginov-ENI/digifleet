@@ -1,7 +1,22 @@
+from django.contrib.auth.models import Permission,Group
 from rest_framework import serializers
 from backend.models import Utilisateur
 from django.contrib.auth.password_validation import validate_password
 
+class PermissionSerializer(serializers.ModelSerializer):
+    Codename = serializers.CharField(source='codename')
+
+    class Meta:
+        model = Permission
+        fields = ('Codename',)
+
+class GroupSerializer(serializers.ModelSerializer):
+    Name = serializers.CharField(source='name')
+    Permissions = PermissionSerializer(source='permissions', read_only=True, many=True)
+    class Meta:
+        model = Group
+        fields = ('Name','Permissions',)
+        
 class UtilisateurSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id', required=False, allow_blank=True)
     Email = serializers.CharField(source='email')
@@ -12,7 +27,8 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     LastLogin = serializers.CharField(source='last_login', required=False, allow_blank=True, default=None)
     IsSuperuser = serializers.CharField(source='is_superuser', required=False, allow_blank=True, default=False)
     Groups = serializers.CharField(source='groups', required=False, allow_blank=True)
-    UserPermissions = serializers.CharField(source='user_permissions', required=False, allow_blank=True)
+    UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
+    Groups = GroupSerializer(source='groups', read_only=True, many=True)
 
     class Meta:
         model = Utilisateur
@@ -25,7 +41,8 @@ class UtilisateurSerializer(serializers.ModelSerializer):
         'LastLogin', 
         'IsSuperuser', 
         'Groups', 
-        'UserPermissions', )
+        'UserPermissions',
+        'Groups', )
         extra_kwargs = {
             'Id' : {
                 'required' : False,
@@ -40,6 +57,9 @@ class UtilisateurSerializer(serializers.ModelSerializer):
                 'required' : False,
             },
             'UserPermissions' : {
+                'required' : False,
+            },
+            'Groups' : {
                 'required' : False,
             }
         }
@@ -61,3 +81,4 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+

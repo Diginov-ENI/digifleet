@@ -41,6 +41,7 @@ export class AuthService {
   private setCurrentUser(id){
     var self = this;
     this._utilisateurBackendService.getUtilisateur(id).subscribe(user => {
+      var utilisateur = new Utilisateur(user);
       localStorage.setItem('user', JSON.stringify(user));
 
       Sentry.addBreadcrumb({
@@ -52,13 +53,13 @@ export class AuthService {
         level: Sentry.Severity.Info,
       });
 
-      self.currentUserSubject.next(user);
+      self.currentUserSubject.next(utilisateur);
      });
   }
 
   private loadUserFromLocalStorage(){
     var user = JSON.parse(localStorage.getItem('user'));
-
+    var utilisateur = new Utilisateur(user);
     Sentry.addBreadcrumb({
       category: "info",
       message: "Chargement des informations de l'utilisateur depuis le localstorage",
@@ -71,7 +72,7 @@ export class AuthService {
     if(user === null){
       this.logout();
     }
-    this.currentUserSubject.next(user);
+    this.currentUserSubject.next(utilisateur);
   }
 
   public refreshUserData(){

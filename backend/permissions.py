@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from rest_framework import exceptions
 """
 Permissions custom pour un Utilisateur
 """
@@ -27,6 +27,15 @@ class UtilisateurPermission(permissions.BasePermission):
             return bool(request.user.is_superuser)
         else:
             return False
+
+class UtilisateurPasswordPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        action = view.action
+        if action == "partial_update":
+            return True
+        else:
+            return False
+
 
 # TODO : finish it - do NOT use as
 class isOwnerOrAdmin(permissions.BasePermission):
