@@ -132,6 +132,18 @@ class UtilisateurTestCase(APITestCase):
         self.assertEqual(response.data['Nom'], new_name)
         self.assertEqual(response.data['Email'], self.user1.email)
         self.assertEqual(response.data['Id'], str(self.user1.id))
+    def test_change_password(self):
+        self.client.force_login(self.user1)
+        url = reverse('auth_change_password',args=[self.user1.id])
+
+        json_update_user_password = {  
+            'Password': "nouveaumdp",
+        }
+        response = self.client.patch(url, json_update_user_password, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        userPasswordChanged = Utilisateur.objects.get(email=self.user1.email)
+        self.assertEqual(userPasswordChanged.check_password('nouveaumdp'), True)
     
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):
