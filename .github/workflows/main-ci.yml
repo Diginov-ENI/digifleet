@@ -59,7 +59,7 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
-    container: docker_web
+    container: web
     steps:
      - name: Run Tests
        run: |
