@@ -60,7 +60,7 @@ jobs:
       run: docker-compose -f ./docker/docker-compose.yml up -d
     - name: Run Tests
       run: |
-        docker exec -it docker_web_1 coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/*,backend/permissions.py,backend/serializers.py -m pytest
+        docker exec docker_web_1 coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/* -m pytest
     - name: Check coverage
       run: |
         docker exec -it docker_web_1 coverage report --fail-under=60
