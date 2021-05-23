@@ -57,6 +57,7 @@ jobs:
       run: docker-compose -f ./docker/docker-compose.yml up -d
     
   test:
+    needs: build
     runs-on: ubuntu-latest
     container: docker_web
     steps:
