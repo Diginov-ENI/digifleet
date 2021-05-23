@@ -7,16 +7,14 @@ on:
     branches: [ develop ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
+    container: web
     
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.9]
-        
         
     steps:
     - uses: actions/checkout@v2
@@ -58,7 +56,7 @@ jobs:
         pip install -r ./docker/web/requirements.txt
     - name: Run Tests
       run: |
-        coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/*,backend/permissions.py,backend/serializers.py -m pytest
+        coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/*,backend/permissions.py,backend/serializers.py -m pytest        
     - name: Check coverage
       run: |
         coverage report --fail-under=60
