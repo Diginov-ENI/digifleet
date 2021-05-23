@@ -1,8 +1,10 @@
+from django.core.exceptions import FieldError
 from django.db.models import query
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
+from rest_framework.fields import EmailField
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
@@ -37,6 +39,10 @@ class UtilisateurViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = UtilisateurSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        if Utilisateur.objects.filter(email__exact=serializer.validated_data['email']):
+            raise FieldError
+
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    

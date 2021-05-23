@@ -7,11 +7,7 @@ from backend.views import UtilisateurViewSet
 
 # Create your tests here.
 class UtilisateurTestCase(TestCase):
-    # Setups 
-    def setUp(self):
-        self.user = Utilisateur.objects.create(email="user@email", username="user", nom="nom", prenom="prenom", is_active=True, is_superuser=False, password="mdp")
-
-    # Models tests -------------------------------------------------------------------------------------------------------------------------------------------------------
+     # Models tests -------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_create_simple_user(self):
         user = Utilisateur.objects.create_user(email="user2@email", username="user2", nom="nom", prenom="prenom", password="mdp")
         self.assertIsInstance(user, Utilisateur)

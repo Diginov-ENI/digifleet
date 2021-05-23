@@ -1,40 +1,188 @@
-from django.test import TestCase
-from django.test.utils import isolate_apps
-
-from rest_framework.test import APIClient
+from django.core.exceptions import FieldError
+from django.test.testcases import SerializeMixin
+from datetime import datetime    
+from rest_framework.test import APIClient, APITestCase
+from rest_framework_jwt.settings import api_settings
 from rest_framework.reverse import reverse
-from rest_framework.test import APIRequestFactory
-from rest_framework.test import force_authenticate
+from rest_framework import serializers, status
 
+from backend.serializers import UtilisateurSerializer
 from backend.models import Utilisateur
 from backend.views import UtilisateurViewSet
 
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
 # Create your tests here.
-class UtilisateurTestCase(TestCase):
+class UtilisateurTestCase(APITestCase):
+    CONST_UTILISATEUR_BASE_URL = '/api/utilisateurs/'
+
     # Setups 
     def setUp(self):
-        self.factory = APIRequestFactory()
         self.client = APIClient()
+        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
+        self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
 
-        self.admin = Utilisateur.objects.create(email="admin@email", username="admin", nom="nom", prenom="prenom", is_active=True, is_superuser=True, password="mdp")
-        self.user1 = Utilisateur.objects.create(email="user1@email", username="user1", nom="nom", prenom="prenom", is_active=True, is_superuser=False, password="mdp")
-        self.user2 = Utilisateur.objects.create(email="user2@email", username="user2", nom="nom", prenom="prenom", is_active=True, is_superuser=False, password="mdp")
-        self.user3 = Utilisateur.objects.create(email="user3@email", username="user3", nom="nom", prenom="prenom", is_active=True, is_superuser=False, password="mdp")
+    # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test_list(self):
+        self.client.force_login(self.admin)
 
-    # Views tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test_utilisateur_not_authenticated_user(self):
         url = reverse('utilisateur-list')
+
         response = self.client.get(url)
 
-        self.assertTemplateNotUsed(response, 'api/utilisateurs')
-        self.failUnlessEqual(response.status_code, 401)
+        self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
+    def test_list_should_throw_401(self):
+        url = reverse('utilisateur-list')
+
+        response = self.client.get(url)
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # Retrieve tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test_retrieve(self):
+        self.client.force_login(self.user1)
+
+        serializer = UtilisateurSerializer(self.user1)
+        url = reverse('utilisateur-detail', args=[self.user1.id])
+
+        response = self.client.get(url)        
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_retrieve_should_throw_404(self):
+        self.client.force_login(self.user1)
+
+        url = reverse('utilisateur-detail', args=[-1])
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    # Create tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test_create(self):
+        self.client.force_login(self.admin)
+
+        json_new_user = {  
+            'Email': 'newUser@email',
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['Email'], 'newUser@email')
+        self.assertIsNot(response.data['Id'], None)
+
+    def test_create_should_throw_invalid_serializer(self):
+        self.client.force_login(self.admin)
+
+        json_new_user = {  
+            'email': 'newUser@email', # Wrong field
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_should_throw_unicity_constraint(self):
+        self.client.force_login(self.admin)
+
+        json_existing_user = {  
+            'Email': 'user1@email',
+            'Username': 'user1',
+            'Nom': 'nom',
+            'Prenom': 'prenom',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+
+        with self.assertRaises(FieldError):
+            self.client.post(url, json_existing_user, format='json')
+
+    # Update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    """ @Maxence - Can't get this to work. Never used in the application context so it can be ignored for now
+    def test_update(self):
+        self.client.force_login(self.admin)
+
+        new_name = 'newName'
+        json_update_user = {
+            'Email': self.user1.email,
+            'Username': self.user1.username,
+            'Nom': new_name,
+            'Prenom': self.user1.prenom,
+            'IsActive': self.user1.is_active,
+            'LastLogin': datetime.now(),
+            'IsSuperuser': self.user1.is_superuser,
+        }
+        serializer = UtilisateurSerializer(self.user1)
+        serializer.data['Nom'] = new_name
+        url = reverse('utilisateur-detail', args=[self.user1.id])
+
+        response = self.client.put(url, json_update_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['Nom'], new_name)
+        self.assertEqual(response.data['Email'], self.user1.email)
+        self.assertEquals(response.data['Id'], str(self.user1.id))
     
-    # FIXME - authentication not working
-    def test_utilisateur_list_view(self):
-        self.client.login(email='admin@email', password='mdp')
+    def test_update_should_throw_404(self):
+        pass
 
-        url = reverse('utilisateur-list')
-        response = self.client.get(url)
+    def test_update_should_throw_invalid_serializer(self):
+        pass
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.user1, request.content)
+    def test_update_should_throw_unicity_constraint(self):
+        pass
+    """
+
+    # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test_partial_update(self):
+        self.client.force_login(self.admin)
+
+        new_name = 'newName'
+        json_update_user = {  
+            'Nom': new_name,
+        }
+        url = reverse('utilisateur-detail', args=[self.user1.id])
+
+        response = self.client.patch(url, json_update_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['Nom'], new_name)
+        self.assertEqual(response.data['Email'], self.user1.email)
+        self.assertEqual(response.data['Id'], str(self.user1.id))
+    
+    # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test_destroy(self):
+        self.client.force_login(self.admin)
+
+        url = reverse('utilisateur-detail', args=[self.user1.id])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Utilisateur.objects.filter(id__exact=self.user1.id))
+
+    def test_destroy_should_throw_404(self):
+        self.client.force_login(self.admin)
+
+        url = reverse('utilisateur-detail', args=[-1])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
