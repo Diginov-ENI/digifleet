@@ -1,6 +1,6 @@
 <form [formGroup]="form">
-    <h1 *ngIf="this.form.controls.Id.value === null || this.form.controls.Id.value === ''">Ajout d'un utilisateur</h1>
-    <h1 *ngIf="this.form.controls.Id.value !== null && this.form.controls.Id.value !== ''">Modification d'un utilisateur
+    <h1 *ngIf="!this.form.controls.Id.value">Ajout d'un utilisateur</h1>
+    <h1 *ngIf="this.form.controls.Id.value">Modification d'un utilisateur
     </h1>
     <input type="hidden" formControlName="Id">
     <p>
@@ -57,7 +57,7 @@
                 <mat-option *ngFor="let profil of ProfilsUtilisateur" value="profil.id">{{profil.valeur}}</mat-option>
             </mat-select>
         </mat-form-field>
-    </p>
+    </p> 
 
     <button mat-stroked-button type="button" routerLink="/" id="btnAnnuler">
         <span>Annuler</span>

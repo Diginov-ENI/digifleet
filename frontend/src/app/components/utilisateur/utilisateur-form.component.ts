@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
 
@@ -12,29 +13,34 @@ export class UtilisateurFormComponent implements OnInit {
   utilisateur: Utilisateur;
   form;
 
-  
+  ProfilsUtilisateur = [{
+    id: 1,
+    valeur: 'Tous les droits'
+  },
+  {
+    id: 2,
+    valeur: 'Back office'
+  }
+  ]
 
   constructor(private _utilisateurBackendService: UtilisateurBackendService,
-    private formBuilder: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+  ) {
+    const utilisateurId = this.route.snapshot.paramMap.get('id');
+    if (utilisateurId)
+      this.chargerUtilisateur(utilisateurId);
+  }
 
   ngOnInit() {
-    console.log('testInit');
-    // ToDo faire le tri
     this.form = this.formBuilder.group({
       Id: [''],
       Username: ['', Validators.required],
       Email: ['', [Validators.email, Validators.required]],
-      MotDePasse: [''],
       Nom: [''],
       Prenom: [''],
-      Groups: [''],
-      UserPermissions: [''],
-      IsActive: [''],
-      IsSuperuser: [''],
-      LastLogin: [''],
+      Groups: ['']
     });
-
 
     this.form.controls.Username.updateValueAndValidity();
     this.form.controls.Username.setValidators([Validators.required,
@@ -50,9 +56,45 @@ export class UtilisateurFormComponent implements OnInit {
   }
 
   sauver() {
-    // Connecter au back ici
-    // this.utilisateur = this.form. ToDo
-    // this._utilisateurBackendService.saveUtilisateur(this.utilisateur);
+    this.utilisateur = new Utilisateur(this.form.value);
+
+    // ToDo factoriser le passage des champ vide à undefined
+    if (!this.utilisateur.Id) {
+      this.utilisateur.Id = undefined;
+      this.utilisateur.Groups = undefined;
+      this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
+        console.log(res);
+      });
+    } else {
+      let object:object = {
+        'Id' : this.utilisateur.Id,
+        'Username' : this.utilisateur.Username,
+        'Email' : this.utilisateur.Email,
+        'Nom' : this.utilisateur.Nom,
+        'Prenom' : this.utilisateur.Prenom
+      }
+
+      this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
+        console.log(res);
+      });
+      // ToDo retour liste des utilisateurs
+    }
+  }
+
+  chargerUtilisateur(id) {
+    this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
+      this.utilisateur = new Utilisateur();
+      this.utilisateur = res;
+      this.itemToForm(this.utilisateur);
+    });
+  }
+
+  itemToForm(utilisateur: Utilisateur){
+    this.form.controls.Id.setValue(utilisateur.Id);
+    this.form.controls.Username.setValue(utilisateur.Username);
+    this.form.controls.Email.setValue(utilisateur.Email);
+    this.form.controls.Nom.setValue(utilisateur.Nom);
+    this.form.controls.Prenom.setValue(utilisateur.Prenom);
   }
 
   public noWhitespaceValidator(): ValidatorFn {
@@ -70,5 +112,4 @@ export class UtilisateurFormComponent implements OnInit {
       return isValid ? null : { WhitespaceStartOrEnd: true };
     };
   }
-
 }

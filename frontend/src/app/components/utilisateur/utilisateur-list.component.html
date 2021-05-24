@@ -1,0 +1,43 @@
+<h1>Liste des Utilisateurs</h1>
+
+<table mat-table [dataSource]="utilisateurs">
+  <ng-container matColumnDef="nomPrenom">
+    <th mat-header-cell *matHeaderCellDef> Nom - Prénom </th>
+    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Nom}} {{utilisateur.Prenom}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Email}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="username">
+    <th mat-header-cell *matHeaderCellDef> Username </th>
+    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Username}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let utilisateur"> 
+      <div *ngIf="utilisateur.IsActive; then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+        <button mat-raised-button>Activer</button>
+      </ng-template>
+      <ng-template #elseBlock>
+        <button mat-raised-button>Désactiver</button>
+      </ng-template>
+      <button mat-raised-button [routerLink]="['../liste-utilisateur/utilisateur/', utilisateur.Id]">Modifier</button>
+      <button mat-icon-button class="delete" (click)="openConfirmDeleteDialog(utilisateur.Id)" matTooltip="ajouter utilisateur">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+  <tr mat-row *matRowDef="let rowData; columns: tableColumns"></tr>
+  
+</table>
+
+<button mat-fab color="primary" matTooltip="Ajouter" routerLink="utilisateur">
+  <mat-icon>add</mat-icon>
+</button>

@@ -10,4 +10,8 @@ export class Utilisateur{
     public IsActive: boolean;
     public IsSuperuser: boolean;
     public LastLogin: Date;
+
+    public constructor(init?: Partial<Utilisateur>) {
+        Object.assign(this, init);
+    }
 }
