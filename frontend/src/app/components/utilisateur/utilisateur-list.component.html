@@ -1,43 +1,106 @@
-<h1>Liste des Utilisateurs</h1>
+<div class="wrapper-component">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size-xl="7">
+      <ion-row class="ion-justify-content-between">
+        <ion-col class="ion-no-padding">
+          <h1 class="titre-page">Utilisateurs</h1>
+        </ion-col>
+        <ion-col class="ion-no-padding">
 
-<table mat-table [dataSource]="utilisateurs">
-  <ng-container matColumnDef="nomPrenom">
-    <th mat-header-cell *matHeaderCellDef> Nom - Prénom </th>
-    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Nom}} {{utilisateur.Prenom}}</td>
-  </ng-container>
+          <div class="button-list-top-container">
+            <button class="button-list color-accent" mat-stroked-button routerLink="utilisateur"
+              matTooltip="Ajout d'un utilisateur" id="btnActifObsoleteUtilisateur">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">add</span>
+              </span>
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
 
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Email}} </td>
-  </ng-container>
+      <table mat-table [dataSource]="dataSource" >
+        <!-- colonne Nom -->
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> Nom</th>
+          <td mat-cell *matCellDef="let utilisateur" [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'">
+            {{utilisateur.Nom}}</td>
+        </ng-container>
 
-  <ng-container matColumnDef="username">
-    <th mat-header-cell *matHeaderCellDef> Username </th>
-    <td mat-cell *matCellDef="let utilisateur"> {{utilisateur.Username}} </td>
-  </ng-container>
+        <!-- colonne Prénom -->
+        <ng-container matColumnDef="prenom">
+          <th  mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" >Prénom </th>
+          <td [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+            {{utilisateur.Prenom}}</td>
+        </ng-container>
 
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions </th>
-    <td mat-cell *matCellDef="let utilisateur"> 
-      <div *ngIf="utilisateur.IsActive; then thenBlock else elseBlock"></div>
-      <ng-template #thenBlock>
-        <button mat-raised-button>Activer</button>
-      </ng-template>
-      <ng-template #elseBlock>
-        <button mat-raised-button>Désactiver</button>
-      </ng-template>
-      <button mat-raised-button [routerLink]="['../liste-utilisateur/utilisateur/', utilisateur.Id]">Modifier</button>
-      <button mat-icon-button class="delete" (click)="openConfirmDeleteDialog(utilisateur.Id)" matTooltip="ajouter utilisateur">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </td>
-  </ng-container>
+        <!-- colonne Nom - Prénom (remplace les colonnes Nom & Prénom, visible sur smartphone) -->
+        <ng-container matColumnDef="nomPrenom">
+          <th class="first-column" [style.display]="nbColumnsAffiche !== 3 ? 'none' : 'table-cell'" mat-header-cell
+            *matHeaderCellDef> Nom - Prénom </th>
+          <td [style.display]="nbColumnsAffiche !== 3 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+            {{utilisateur.Nom}} {{utilisateur.Prenom}}</td>
+        </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-  <tr mat-row *matRowDef="let rowData; columns: tableColumns"></tr>
-  
-</table>
+        <!-- colonne Email -->
+        <ng-container matColumnDef="email">
+          <th [style.display]="nbColumnsAffiche < 6 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Email
+          </th>
+          <td [style.display]="nbColumnsAffiche < 6 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+            {{utilisateur.Email}} </td>
+        </ng-container>
 
-<button mat-fab color="primary" matTooltip="Ajouter" routerLink="utilisateur">
-  <mat-icon>add</mat-icon>
-</button>
+        <!-- colonne Username -->
+        <ng-container matColumnDef="username">
+          <th [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Username
+          </th>
+          <td [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+            {{utilisateur.Username}} </td>
+        </ng-container>
+
+        <!-- colonne État -->
+        <ng-container matColumnDef="etat">
+          <th mat-header-cell *matHeaderCellDef id="headerEtat">État</th>
+          <td mat-cell *matCellDef="let utilisateur" id="cellEtat">
+            <span class="material-icons green" *ngIf="utilisateur.IsActive === 'True'" matTooltip="Actif">circle</span>
+            <span class="material-icons red" *ngIf="utilisateur.IsActive === 'False'" matTooltip="Inactif">circle</span>
+          </td>
+        </ng-container>
+
+        <!-- colonne Actions -->
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let utilisateur">
+            <div class="mat-button-list-container">
+              <button class="button-list" mat-stroked-button (click)="rendreActifObsoleteUtilisateur(utilisateur)"
+                matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">hourglass_empty</span>
+                </span>
+              </button>
+              <button class="button-list" mat-stroked-button
+                [routerLink]="['../liste-utilisateur/utilisateur/', utilisateur.Id]"
+                matTooltip="Modifier un utilisateur">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">edit</span>
+                </span>
+              </button>
+              <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(utilisateur)"
+                matTooltip="Supprimer un utilisateur" id="btnDeleteUtilisateur">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">delete</span>
+                </span>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
+      </table>
+
+      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+
+    </ion-col>
+  </ion-row>
+</div>
