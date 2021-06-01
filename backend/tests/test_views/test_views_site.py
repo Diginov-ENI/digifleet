@@ -1,51 +1,52 @@
 from django.core.exceptions import FieldError
-
 from rest_framework.test import APIClient, APITestCase
 from rest_framework_jwt.settings import api_settings
 from rest_framework.reverse import reverse
 from rest_framework import status
 
-from backend.serializers.serializer_utilisateur import UtilisateurSerializer
+from backend.serializers.serializer_site import SiteSerializer
+from backend.models.model_site import Site
 from backend.models.model_utilisateur import Utilisateur
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 # Create your tests here.
-class UtilisateurTestCase(APITestCase):
-    CONST_UTILISATEUR_BASE_URL = '/api/utilisateurs/'
+class SiteTestCase(APITestCase):
+    CONST_SITE_BASE_URL = '/api/sites/'
 
     # Setups 
     def setUp(self):
         self.client = APIClient()
         self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
-        self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
+        self.site_nantes = Site.objects.create(libelle='ENI Nantes')
+        self.site_rennes = Site.objects.create(libelle='ENI Rennes')
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
         self.client.force_login(self.admin)
 
-        url = reverse('utilisateur-list')
+        url = reverse('site-list')
 
         response = self.client.get(url)
 
-        self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
+        self.assertContains(response, self.site_nantes.libelle, status_code=status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
 
     def test_list_should_throw_401(self):
-        url = reverse('utilisateur-list')
+        url = reverse('site-list')
 
         response = self.client.get(url)
 
-        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertTemplateNotUsed(response, self.CONST_SITE_BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Retrieve tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_retrieve(self):
-        self.client.force_login(self.user1)
+        self.client.force_login(self.admin)
 
-        serializer = UtilisateurSerializer(self.user1)
-        url = reverse('utilisateur-detail', args=[self.user1.id])
+        serializer = SiteSerializer(self.site_nantes)
+        url = reverse('site-detail', args=[self.site_nantes.id])
 
         response = self.client.get(url)        
 
@@ -53,9 +54,9 @@ class UtilisateurTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_retrieve_should_throw_404(self):
-        self.client.force_login(self.user1)
+        self.client.force_login(self.admin)
 
-        url = reverse('utilisateur-detail', args=[-1])
+        url = reverse('site-detail', args=[-1])
 
         response = self.client.get(url)
 
@@ -65,86 +66,70 @@ class UtilisateurTestCase(APITestCase):
     def test_create(self):
         self.client.force_login(self.admin)
 
-        json_new_user = {  
-            'Email': 'newUser@email',
-            'Username': 'newUser',
-            'Nom': 'newUser',
-            'Prenom': 'newUser',
-            'IsActive': 'True',
-            'IsSuperuser': 'False',
+        json_new_site = {  
+            'Libelle': 'ENI Niort',
         }
-        url = reverse('utilisateur-list')
+        url = reverse('site-list')
 
-        response = self.client.post(url, json_new_user, format='json')
+        response = self.client.post(url, json_new_site, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Email'], 'newUser@email')
+        self.assertEqual(response.data['Libelle'], 'ENI Niort')
         self.assertIsNot(response.data['Id'], None)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
 
-        json_new_user = {  
-            'email': 'newUser@email', # Wrong field
-            'Username': 'newUser',
-            'Nom': 'newUser',
-            'Prenom': 'newUser',
-            'IsActive': 'True',
-            'IsSuperuser': 'False',
+        json_new_site = {  
+            'name': 'ENI Niort', # Wrong field
         }
-        url = reverse('utilisateur-list')
+        url = reverse('site-list')
 
-        response = self.client.post(url, json_new_user, format='json')
+        response = self.client.post(url, json_new_site, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_should_throw_unicity_constraint(self):
         self.client.force_login(self.admin)
 
-        json_existing_user = {  
-            'Email': 'user1@email',
-            'Username': 'user1',
-            'Nom': 'nom',
-            'Prenom': 'prenom',
-            'IsActive': 'True',
-            'IsSuperuser': 'False',
+        json_existing_site = {  
+            'Libelle': 'ENI Nantes',
         }
-        url = reverse('utilisateur-list')
+        url = reverse('site-list')
 
         with self.assertRaises(FieldError):
-            self.client.post(url, json_existing_user, format='json')
+            self.client.post(url, json_existing_site, format='json')
 
-    # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test_partial_update(self):
+    # update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def test__update(self):
         self.client.force_login(self.admin)
 
-        new_name = 'newName'
-        json_update_user = {  
-            'Nom': new_name,
+        new_libelle = 'newLibelle'
+        json_update_site = {  
+            'Libelle': new_libelle,
         }
-        url = reverse('utilisateur-detail', args=[self.user1.id])
+        url = reverse('site-detail', args=[self.site_nantes.id])
 
-        response = self.client.patch(url, json_update_user, format='json')
+        response = self.client.put(url, json_update_site, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Nom'], new_name)
-        self.assertEqual(response.data['Email'], self.user1.email)
-        self.assertEqual(response.data['Id'], str(self.user1.id))
+        self.assertEqual(response.data['Libelle'], new_libelle)
+        self.assertEqual(response.data['Id'], str(self.site_nantes.id))
     
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):
         self.client.force_login(self.admin)
 
-        url = reverse('utilisateur-detail', args=[self.user1.id])
+        url = reverse('site-detail', args=[self.site_nantes.id])
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Utilisateur.objects.filter(id__exact=self.user1.id))
+        self.assertFalse(Site.objects.filter(id__exact=self.site_nantes.id))
 
     def test_destroy_should_throw_404(self):
         self.client.force_login(self.admin)
 
-        url = reverse('utilisateur-detail', args=[-1])
+        url = reverse('site-detail', args=[-1])
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
