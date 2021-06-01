@@ -5,10 +5,18 @@ Permissions custom pour un Utilisateur
 """
 class UtilisateurPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        if view.action in ['create', 'list', 'destroy' ,'archive']:
-            return bool(request.user.is_authenticated and request.user.is_superuser)
-        elif view.action in ['retrieve','update', 'partial_update']:
+        if view.action == "create":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_create")))
+        elif view.action == "retrieve":
             return True
+        elif view.action == "list":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_list")))
+        elif view.action == "destroy":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_destroy")))
+        elif view.action == "archive":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_archive")))
+        elif view.action in ['update', 'partial_update']:
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_update")))
         else:
             return False
 
@@ -21,33 +29,18 @@ class UtilisateurPermission(permissions.BasePermission):
         if not request.user.is_authenticated:
             return False
 
-        if view.action in ['retrieve', 'update', 'partial_update']:
-            return bool(obj == request.user or request.user.is_superuser)
-        elif view.action in ['create', 'list', 'destroy' ,'archive']:
-            return bool(request.user.is_superuser)
+        if view.action == 'retrieve':
+            return bool(obj == request.user or (request.user.is_superuser or request.user.has_perm("utilisateur_retrieve")))
         else:
-            return False
+            return True
 
 class UtilisateurPasswordPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        action = view.action
-        if action == "partial_update":
-            return True
-        else:
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        # Deny actions on objects if the user is not authenticated
+        if not request.user.is_authenticated:
             return False
 
-
-# TODO : finish it - do NOT use as
-class isOwnerOrAdmin(permissions.BasePermission):
-    """
-    Object-level permission to only allow owners of an object to edit it.
-    Assumes the model instance has an `owner` attribute.
-    """
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        # Instance must have an attribute named `owner`.
-        return obj.owner == request.user
+        return bool(obj == request.user)

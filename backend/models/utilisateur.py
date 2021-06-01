@@ -51,10 +51,12 @@ class Utilisateur(AbstractBaseUser,  PermissionsMixin):
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'nom', 'prenom']
-    
+ 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission ?"
-        return self.user_permissions
+        perms = []
+        for onePerm in self.get_user_permissions():
+            perms.append(onePerm.codename)
+        return perm in perms
 
     def get_user_permissions(self):
         if self.is_superuser:

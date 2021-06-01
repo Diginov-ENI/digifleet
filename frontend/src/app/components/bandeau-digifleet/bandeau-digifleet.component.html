@@ -3,11 +3,13 @@
         <span>Digifleet</span>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
-                <button mat-icon-button 
-                        matTooltip="Utilisateurs"
-                        routerLink="liste-utilisateur">
-                    <mat-icon>people</mat-icon>
-                </button>
+                <ng-template [ngIf]="user && user.hasPermissionByCodeName('utilisateur_list')">
+                    <button mat-icon-button 
+                            matTooltip="Utilisateurs"
+                            routerLink="liste-utilisateur">
+                        <mat-icon>people</mat-icon>
+                    </button>
+                </ng-template>
 
                 <button mat-icon-button
                         matTooltip="Véhicules"
@@ -23,7 +25,7 @@
 
             <button mat-button [matMenuTriggerFor]="auth">
                 <mat-icon>person_outline</mat-icon>
-                <ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom}} {{user.Nom}}</ng-template> <ng-template #loading>Chargement..</ng-template>
+                <ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom.charAt(0).toUpperCase() + user.Prenom.slice(1)}} {{user.Nom.toUpperCase()}}</ng-template> <ng-template #loading>Chargement..</ng-template>
             </button>
         </span>
 

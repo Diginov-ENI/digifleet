@@ -15,6 +15,6 @@ export class Utilisateur{
         Object.assign(this, init);
     }
     public hasPermissionByCodeName(codename:string) {
-        return this.UserPermissions.map(perm=> perm.Codename).includes(codename);
+        return (this.IsSuperuser || this.UserPermissions.map(perm=> perm.Codename).includes(codename));
     }
 }

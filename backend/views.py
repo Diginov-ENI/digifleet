@@ -11,8 +11,7 @@ from rest_framework.serializers import Serializer
 from backend.models import Utilisateur
 from backend.serializers import UtilisateurSerializer
 from backend.serializers import ChangePasswordSerializer
-from backend.permissions import UtilisateurPermission
-
+from backend.permissions import UtilisateurPasswordPermission, UtilisateurPermission
 
 # Create your views here.
 class UtilisateurViewSet(viewsets.ViewSet):
@@ -92,6 +91,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
     queryset = Utilisateur.objects.all()
     serializer_class = ChangePasswordSerializer
+    permission_classes = (UtilisateurPasswordPermission,)
     #def filter_queryset(self, queryset):
            # queryset = queryset.filter(pk=self.request.user.id)
            #Todo filter connected user, perm ?
