@@ -1,3 +1,9 @@
-.router-outlet{
+.router-outlet, .mat-app-background{
     min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 599px){ 
+    .router-outlet, .mat-app-background{
+        min-height: calc(100vh - 56px);
+    }
 }
