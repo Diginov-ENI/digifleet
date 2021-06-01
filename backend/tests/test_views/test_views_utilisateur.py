@@ -25,6 +25,14 @@ class UtilisateurTestCase(APITestCase):
         self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
         self.user2 = Utilisateur.objects.create(email='user2@email', username='user2', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
 
+        self.admin.set_password("mdp")
+        self.admin.save()
+        
+        self.user1.set_password("mdp")
+        self.user1.save()
+        
+        self.user2.set_password("mdp")
+        self.user2.save()
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
         self.client.force_login(self.user1)
@@ -189,6 +197,7 @@ class UtilisateurTestCase(APITestCase):
 
         json_update_user_password = {  
             'Password': "nouveaumdp",
+            'OldPassword': "mdp",
         }
         response = self.client.patch(url, json_update_user_password, format='json')
 
@@ -201,7 +210,8 @@ class UtilisateurTestCase(APITestCase):
         url = reverse('auth_change_password',args=[self.admin.id])
 
         json_update_user_password = {  
-            'Password': "nouveaumdp",
+            'OldPassword': "mdp",
+            'Password': "nouveaumdp"
         }
         response = self.client.patch(url, json_update_user_password, format='json')
 

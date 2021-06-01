@@ -16,6 +16,9 @@ import { catchError } from 'rxjs/operators';
 export class UtilisateurSecuriteComponent implements OnInit{
 
   passwordForm = new FormGroup({
+    oldPassword: new FormControl('',[
+      Validators.required,
+    ]),
     password: new FormControl('',[
       Validators.required,
       Validators.minLength(8),
@@ -46,18 +49,29 @@ export class UtilisateurSecuriteComponent implements OnInit{
       let object:object = {
         'Id' : this.user.Id,
         'Password' :this.passwordForm.get('password').value,
+        'OldPassword':this.passwordForm.get('oldPassword').value,
       }
       try {
         this._utilisateurBackendService.updatePasswordUtilisateur(object).subscribe(res => {
           this.success = ["Votre mot de passe a bien été modifié."];
+          this.clearPasswordForm();
         },
         error=>{
-          this.errors = error.error.Password;
+          
+          var tmp = [];
+          if(typeof error.error.Password == 'object'){
+            tmp = tmp.concat(error.error.Password)
+          }
+          
+          if(typeof error.error.OldPassword == 'object'){
+            tmp = tmp.concat(error.error.OldPassword)
+          }
+          console.log(tmp)
+          this.errors = tmp;
         });
       } catch (error) {
       }
     
-      this.clearPasswordForm();
     }
   }
 
@@ -66,7 +80,7 @@ export class UtilisateurSecuriteComponent implements OnInit{
   }
   clearPasswordForm(){
     
-      this.passwordForm.setValue({password: '', passwordAgain: '' }); 
+      this.passwordForm.setValue({oldPassword:'',password: '', passwordAgain: '' }); 
 
   }
 
@@ -77,6 +91,15 @@ export class UtilisateurSecuriteComponent implements OnInit{
     if (password !== confirmPassword) {
       // if they don't match, set an error in our confirmPassword form control
       control.get('passwordAgain').setErrors({ NoPassswordMatch: true });
+    }
+  }
+
+  messageTranslate(message){
+    switch(message){
+      case "This password is too common.":
+        return "Le nouveau mot de passe est trop commun.";
+      default:
+        return message;
     }
   }
 }
