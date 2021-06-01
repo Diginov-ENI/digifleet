@@ -1,16 +1,13 @@
-from django.core.exceptions import FieldError
-from django.db.models import query
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
-from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
-from rest_framework.fields import EmailField
+from django.core.exceptions import FieldError
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
-from backend.models import Utilisateur
-from backend.serializers import UtilisateurSerializer
-from backend.permissions import UtilisateurPermission
+from backend.models.model_utilisateur import Utilisateur
+from backend.serializers.serializer_utilisateur import UtilisateurSerializer
+from backend.permissions.permission_utilisateur import UtilisateurPermission
 
 
 # Create your views here.
@@ -20,7 +17,6 @@ class UtilisateurViewSet(viewsets.ViewSet):
     les méthodes ci-dessous surchargent les méthodes de base du ViewSet pour 
     appliquer nos permissions personnalisées 
     """
-    
     queryset = Utilisateur.objects.all()
     permission_classes = (UtilisateurPermission,)
     
@@ -41,7 +37,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         if Utilisateur.objects.filter(email__exact=serializer.validated_data['email']):
-            raise FieldError
+            raise FieldError # TODO : add specific exception with message
 
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -58,6 +54,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
+        # TODO : Maybe some tests for exceptions here ? like a 404
         return self.update(request, *args, **kwargs)
 
     def destroy(self, request, pk=None, *args, **kwargs):

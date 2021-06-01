@@ -3,7 +3,7 @@ from django.test.utils import isolate_apps
 from django.urls import reverse
 
 from backend.models import Utilisateur
-from backend.views import UtilisateurViewSet
+from backend.views.view_utilisateur import UtilisateurViewSet
 
 # Create your tests here.
 class UtilisateurTestCase(TestCase):

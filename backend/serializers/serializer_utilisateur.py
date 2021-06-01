@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.models import Utilisateur
+from backend.models.model_utilisateur import Utilisateur
 
 class UtilisateurSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id', required=False, allow_blank=True)
@@ -15,16 +15,18 @@ class UtilisateurSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Utilisateur
-        fields = ('Id', 
-        'Email', 
-        'Username', 
-        'Nom', 
-        'Prenom', 
-        'IsActive', 
-        'LastLogin', 
-        'IsSuperuser', 
-        'Groups', 
-        'UserPermissions', )
+        fields = (
+            'Id', 
+            'Email', 
+            'Username', 
+            'Nom', 
+            'Prenom', 
+            'IsActive', 
+            'LastLogin', 
+            'IsSuperuser', 
+            'Groups', 
+            'UserPermissions',
+        )
         extra_kwargs = {
             'Id' : {
                 'required' : False,

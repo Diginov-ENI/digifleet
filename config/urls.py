@@ -14,15 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
-from backend.models import Utilisateur
 from django.urls import path, include
 from rest_framework import routers, serializers, viewsets
 from backend import views
 
-
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'utilisateurs', views.UtilisateurViewSet)
+router.register(r'sites', views.SiteViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
