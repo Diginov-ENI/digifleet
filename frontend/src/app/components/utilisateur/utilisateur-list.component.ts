@@ -49,7 +49,7 @@ export class UtilisateurListComponent implements OnInit {
   }
 
   openConfirmDeleteDialog(utilisateur: Utilisateur) {
-    const dialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
+    const dialogRef = this.matDialog.open(ConfirmDeleteUtilisateurDialogComponent, {
       data: {
         utilisateur: utilisateur
       }
@@ -82,9 +82,9 @@ export class UtilisateurListComponent implements OnInit {
   selector: 'confirm-delete-dialog',
   templateUrl: './dialogs/confirm-delete-dialog.component.html',
 })
-export class ConfirmDeleteDialogComponent {
+export class ConfirmDeleteUtilisateurDialogComponent {
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDeleteDialogComponent>,
+    public dialogRef: MatDialogRef<ConfirmDeleteUtilisateurDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 }
 

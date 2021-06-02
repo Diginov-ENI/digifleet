@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
 
@@ -23,7 +23,9 @@ export class UtilisateurFormComponent implements OnInit {
   }
   ]
 
-  constructor(private _utilisateurBackendService: UtilisateurBackendService,
+  constructor(
+    private _utilisateurBackendService: UtilisateurBackendService,
+    private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
   ) {
@@ -63,7 +65,7 @@ export class UtilisateurFormComponent implements OnInit {
       this.utilisateur.Id = undefined;
       this.utilisateur.Groups = undefined;
       this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
-        console.log(res);
+        this.router.navigate(['Digifleet/liste-utilisateur']);
       });
     } else {
       let object:object = {
@@ -75,9 +77,8 @@ export class UtilisateurFormComponent implements OnInit {
       }
 
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
-        console.log(res);
+        this.router.navigate(['Digifleet/liste-utilisateur']);
       });
-      // ToDo retour liste des utilisateurs
     }
   }
 

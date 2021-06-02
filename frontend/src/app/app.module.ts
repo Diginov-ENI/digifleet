@@ -5,15 +5,11 @@ import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angu
 import { RouteReuseStrategy, RouterModule, Router } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
-import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ConfirmDeleteDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { MaterialModule } from './material.module';
 import { BandeauDigifleetComponent } from './components/bandeau-digifleet/bandeau-digifleet.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { APP_ROUTING, DETAILS_ROUTES } from './app.routing';
-import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { HttpXsrfInterceptor } from './http-interceptors/HttpXsrfInterceptor'
 import * as Sentry from '@sentry/angular';
 import { SentryIonicErrorHandler } from './services/sentry-ionic-error-handler';
@@ -24,6 +20,14 @@ import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { AuthInterceptor } from './services/authInterceptor.service';
 
+import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { ConfirmDeleteUtilisateurDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
+import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
+import { SiteFormComponent } from './components/site/site-form.component';
+import { ConfirmDeleteSiteDialogComponent, SiteListComponent } from './components/site/site-list.component';
+import { SiteBackendService } from './backendservices/site.backendservice';
+import { VehiculeComponent } from './components/vehicule/vehicule.component';
+
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
 
@@ -31,13 +35,16 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
 @NgModule({
   declarations: [
     AppComponent,
-    UtilisateurListComponent,
-    ConfirmDeleteDialogComponent,
-    UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
-    VehiculeComponent,
     ConnexionFormComponent,
+    UtilisateurListComponent,
+    UtilisateurFormComponent,
+    ConfirmDeleteUtilisateurDialogComponent,
+    SiteListComponent,
+    SiteFormComponent,
+    ConfirmDeleteSiteDialogComponent,
+    VehiculeComponent,
     AlertComponent
   ],
   entryComponents: [],
@@ -62,6 +69,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
+    SiteBackendService,
     AuthService,
     AuthGuard,
     {
