@@ -19,13 +19,14 @@ export class AuthService {
   }
 
   private setSession(authResult) {
-    const token = authResult.token; 
+    const token = authResult.access; 
     const payload = <JWTPayload>jwtDecode(token);
     const expiresAt = moment.unix(payload.exp);
     
-    localStorage.setItem('token', authResult.token);
+    localStorage.setItem('token', authResult.access);
+    localStorage.setItem('refresh', authResult.refresh);
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
-    
+
     Sentry.addBreadcrumb({
       category: "auth",
       message: "Sauvegarde du token JWT",
@@ -97,6 +98,9 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  get refresh(): string {
+    return localStorage.getItem('refresh');
+  }
   login(email: string, password: string) {
     
     return this.http.post(
@@ -121,16 +125,14 @@ export class AuthService {
   }
 
   refreshToken() {
-    if (moment().isBetween(this.getExpiration().subtract(30, 'minutes'), this.getExpiration())) {
       Sentry.addBreadcrumb({
         category: "auth",
         message: "Déclanchement de la mise a jour du token JWT",
         level: Sentry.Severity.Info,
       });
-      
       return this.http.post(
         this.apiRoot.concat('refresh-token/'),
-        { token: this.token }
+        { refresh: this.refresh }
       ).pipe(
         tap(response => this.setSession(response)),
         shareReplay(),

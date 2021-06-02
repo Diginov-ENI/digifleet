@@ -2,6 +2,7 @@ from django.contrib.auth.models import Permission,Group
 from rest_framework import serializers
 from backend.models import Utilisateur
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class PermissionSerializer(serializers.ModelSerializer):
     Codename = serializers.CharField(source='codename')
@@ -87,3 +88,16 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
         return instance
 
+
+
+class CustomJWTSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        credentials = {
+            'email': '',
+            'password': attrs.get("password")
+        }
+        user_obj = Utilisateur.objects.filter(email=attrs.get("email")).first() or Utilisateur.objects.filter(username=attrs.get("email")).first()
+        if user_obj:
+            credentials['email'] = user_obj.email
+
+        return super().validate(credentials)

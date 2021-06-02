@@ -8,10 +8,12 @@ from rest_framework.fields import EmailField
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework.authtoken.views import ObtainAuthToken
 from backend.models import Utilisateur
 from backend.serializers import UtilisateurSerializer
 from backend.serializers import ChangePasswordSerializer
 from backend.permissions import UtilisateurPasswordPermission, UtilisateurPermission
+from django.contrib.auth.models import update_last_login
 
 # Create your views here.
 class UtilisateurViewSet(viewsets.ViewSet):
@@ -95,3 +97,18 @@ class ChangePasswordView(generics.UpdateAPIView):
     #def filter_queryset(self, queryset):
            # queryset = queryset.filter(pk=self.request.user.id)
            #Todo filter connected user, perm ?
+
+
+
+class TokenAuthenticationView(ObtainAuthToken):
+    """Implementation of ObtainAuthToken with last_login update"""
+
+    def post(self, request):
+        result = super(TokenAuthenticationView, self).post(request)
+        try:
+            request_user, data = requests.get_parameters(request)
+            user = requests.get_user_by_email(data['email'])
+            update_last_login(None, user)            
+        except Exception as exc:
+            return None
+        return result
