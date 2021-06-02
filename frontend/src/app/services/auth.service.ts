@@ -125,6 +125,7 @@ export class AuthService {
   }
 
   refreshToken() {
+    if (moment().isBetween(this.getExpiration().subtract(30, 'minutes'), this.getExpiration())) {
       Sentry.addBreadcrumb({
         category: "auth",
         message: "Déclanchement de la mise a jour du token JWT",
@@ -137,6 +138,7 @@ export class AuthService {
         tap(response => this.setSession(response)),
         shareReplay(),
       ).subscribe();
+    }
   }
   getExpiration() {
     const expiration = localStorage.getItem('expires_at');
