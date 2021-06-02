@@ -97,18 +97,3 @@ class ChangePasswordView(generics.UpdateAPIView):
     #def filter_queryset(self, queryset):
            # queryset = queryset.filter(pk=self.request.user.id)
            #Todo filter connected user, perm ?
-
-
-
-class TokenAuthenticationView(ObtainAuthToken):
-    """Implementation of ObtainAuthToken with last_login update"""
-
-    def post(self, request):
-        result = super(TokenAuthenticationView, self).post(request)
-        try:
-            request_user, data = requests.get_parameters(request)
-            user = requests.get_user_by_email(data['email'])
-            update_last_login(None, user)            
-        except Exception as exc:
-            return None
-        return result

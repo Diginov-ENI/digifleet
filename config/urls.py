@@ -35,8 +35,8 @@ router.register(r'utilisateurs', views.UtilisateurViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/auth/login/', TokenObtainPairView.as_view(serializer_class=CustomJWTSerializer)),
-    path('api/auth/refresh-token/', TokenRefreshView.as_view()),
+    path('api/auth/login/', TokenObtainPairView.as_view(serializer_class=CustomJWTSerializer),name="jwt_login"),
+    path('api/auth/refresh-token/', TokenRefreshView.as_view(),name="jwt_refresh"),
     path('api/change-password/<int:pk>/', ChangePasswordView.as_view(), name='auth_change_password'),
 
 ]

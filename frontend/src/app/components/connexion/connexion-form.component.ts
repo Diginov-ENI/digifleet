@@ -71,7 +71,7 @@ export class ConnexionFormComponent {
                 this.errors.push("L'adresse email ne doit pas etre vide")
                 break;
               default:
-                this.errors.push(error.type + ": " + error.message);
+                this.errors.push(error.message);
                 break;
             }
             break;
@@ -82,7 +82,7 @@ export class ConnexionFormComponent {
                 this.errors.push("Le mot de passe ne doit pas etre vide")
                 break;
               default:
-                this.errors.push(error.type + ": " + error.message);
+                this.errors.push( error.message);
                 break;
             }
             break;
@@ -92,7 +92,7 @@ export class ConnexionFormComponent {
                 this.errors.push("Votre adresse email ou mot de passe est incorrect.")
                 break;
               default:
-                this.errors.push(error.type + ": " + error.message);
+                this.errors.push(error.message);
                 break;
             }
             break;

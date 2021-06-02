@@ -98,6 +98,8 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
         }
         user_obj = Utilisateur.objects.filter(email=attrs.get("email")).first() or Utilisateur.objects.filter(username=attrs.get("email")).first()
         if user_obj:
+            if not user_obj.is_active:
+                raise serializers.ValidationError(["Le compte utilisateur est désactivé."])
             credentials['email'] = user_obj.email
 
         return super().validate(credentials)

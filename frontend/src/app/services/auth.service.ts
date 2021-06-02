@@ -137,7 +137,6 @@ export class AuthService {
         tap(response => this.setSession(response)),
         shareReplay(),
       ).subscribe();
-    }
   }
   getExpiration() {
     const expiration = localStorage.getItem('expires_at');
