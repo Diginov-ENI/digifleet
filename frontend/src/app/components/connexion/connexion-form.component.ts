@@ -96,6 +96,16 @@ export class ConnexionFormComponent {
                 break;
             }
             break;
+          case "detail":
+            switch (error.message) {
+              case "No active account found with the given credentials":
+                this.errors.push("Votre adresse email ou mot de passe est incorrect.")
+                break;
+              default:
+                this.errors.push(error.message);
+                break;
+            }
+            break;
           default:
             this.errors.push(error.type + ": " + error.message);
             break;

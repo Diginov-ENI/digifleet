@@ -59,6 +59,8 @@ class Utilisateur(AbstractBaseUser,  PermissionsMixin):
         return perm in perms
 
     def get_user_permissions(self):
+        if not self.is_active:
+            return []
         if self.is_superuser:
             return Permission.objects.all()
         group_ids = Group.objects.all().values_list('id', flat=True).distinct()
