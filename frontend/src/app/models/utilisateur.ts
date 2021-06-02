@@ -6,12 +6,15 @@ export class Utilisateur{
     public Nom: string;
     public Prenom: string;
     public Groups: string[];
-    public UserPermissions: string[];
+    public UserPermissions: any[];
     public IsActive: boolean;
     public IsSuperuser: boolean;
     public LastLogin: Date;
 
     public constructor(init?: Partial<Utilisateur>) {
         Object.assign(this, init);
+    }
+    public hasPermissionByCodeName(codename:string) {
+        return (this.IsSuperuser || this.UserPermissions.map(perm=> perm.Codename).includes(codename));
     }
 }

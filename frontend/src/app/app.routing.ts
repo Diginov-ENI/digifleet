@@ -5,6 +5,7 @@ import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { AuthGuard } from './services/authGuard.service';
 import {ConnexionFormComponent} from './components/connexion/connexion-form.component';
+import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 
 // WIP - la gestion des routes est susceptible de changer, essayez d'ajouter proprement vos routes sur une ligne pour éviter les merge conflicts
 export const APP_ROUTING = RouterModule.forRoot([
@@ -25,6 +26,18 @@ export const DETAILS_ROUTES_UTILISATEUR: Routes = [
       },
     ];
 
+    
+export const DETAILS_ROUTES_MON_COMPTE: Routes = [
+    {
+        path: '',
+        redirectTo: 'securite',
+        pathMatch: 'prefix'
+      },
+      {
+        path: 'securite', component: UtilisateurSecuriteComponent
+      },
+    ];
+
 export const DETAILS_ROUTES: Routes = [
     {
         path: 'Digifleet',
@@ -32,6 +45,7 @@ export const DETAILS_ROUTES: Routes = [
         children: [
             { path: 'liste-vehicule', component: VehiculeComponent },
             { path: 'liste-utilisateur', children: DETAILS_ROUTES_UTILISATEUR },     
+            { path: 'mon-compte', children: DETAILS_ROUTES_MON_COMPTE },     
         ],
         canActivate:[AuthGuard]
     },

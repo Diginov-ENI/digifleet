@@ -13,11 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+from backend.serializers import CustomJWTSerializer
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 from backend.models import Utilisateur
 from django.urls import path, include
 from rest_framework import routers, serializers, viewsets
 from backend import views
+from backend.views import ChangePasswordView
 
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -29,6 +35,8 @@ router.register(r'utilisateurs', views.UtilisateurViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/auth/login/', obtain_jwt_token),
-    path('api/auth/refresh-token/', refresh_jwt_token),
+    path('api/auth/login/', TokenObtainPairView.as_view(serializer_class=CustomJWTSerializer),name="jwt_login"),
+    path('api/auth/refresh-token/', TokenRefreshView.as_view(),name="jwt_refresh"),
+    path('api/change-password/<int:pk>/', ChangePasswordView.as_view(), name='auth_change_password'),
+
 ]

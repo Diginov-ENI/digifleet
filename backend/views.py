@@ -1,17 +1,19 @@
 from django.core.exceptions import FieldError
 from django.db.models import query
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
 from rest_framework.fields import EmailField
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework.authtoken.views import ObtainAuthToken
 from backend.models import Utilisateur
 from backend.serializers import UtilisateurSerializer
-from backend.permissions import UtilisateurPermission
-
+from backend.serializers import ChangePasswordSerializer
+from backend.permissions import UtilisateurPasswordPermission, UtilisateurPermission
+from django.contrib.auth.models import update_last_login
 
 # Create your views here.
 class UtilisateurViewSet(viewsets.ViewSet):
@@ -83,3 +85,15 @@ class UtilisateurViewSet(viewsets.ViewSet):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+
+    queryset = Utilisateur.objects.all()
+    serializer_class = ChangePasswordSerializer
+    permission_classes = (UtilisateurPasswordPermission,)
+    #def filter_queryset(self, queryset):
+           # queryset = queryset.filter(pk=self.request.user.id)
+           #Todo filter connected user, perm ?
