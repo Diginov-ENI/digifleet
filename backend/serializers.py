@@ -88,8 +88,6 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
         return instance
 
-
-
 class CustomJWTSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         credentials = {
