@@ -18,9 +18,10 @@ import { ConnexionFormComponent } from './components/connexion/connexion-form.co
 import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
-import { AuthInterceptor } from './services/authInterceptor.service';
+import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 import { ConfirmDeleteUtilisateurDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
 import { SiteFormComponent } from './components/site/site-form.component';
@@ -40,6 +41,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     ConnexionFormComponent,
     UtilisateurListComponent,
     UtilisateurFormComponent,
+    UtilisateurSecuriteComponent,
     ConfirmDeleteUtilisateurDialogComponent,
     SiteListComponent,
     SiteFormComponent,

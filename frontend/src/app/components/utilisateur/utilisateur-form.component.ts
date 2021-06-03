@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'utilisateur-form',
@@ -28,6 +30,7 @@ export class UtilisateurFormComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private authService: AuthService,
   ) {
     const utilisateurId = this.route.snapshot.paramMap.get('id');
     if (utilisateurId)
@@ -77,7 +80,12 @@ export class UtilisateurFormComponent implements OnInit {
       }
 
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-utilisateur']);
+        this.authService.getUser().pipe(first()).subscribe(user=>{
+          if(res.Id === user.Id){
+            this.authService.refreshUserData();
+          }
+          this.router.navigate(['Digifleet/liste-utilisateur']);
+        });
       });
     }
   }
