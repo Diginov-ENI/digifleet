@@ -29,11 +29,9 @@ class UtilisateurTestCase(APITestCase):
         self.user2.set_password("mdp")
         self.user2.save()
 
-
+    # Permissions tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_api_jwt(self):
-
         url = reverse('jwt_login')
-        
 
         resp = self.client.post(url, {'email':self.admin.email, 'password':'mdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -44,13 +42,8 @@ class UtilisateurTestCase(APITestCase):
         resp = self.client.post(url, {'email':self.admin.email, 'password':'wrongmdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        
         resp = self.client.post(url, {'email':self.user2.email, 'password':'mdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-      
-
-    
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):

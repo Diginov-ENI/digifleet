@@ -5,9 +5,24 @@ Permissions custom pour un Site
 """
 class SitePermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        if view.action in ['create', 'update', 'partial_update', 'destroy' ,'archive']:
-            return bool(request.user.is_authenticated and request.user.is_superuser)
-        elif view.action in ['retrieve', 'list']:
-            return bool(request.user.is_authenticated)
+        if view.action == "create":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_create")))
+        elif view.action == "retrieve":
+            return True
+        elif view.action == "list":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_list")))
+        elif view.action == "destroy":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_destroy")))
+        elif view.action == "archive":
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_archive")))
+        elif view.action in 'update':
+            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_update")))
         else:
             return False
+    
+    """
+    Exécuté après has_permission
+    Authorise la lecture et la modification de son propre profil
+    """
+    def has_object_permission(self, request, view, obj):
+        return True

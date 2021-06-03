@@ -1,15 +1,11 @@
 from django.core.exceptions import FieldError
 from rest_framework.test import APIClient, APITestCase
-from rest_framework_jwt.settings import api_settings
 from rest_framework.reverse import reverse
 from rest_framework import status
 
 from backend.serializers.serializer_site import SiteSerializer
 from backend.models.model_site import Site
 from backend.models.model_utilisateur import Utilisateur
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 # Create your tests here.
 class SiteTestCase(APITestCase):
