@@ -57,10 +57,10 @@ export class UtilisateurBackendService {
 
     /**
      * Obtenir un utilisateur
-     * @param id 
+     * @param idUtilisateur 
      */
-    getUtilisateur(id): Observable<Utilisateur> {
-        return this._httpClient.get<Utilisateur>(this._apiname + id);
+    getUtilisateur(idUtilisateur): Observable<Utilisateur> {
+        return this._httpClient.get<Utilisateur>(this._apiname + idUtilisateur);
     }
     
     /**

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Permission,Group
 from rest_framework import serializers
-from backend.models import Utilisateur
+from backend.models.model_utilisateur import Utilisateur
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -33,17 +33,18 @@ class UtilisateurSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Utilisateur
-        fields = ('Id', 
-        'Email', 
-        'Username', 
-        'Nom', 
-        'Prenom', 
-        'IsActive', 
-        'LastLogin', 
-        'IsSuperuser', 
-        'Groups', 
-        'UserPermissions',
-        'Groups', )
+        fields = (
+            'Id', 
+            'Email', 
+            'Username', 
+            'Nom', 
+            'Prenom', 
+            'IsActive', 
+            'LastLogin', 
+            'IsSuperuser', 
+            'Groups', 
+            'UserPermissions',
+        )
         extra_kwargs = {
             'Id' : {
                 'required' : False,

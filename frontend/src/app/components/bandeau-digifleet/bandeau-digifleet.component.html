@@ -1,22 +1,46 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <span>Digifleet</span>
+         <button mat-button
+                disableRipple
+                routerLink="/Digifleet">
+                <h5>Digifleet</h5>
+        </button>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
-                <ng-template [ngIf]="user && user.hasPermissionByCodeName('utilisateur_list')">
-                    <button mat-icon-button 
-                            matTooltip="Utilisateurs"
-                            routerLink="liste-utilisateur">
-                        <mat-icon>people</mat-icon>
-                    </button>
-                </ng-template>
-
-                <button mat-icon-button
-                        matTooltip="Véhicules"
-                        routerLink="liste-vehicule">
-                    <mat-icon>directions_car</mat-icon>
+                
+                <button mat-button
+                        routerLink="/Digifleet/liste-emprunt">
+                    <mat-icon>emoji_transportation</mat-icon>
+                    Emprunts
                 </button>
 
+                <button mat-button [matMenuTriggerFor]="administration">
+                    <mat-icon>build</mat-icon>
+                    Administration
+                </button>
+                <mat-menu #administration="matMenu">
+                    <ng-template [ngIf]="user && user.hasPermissionByCodeName('vehicule_list')">
+                        <button mat-menu-item
+                            routerLink="/Digifleet/liste-vehicule">
+                            <mat-icon>directions_car</mat-icon>
+                            Véhicules
+                        </button>
+                    </ng-template>
+                    <ng-template [ngIf]="user && user.hasPermissionByCodeName('site_list')">
+                        <button mat-menu-item
+                            routerLink="/Digifleet/liste-site">
+                            <mat-icon>location_city</mat-icon>
+                            Sites
+                        </button>
+                    </ng-template>
+                    <ng-template [ngIf]="user && user.hasPermissionByCodeName('utilisateur_list')">
+                        <button mat-menu-item
+                            routerLink="/Digifleet/liste-utilisateur">
+                            <mat-icon>people</mat-icon>
+                            Utilisateurs
+                        </button>
+                    </ng-template>
+                </mat-menu>
             </ul>
         </div>
         

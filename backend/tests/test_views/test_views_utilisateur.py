@@ -1,14 +1,12 @@
 from django.contrib.auth.models import Permission
 from django.core.exceptions import FieldError
-from django.test.testcases import SerializeMixin
-from datetime import datetime    
+
 from rest_framework.test import APIClient, APITestCase
 from rest_framework.reverse import reverse
-from rest_framework import serializers, status
+from rest_framework import status
 
-from backend.serializers import UtilisateurSerializer
-from backend.models import Utilisateur
-from backend.views import UtilisateurViewSet
+from backend.serializers.serializer_utilisateur import UtilisateurSerializer
+from backend.models.model_utilisateur import Utilisateur
 
 
 # Create your tests here.
@@ -31,11 +29,9 @@ class UtilisateurTestCase(APITestCase):
         self.user2.set_password("mdp")
         self.user2.save()
 
-
+    # Permissions tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_api_jwt(self):
-
         url = reverse('jwt_login')
-        
 
         resp = self.client.post(url, {'email':self.admin.email, 'password':'mdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -46,13 +42,8 @@ class UtilisateurTestCase(APITestCase):
         resp = self.client.post(url, {'email':self.admin.email, 'password':'wrongmdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        
         resp = self.client.post(url, {'email':self.user2.email, 'password':'mdp'}, format='json')
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-      
-
-    
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):

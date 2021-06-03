@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Confirmation suppression</h1>
+<mat-dialog-content class="mat-typography">
+  Souhaitez vous supprimer le site  "{{data?.site?.Libelle}}" ?
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" type="button" mat-dialog-close>Annuler</button>
+  <button mat-raised-button color="primary" type="button" [mat-dialog-close]="true" cdkFocusInitial>Supprimer</button>
+</mat-dialog-actions>
