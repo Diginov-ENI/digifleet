@@ -1,35 +1,49 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <span>Digifleet</span>
+         <button mat-button
+                disableRipple
+                routerLink="/Digifleet">
+                <h5>Digifleet</h5>
+        </button>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
-                <button mat-icon-button 
-                        matTooltip="Utilisateurs"
-                        routerLink="liste-utilisateur">
-                    <mat-icon>people</mat-icon>
+                
+                <button mat-button
+                        routerLink="/Digifleet/liste-emprunt">
+                    <mat-icon>emoji_transportation</mat-icon>
+                    Emprunts
                 </button>
 
-                <button mat-icon-button
-                        matTooltip="Véhicules"
-                        routerLink="liste-vehicule">
-                    <mat-icon>directions_car</mat-icon>
+                <button mat-button [matMenuTriggerFor]="administration">
+                    <mat-icon>build</mat-icon>
+                    Administration
                 </button>
+                <mat-menu #administration="matMenu">
+                    <button mat-menu-item
+                        routerLink="/Digifleet/liste-vehicule">
+                        <mat-icon>directions_car</mat-icon>
+                        Gestion des véhicules
+                    </button>
+                    <button mat-menu-item
+                        routerLink="/Digifleet/liste-site">
+                        <mat-icon>location_city</mat-icon>
+                        Gestion des sites
+                    </button>
+                    <button mat-menu-item
+                        routerLink="/Digifleet/liste-utilisateur">
+                        <mat-icon>people</mat-icon>
+                        Gestion des utilisateurs
+                    </button>
+                </mat-menu>
 
-                <button mat-icon-button
-                        matTooltip="Sites"
-                        routerLink="liste-site">
-                    <mat-icon>location_city</mat-icon>
-                </button>
-
-                <button mat-icon-button [matMenuTriggerFor]="auth">
+                <button mat-button [matMenuTriggerFor]="auth">
                     <mat-icon>person_outline</mat-icon>
+                    <span id="connectedUser"><ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom}} {{user.Nom}}</ng-template> <ng-template #loading>Chargement..</ng-template></span>
                 </button>
-
                 <mat-menu #auth="matMenu">
-                    <div id="connectedUser"><ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom}} {{user.Nom}}</ng-template> <ng-template #loading>Chargement..</ng-template></div>
                     <button mat-menu-item (click)="logout()">
                         <mat-icon>exit_to_app</mat-icon>
-                        <span>Déconnexion</span>
+                        Déconnexion
                     </button>
                 </mat-menu>
             </ul>
