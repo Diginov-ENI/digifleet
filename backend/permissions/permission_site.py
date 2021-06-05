@@ -13,9 +13,7 @@ class SitePermission(permissions.BasePermission):
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_list")))
         elif view.action == "destroy":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_destroy")))
-        elif view.action == "archive":
-            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_archive")))
-        elif view.action in 'update':
+        elif view.action == "update":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("site_update")))
         else:
             return False
