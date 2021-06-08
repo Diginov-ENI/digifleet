@@ -86,6 +86,10 @@ class EmpruntSerializer(serializers.ModelSerializer):
         return emprunt
 
     def update(self, instance, validated_data):
+        """
+        Il est nécéssaire de surcharger la méthode update par défaut pour 
+        définir comment gérer les objets liés à un emprunt.
+        """
         instance.date_debut = validated_data.get('date_debut', instance.date_debut)
         instance.date_fin = validated_data.get('date_fin', instance.date_fin)
         instance.statut = validated_data.get('statut', instance.statut)

@@ -25,9 +25,9 @@ class EmpruntViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = Emprunt.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = EmpruntSerializer(user)
-        self.check_object_permissions(request, user)
+        emprunt = get_object_or_404(queryset, pk=pk)
+        serializer = EmpruntSerializer(emprunt)
+        self.check_object_permissions(request, emprunt)
         return Response(serializer.data)
 
     def create(self, request):
@@ -40,8 +40,9 @@ class EmpruntViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Emprunt.objects.all()
         partial = kwargs.pop('partial', False)
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = EmpruntSerializer(user, data=request.data, partial=partial)
+        emprunt = get_object_or_404(queryset, pk=pk)
+        serializer = EmpruntSerializer(emprunt, data=request.data, partial=partial)
+        self.check_object_permissions(request, emprunt)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -53,8 +54,9 @@ class EmpruntViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None, *args, **kwargs):
         queryset = Emprunt.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        user.delete()
+        emprunt = get_object_or_404(queryset, pk=pk)
+        self.check_object_permissions(request, emprunt)
+        emprunt.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
     def get_success_headers(self, data):

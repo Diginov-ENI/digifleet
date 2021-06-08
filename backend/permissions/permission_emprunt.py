@@ -28,8 +28,8 @@ class EmpruntPermission(permissions.BasePermission):
             return False
 
         if view.action == 'retrieve':
-            return bool(obj == request.user or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
+            return bool(obj.conducteur == request.user or request.user in obj.passagers.all() or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
         if view.action in ['update', 'partial_update']:
-            return bool(obj == request.user or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
+            return bool(obj.conducteur == request.user or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
         else:
             return True
