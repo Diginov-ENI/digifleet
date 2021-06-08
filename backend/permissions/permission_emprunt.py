@@ -19,8 +19,8 @@ class EmpruntPermission(permissions.BasePermission):
             return False
     
     """
-    Exécuté après has_permission
-    Authorise la lecture et la modification de son propre profil
+    Exécuté en appellant check_object_permissions
+    S'execute après has_permission
     """
     def has_object_permission(self, request, view, obj):
         # Deny actions on objects if the user is not authenticated
