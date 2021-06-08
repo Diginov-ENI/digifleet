@@ -1,0 +1,8 @@
+<h2>
+    Permissions associées au groupe
+    <span class="spacer"></span>
+    <mat-checkbox [checked]="allPermissionsComplete" (change)="setAll($event.checked)">
+        Cocher toutes les permissions</mat-checkbox>
+</h2>
+<permission-type (permissionsUpdate)="verifyPermissions($event)" #permissionType [type]="type" [name]="type.data.Name"
+    *ngFor="let type of typesCheckbox; index as i; first as isFirst"></permission-type>

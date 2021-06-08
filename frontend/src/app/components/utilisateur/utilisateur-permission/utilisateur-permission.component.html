@@ -1,0 +1,24 @@
+<div class="wrapper-component">
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="7">
+            <ion-row class="ion-justify-content-between">
+                <ion-col class="ion-no-padding">
+                    <h1 class="titre-page">Modification d'un utilisateur</h1>
+                </ion-col>
+            </ion-row>
+        </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="5">
+            <permission-form #permissionFrom [parent]="utilisateur"></permission-form>
+                <div class="group-button-stick-right">
+                    <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-utilisateur" id="btnAnnuler">
+                        <span>Annuler</span>
+                    </button>
+                    <button mat-raised-button color="primary" type="button" (click)="sauver()" id="btnSauver">
+                        <span>Valider</span>
+                    </button>
+                </div>
+        </ion-col>
+    </ion-row>
+</div>

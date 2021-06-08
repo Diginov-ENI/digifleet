@@ -24,7 +24,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
     les méthodes ci-dessous surchargent les méthodes de base du ViewSet pour 
     appliquer nos permissions personnalisées 
     """
-    queryset = Utilisateur.objects.all()
+    queryset = Utilisateur.objects.all().order_by('id')
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
@@ -54,7 +54,8 @@ class UtilisateurViewSet(viewsets.ViewSet):
         queryset = Utilisateur.objects.all()
         partial = kwargs.pop('partial', False)
         user = get_object_or_404(queryset, pk=pk)
-        serializer = UtilisateurSerializer(user, data=request.data, partial=partial)
+        context = {'request': self.request}
+        serializer = UtilisateurSerializer(user, data=request.data, partial=partial,context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

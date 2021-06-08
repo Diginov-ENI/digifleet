@@ -57,15 +57,8 @@
                     <mat-error *ngIf="form.controls.Email.errors && form.controls.Email.errors.email">
                         L'email doit être valide</mat-error>
                 </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Profil utilisateur *</mat-label>
-                    <mat-select formControlName="Groups">
-                        <mat-option *ngFor="let profil of ProfilsUtilisateur" value="profil.id">
-                            {{profil.valeur}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
+                
+                <groupe-chips #groupesChips [disabled]="groupeDisabled" [matTooltip]="this.groupeTooltip"></groupe-chips>
                 <div class="group-button-stick-right">
                     <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-utilisateur" id="btnAnnuler">
                         <span>Annuler</span>
