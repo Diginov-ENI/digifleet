@@ -22,12 +22,13 @@ import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
-import { ConfirmDeleteUtilisateurDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
+import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
 import { SiteFormComponent } from './components/site/site-form.component';
-import { ConfirmDeleteSiteDialogComponent, SiteListComponent } from './components/site/site-list.component';
+import { SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -42,12 +43,11 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
-    ConfirmDeleteUtilisateurDialogComponent,
     SiteListComponent,
     SiteFormComponent,
-    ConfirmDeleteSiteDialogComponent,
     VehiculeComponent,
-    AlertComponent
+    AlertComponent,
+    DialogConfirmComponent,
   ],
   entryComponents: [],
   imports: [
