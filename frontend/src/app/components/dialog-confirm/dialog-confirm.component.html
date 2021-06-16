@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{data?.titre}}</h1>
+<mat-dialog-content class="mat-typography">
+  {{data?.libConfirmation}}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" type="button" [mat-dialog-close]="true" cdkFocusInitial>{{data?.libBouton}}</button>
+  <button mat-raised-button color="accent" type="button" mat-dialog-close>Annuler</button>
+</mat-dialog-actions>

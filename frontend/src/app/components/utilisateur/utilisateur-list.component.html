@@ -75,7 +75,7 @@
           <td mat-cell *matCellDef="let utilisateur">
             <div class="mat-button-list-container">
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_archive')">
-                <button class="button-list" mat-stroked-button (click)="rendreActifObsoleteUtilisateur(utilisateur)"
+                <button class="button-list" mat-stroked-button (click)="ActiverDesactiverCompte(utilisateur)"
                   matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
                   <span class="mat-button-wrapper">
                     <span class="material-icons">hourglass_empty</span>
