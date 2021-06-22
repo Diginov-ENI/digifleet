@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Confirmer le changement d'état</h1>
+<mat-dialog-content class="mat-typography">
+    Vouez-vous vraiment changer l'état de ce véhicule ?
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Annuler</button>
+  <button mat-raised-button class="delete" [mat-dialog-close]="true" cdkFocusInitial>Changer</button>
+</mat-dialog-actions>

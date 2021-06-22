@@ -24,3 +24,148 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+/* Font */ 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Variable */
+$color-accent: #c2185b;
+$color-background: #303030;
+$color-background-wrapper: #424242;
+$color-text-titre: #FFFFFF;
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus
+{
+  -webkit-text-fill-color: $color-text-titre;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+body{
+    background-color: $color-background;
+}
+
+digifleet-home{
+    overflow-y: auto !important;
+}
+
+.wrapper-component {
+    margin: 20px 30px;
+    & .titre-page {
+        margin: 0 0 20px 0;;
+        text-transform: uppercase;
+        line-height: 1;
+        font-family: "Poppins", "Arial", sans-serif;
+        display: inline-block;
+    }
+
+    h1::after {
+        content: "";
+        display: block;
+        width: auto;
+        height: 5px;
+        background-color: $color-accent;
+        margin: 0.5rem 1rem 0.2rem;
+        transform: skewX(-25deg);
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .wrapper-component{
+        margin: 20px 5px;
+    }
+}
+
+/* Début CSS des listes */
+table {
+    width: 100%;
+}
+
+td.mat-cell {
+    padding: 0 0.5rem !important;
+}
+
+.mat-stroked-button.button-list {
+    min-width: 32px;
+    margin: 2px;
+    padding: 0 !important;
+    border:none;
+    border-radius: 6px;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    background-color: $color-background-wrapper;
+    vertical-align: middle;
+    line-height: 0.9rem;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
+}
+
+.mat-stroked-button.button-list.color-accent {
+    background-color: $color-accent;
+}
+
+.mat-button-list-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.button-list-top-container {
+    text-align: end;
+}
+
+.material-icons.green {
+    color: #3fd475;
+}
+
+.material-icons.red {
+    color: #ff5353;
+}
+/* Fin CSS des listes */
+
+/* Début CSS des formulaire */
+mat-form-field {
+    width: 100%;
+    padding: 0 0 20px 0;
+}
+
+.group-button-stick-right {
+    text-align: end;
+
+    button + button {
+        margin-left: 15px;
+    }
+}
+/* Fin CSS des formulaire */
+
+/* Début CSS des modales */
+mat-dialog-container {
+    min-width: 375px;
+    
+    h1 {
+        border-bottom-style: solid;
+        border-bottom-width: thin;
+    }
+    mat-dialog-content {
+        min-height: 70px !important;
+    }
+
+    button + button {
+        margin-left: 15px !important;
+    }
+}
+
+@media only screen and (max-width: 420px){
+    mat-dialog-container {
+        min-width: inherit;
+    }
+}
+/* Fin CSS des modales */

@@ -1,61 +1,101 @@
-import { NodeWithI18n } from '@angular/compiler';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, Inject } from '@angular/core';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
-import {MatDialog} from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'utilisateur-list',
   templateUrl: 'utilisateur-list.component.html',
-  styleUrls : ['utilisateur-list.scss'],
+  styleUrls: ['utilisateur-list.scss'],
 })
 
-export class UtilisateurListComponent implements OnInit{
+export class UtilisateurListComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private connectedUser:Utilisateur = null;
   utilisateurs: Utilisateur[];
   utilisateur: Utilisateur;
-  tableColumns = ['nomPrenom', 'email', 'username', 'actions'];
+  dataSource = new MatTableDataSource();
+  tableColumns: string[] = ['nom', 'prenom', 'nomPrenom', 'email', 'username', 'etat', 'actions'];
 
-  constructor(private _utilisateurBackendService: UtilisateurBackendService, public matDialog: MatDialog) {}
+  nbColumnsAffiche = 6;
 
-  ngOnInit(){
+  constructor(
+    private _utilisateurBackendService: UtilisateurBackendService, 
+    public matDialog: MatDialog,
+    private authService: AuthService,
+    ) {
+  }
+
+  ngOnInit() {
+    this.authService.getUser().subscribe(user=>this.connectedUser = user);
     this.getUtilisateurs();
+    this.onResize();
   }
 
   getUtilisateurs() {
     this._utilisateurBackendService.getUtilisateurs().subscribe((response => {
-        this.utilisateurs = response;
+      this.utilisateurs = response;
+      this.dataSource = new MatTableDataSource(response);
+      this.dataSource.paginator = this.paginator;
     }))
   }
 
-  getUtilisateurById(id){
+  getUtilisateurById(id) {
     this._utilisateurBackendService.getUtilisateur(id).subscribe((response => {
       this.utilisateur = response;
     }))
   }
 
-  deleteUtilisateur(id){
+  deleteUtilisateur(id) {
     this._utilisateurBackendService.deleteUtilisateur(id).subscribe(() => {
       this.getUtilisateurs();
     })
   }
 
-  openConfirmDeleteDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmDeleteDialogComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.deleteUtilisateur(id);
+  openConfirmDeleteDialog(utilisateur: Utilisateur) {
+    const dialogRef = this.matDialog.open(ConfirmDeleteUtilisateurDialogComponent, {
+      data: {
+        utilisateur: utilisateur
       }
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteUtilisateur(utilisateur.Id);
+      }
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onResize(event?) {
+    if (window.innerWidth < 420) {
+      this.nbColumnsAffiche = 3;
+
+    } else if (window.innerWidth < 520) {
+      this.nbColumnsAffiche = 4;
+
+    } else if (window.innerWidth < 800) {
+      this.nbColumnsAffiche = 5;
+    } else {
+      this.nbColumnsAffiche = 6;
+    }
   }
 }
 
 @Component({
   selector: 'confirm-delete-dialog',
   templateUrl: './dialogs/confirm-delete-dialog.component.html',
-  styleUrls : ['utilisateur-list.scss'],
 })
-export class ConfirmDeleteDialogComponent {
+export class ConfirmDeleteUtilisateurDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmDeleteUtilisateurDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+}
 
+export interface DialogData {
+  utilisateur: Utilisateur;
 }

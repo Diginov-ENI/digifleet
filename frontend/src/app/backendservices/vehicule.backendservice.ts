@@ -3,11 +3,12 @@ import { Observable } from 'rxjs';
 import { VehiculeListComponent } from '../components/vehicule/vehicule-list.component';
 import { Vehicule } from '../models/Vehicule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class VehiculeBackendService {
-    private readonly _apiroute = 'http://localhost:8000/api/';
-    private readonly _apiname = this._apiroute + 'Vehicules/';
+    private readonly _apiroute = environment.API_URL;
+    private readonly _apiname = this._apiroute + 'vehicules/';
     private readonly _httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export class VehiculeBackendService {
 
 
 
-        return this._httpClient.patch<Vehicule>(this._apiname + Vehicule['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
