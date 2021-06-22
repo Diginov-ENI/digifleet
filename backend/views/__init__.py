@@ -3,3 +3,4 @@
 
 from .view_utilisateur import UtilisateurViewSet
 from .view_site import SiteViewSet
+from .view_vehicule import VehiculeViewSet

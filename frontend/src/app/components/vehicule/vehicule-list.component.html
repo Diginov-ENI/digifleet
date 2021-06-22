@@ -1,0 +1,93 @@
+<div class="wrapper-component">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size-xl="7">
+      <ion-row class="ion-justify-content-between">
+        <ion-col class="ion-no-padding">
+          <h1 class="titre-page">Vehicules</h1>
+        </ion-col>
+        <ion-col class="ion-no-padding">
+
+          <div class="button-list-top-container">
+            <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('vehicule_create')">  
+              <button class="button-list color-accent" mat-stroked-button routerLink="vehicule"
+                matTooltip="Ajouter un vehicule" id="btnActifObsoleteVehicule">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">add</span>
+                </span>
+              </button>
+            </ng-template>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <table mat-table [dataSource]="vehicules">
+        <ng-container matColumnDef="immatriculation">
+          <th mat-header-cell *matHeaderCellDef> Immatriculation </th>
+          <td mat-cell *matCellDef="let vehicule"> {{vehicule.immatriculation}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="modele">
+          <th mat-header-cell *matHeaderCellDef> Modèle </th>
+          <td mat-cell *matCellDef="let vehicule"> {{vehicule.modele}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="marque">
+          <th mat-header-cell *matHeaderCellDef> Marque </th>
+          <td mat-cell *matCellDef="let vehicule"> {{vehicule.marque}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="couleur">
+          <th mat-header-cell *matHeaderCellDef> Couleur </th>
+          <td mat-cell *matCellDef="let vehicule"> {{vehicule.couleur}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nb_place">
+          <th mat-header-cell *matHeaderCellDef> Nombre de places </th>
+          <td mat-cell *matCellDef="let vehicule"> {{vehicule.nb_place}} </td>
+        </ng-container>
+        <ng-container matColumnDef="etat">
+          <th mat-header-cell *matHeaderCellDef id="headerEtat">État</th>
+          <td mat-cell *matCellDef="let vehicule" id="cellEtat">
+            <span class="material-icons green" *ngIf="vehicule.is_active"  matTooltip="Actif"  >circle     </span>
+            <span class="material-icons red"   *ngIf="!vehicule.is_active" matTooltip="Inactif">hide_source</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let vehicule"> 
+            <button class="button-list" mat-stroked-button (click)="openConfirmArchiveDialog(vehicule.id)"
+              matTooltip="Changer l'état du véhicule" id="btnActifObsoleteVehicule">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">hourglass_empty</span>
+              </span>
+            </button>
+            <button class="button-list" mat-stroked-button
+              [routerLink]="['../liste-vehicule/vehicule/', vehicule.id]"
+              matTooltip="Modifier un véhicule">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">edit</span>
+              </span>
+            </button>
+            <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(vehicule.id)"
+              matTooltip="Supprimer un vehicule" id="btnDeleteVehicule">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">delete</span>
+              </span>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let rowData; columns: tableColumns"></tr>
+
+        
+        
+      </table>
+
+      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+
+    </ion-col>
+  </ion-row>
+</div>
