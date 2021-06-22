@@ -1,10 +1,12 @@
-import { Component, OnInit, HostListener, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
+import { identifierModuleUrl } from '@angular/compiler';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'utilisateur-list',
@@ -15,7 +17,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class UtilisateurListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  private connectedUser:Utilisateur = null;
+  private connectedUser: Utilisateur = null;
   utilisateurs: Utilisateur[];
   utilisateur: Utilisateur;
   dataSource = new MatTableDataSource();
@@ -24,14 +26,14 @@ export class UtilisateurListComponent implements OnInit {
   nbColumnsAffiche = 6;
 
   constructor(
-    private _utilisateurBackendService: UtilisateurBackendService, 
+    private _utilisateurBackendService: UtilisateurBackendService,
     public matDialog: MatDialog,
     private authService: AuthService,
-    ) {
+  ) {
   }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user=>this.connectedUser = user);
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
     this.getUtilisateurs();
     this.onResize();
   }
@@ -57,9 +59,11 @@ export class UtilisateurListComponent implements OnInit {
   }
 
   openConfirmDeleteDialog(utilisateur: Utilisateur) {
-    const dialogRef = this.matDialog.open(ConfirmDeleteUtilisateurDialogComponent, {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
-        utilisateur: utilisateur
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez vous supprimer l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
+        libBouton: 'Supprimer'
       }
     });
 
@@ -68,6 +72,36 @@ export class UtilisateurListComponent implements OnInit {
         this.deleteUtilisateur(utilisateur.Id);
       }
     });
+  }
+
+  ActiverDesactiverCompte(utilisateur: Utilisateur) {
+
+    let object: object = {
+      'Id': utilisateur.Id,
+      'IsActive': !utilisateur.IsActive
+    };
+
+    if (!utilisateur?.IsActive) {
+      this._utilisateurBackendService.updateUtilisateur(object).subscribe(() => {
+        this.getUtilisateurs();
+      });
+    } else {
+      const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+        data: {
+          titre: 'Désactiver un compte utilisateur',
+          libConfirmation: `Souhaitez-vous désactiver l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
+          libBouton: 'Désactiver'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(hasConfirmation => {
+        if (hasConfirmation) {
+          this._utilisateurBackendService.updateUtilisateur(object).subscribe(() => {
+            this.getUtilisateurs();
+          });
+        }
+      });
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -84,18 +118,4 @@ export class UtilisateurListComponent implements OnInit {
       this.nbColumnsAffiche = 6;
     }
   }
-}
-
-@Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './dialogs/confirm-delete-dialog.component.html',
-})
-export class ConfirmDeleteUtilisateurDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmDeleteUtilisateurDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
-}
-
-export interface DialogData {
-  utilisateur: Utilisateur;
 }
