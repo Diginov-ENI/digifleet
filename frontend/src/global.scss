@@ -174,3 +174,16 @@ mat-dialog-container {
     }
 }
 /* Fin CSS des modales */
+
+.bloc-aucune-donnee {
+    height: 60vh;
+    position: relative;
+    & p {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}

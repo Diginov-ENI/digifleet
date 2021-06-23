@@ -8,8 +8,8 @@
         <ion-col class="ion-no-padding">
 
           <div class="button-list-top-container">
-            <button class="button-list color-accent" mat-stroked-button routerLink="site"
-              matTooltip="Ajouert un site" id="btnAjoutSite">
+            <button class="button-list color-accent" mat-stroked-button routerLink="site" matTooltip="Ajouter un site"
+              id="btnAjoutSite">
               <span class="mat-button-wrapper">
                 <span class="material-icons">add</span>
               </span>
@@ -18,7 +18,7 @@
         </ion-col>
       </ion-row>
 
-      <table mat-table [dataSource]="dataSource" >
+      <table *ngIf="dataSource?.filteredData?.length > 0" mat-table [dataSource]="dataSource">
         <!-- colonne Libellé -->
         <ng-container matColumnDef="libelle">
           <th [style.display]="table-cell" mat-header-cell *matHeaderCellDef> Libellé
@@ -32,8 +32,7 @@
           <th mat-header-cell *matHeaderCellDef> Actions </th>
           <td mat-cell *matCellDef="let site">
             <div class="mat-button-list-container">
-              <button class="button-list" mat-stroked-button
-                [routerLink]="['../liste-site/site/', site.Id]"
+              <button class="button-list" mat-stroked-button [routerLink]="['../liste-site/site/', site.Id]"
                 matTooltip="Modifier un site">
                 <span class="mat-button-wrapper">
                   <span class="material-icons">edit</span>
@@ -53,9 +52,13 @@
         <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
       </table>
 
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
-
+      <div *ngIf="dataSource == null || dataSource?.filteredData == null || dataSource?.filteredData?.length == 0"
+        class="bloc-aucune-donnee">
+        <p>Aucun site à afficher.</p>
+      </div>
     </ion-col>
   </ion-row>
 </div>

@@ -18,15 +18,18 @@ import { ConnexionFormComponent } from './components/connexion/connexion-form.co
 import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
+import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
+import { ConfirmDeleteDialogComponentVehicule, VehiculeListComponent } from './components/vehicule/vehicule-list.component';
+import { ConfirmArchiveDialogComponentVehicule } from './components/vehicule/vehicule-list.component';
 import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
-import { ConfirmDeleteUtilisateurDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
+import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
 
 import { SiteFormComponent } from './components/site/site-form.component';
-import { ConfirmDeleteSiteDialogComponent, SiteListComponent } from './components/site/site-list.component';
+import { SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
 
 import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
@@ -35,6 +38,7 @@ import { StepperStatutComponent } from './components/emprunt/emprunt-list.compon
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
 
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -43,21 +47,23 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
 @NgModule({
   declarations: [
     AppComponent,
+    UtilisateurListComponent,
+    ConfirmDeleteDialogComponentVehicule,
+    UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
     ConnexionFormComponent,
+    AlertComponent,
+    VehiculeListComponent,
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
-    ConfirmDeleteUtilisateurDialogComponent,
     SiteListComponent,
     SiteFormComponent,
-    ConfirmDeleteSiteDialogComponent,
-    EmpruntListComponent,
-    EmpruntFormComponent,
-    StepperStatutComponent,
     VehiculeComponent,
-    AlertComponent
+    ConfirmArchiveDialogComponentVehicule,
+    AlertComponent,
+    DialogConfirmComponent,
   ],
   entryComponents: [],
   imports: [
@@ -85,6 +91,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     EmpruntBackendService,
     AuthService,
     AuthGuard,
+    VehiculeBackendService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

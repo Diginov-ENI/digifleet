@@ -4,6 +4,7 @@ import { Site } from 'src/app/models/site';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'site-list',
@@ -48,30 +49,18 @@ export class SiteListComponent implements OnInit {
   }
 
   openConfirmDeleteDialog(site: Site) {
-    const dialogRef = this.matDialog.open(ConfirmDeleteSiteDialogComponent, {
+
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
-        site: site
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez vous supprimer le site "${site?.Libelle}" ?`,
+        libBouton: 'Supprimer'
       }
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteSite(site.Id);
       }
     });
   }
-}
-
-@Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './dialogs/confirm-delete-site-dialog.component.html',
-})
-export class ConfirmDeleteSiteDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmDeleteSiteDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
-}
-
-export interface DialogData {
-  site: Site;
 }

@@ -27,6 +27,7 @@ from backend.views.view_utilisateur import ChangePasswordView
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'utilisateurs', views.UtilisateurViewSet)
+router.register(r'vehicules', views.VehiculeViewSet)
 router.register(r'sites', views.SiteViewSet)
 router.register(r'emprunts', views.EmpruntViewSet)
 

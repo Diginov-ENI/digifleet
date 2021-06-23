@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { SiteListComponent } from './components/site/site-list.component';
 import { SiteFormComponent } from './components/site/site-form.component';
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
@@ -69,12 +70,24 @@ export const DETAILS_ROUTES_MON_COMPTE: Routes = [
       },
     ];
 
+export const DETAILS_ROUTES_VEHICULE: Routes = [
+    {
+        path: '', component: VehiculeListComponent 
+        },
+        {
+        path: 'vehicule', component: VehiculeComponent
+        },
+        {
+        path: 'vehicule/:id', component: VehiculeComponent
+        },
+    ];
+
 export const DETAILS_ROUTES: Routes = [
     {
         path: 'Digifleet',
         component: DigifleetHomeComponent,
         children: [
-            { path: 'liste-vehicule', component: VehiculeComponent },
+            { path: 'liste-vehicule', children: DETAILS_ROUTES_VEHICULE },
             { path: 'liste-utilisateur', children: DETAILS_ROUTES_UTILISATEUR },     
             { path: 'liste-site', children: DETAILS_ROUTES_SITE },     
             { path: 'liste-emprunt', children: DETAILS_ROUTES_EMPRUNT },     
