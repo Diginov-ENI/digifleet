@@ -23,7 +23,7 @@ def create_permissions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0004_site_permissions'),
+        ('backend', '0005_vehicule'),
     ]
 
     operations = [

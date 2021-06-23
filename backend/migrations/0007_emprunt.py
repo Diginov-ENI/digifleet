@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0004_site_permissions'),
+        ('backend', '0006_vehicule_permissions'),
     ]
 
     operations = [
