@@ -8,11 +8,13 @@
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
                 
-                <button mat-button
+                <ng-template [ngIf]="user && user.hasPermissionByCodeName('emprunt_list')">
+                    <button mat-button 
                         routerLink="/Digifleet/liste-emprunt">
-                    <mat-icon>emoji_transportation</mat-icon>
-                    Emprunts
-                </button>
+                        <mat-icon>emoji_transportation</mat-icon>
+                        Emprunts
+                    </button>
+                </ng-template>
 
                 <button mat-button [matMenuTriggerFor]="administration">
                     <mat-icon>build</mat-icon>

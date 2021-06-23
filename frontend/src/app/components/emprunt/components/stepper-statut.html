@@ -1,0 +1,35 @@
+<mat-horizontal-stepper labelPosition="bottom" #stepper>
+  <mat-step>
+      <ng-template matStepLabel>Déposée</ng-template>
+      <div>
+        <button mat-raised-button matStepperNext color="primary">Accepter</button>
+      </div>
+  </mat-step>
+  <mat-step>
+      <ng-template matStepLabel>Acceptée</ng-template>
+      <div>
+        <button mat-raised-button matStepperPrevious color="primary">Annuler</button>
+      </div>
+  </mat-step>
+  <mat-step>
+      <ng-template matStepLabel>Refusée</ng-template>
+  </mat-step>
+  <mat-step>
+      <ng-template matStepLabel>Annulée</ng-template>
+  </mat-step>
+  <mat-step >
+      <ng-template matStepLabel>Attente clef</ng-template>
+      <div>
+        <button mat-raised-button matStepperNext color="primary">Clef récupérées</button>
+      </div>
+  </mat-step>
+  <mat-step >
+      <ng-template matStepLabel>En cours</ng-template>
+      <div>
+        <button mat-raised-button matStepperNext color="primary">Clef rendues</button>
+      </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Cloture</ng-template>
+  </mat-step>
+</mat-horizontal-stepper>

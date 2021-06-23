@@ -8,26 +8,37 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 class SiteSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id')
+    Libelle = serializers.CharField(source='libelle', read_only=True)
+
 
     class Meta:
         model = Site
-        fields = ('Id',)
+        fields = (
+            'Id', 
+            'Libelle', 
+        )
 
 class UtilisateurSerializer(serializers.ModelSerializer):
     Id = serializers.CharField(source='id')
+    Nom = serializers.CharField(source='nom', required=False)
+    Prenom = serializers.CharField(source='prenom', required=False)
 
     class Meta:
         model = Utilisateur
-        fields = ('Id',)
+        fields = (
+            'Id', 
+            'Nom', 
+            'Prenom', 
+        )
 
 class EmpruntSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', read_only=True, required=False, allow_blank=True)
-    DateDemande = serializers.DateTimeField(source='date_demande', required=False)
+    Id = serializers.CharField(source='id', read_only=True, required=False)
+    DateDemande = serializers.DateTimeField(source='date_demande', read_only=True, required=False)
     DateDebut = serializers.DateTimeField(source='date_debut', required=True)
     DateFin = serializers.DateTimeField(source='date_fin', required=False)
     Statut = serializers.CharField(source='statut', required=False)
     Destination = serializers.CharField(source='destination', required=True)
-    Commentaire = serializers.CharField(source='commentaire', required=False)
+    Commentaire = serializers.CharField(source='commentaire', required=False, allow_blank=True)
     Type = serializers.CharField(source='type', required=True)
     Site = SiteSerializer(source='site', required=True)
     Conducteur = UtilisateurSerializer(source='conducteur', required=True)

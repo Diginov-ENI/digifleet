@@ -24,9 +24,16 @@ import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-f
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 import { ConfirmDeleteUtilisateurDialogComponent, UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
+
 import { SiteFormComponent } from './components/site/site-form.component';
 import { ConfirmDeleteSiteDialogComponent, SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
+
+import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
+import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
+import { StepperStatutComponent } from './components/emprunt/emprunt-list.component';
+import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
+
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
@@ -46,6 +53,9 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     SiteListComponent,
     SiteFormComponent,
     ConfirmDeleteSiteDialogComponent,
+    EmpruntListComponent,
+    EmpruntFormComponent,
+    StepperStatutComponent,
     VehiculeComponent,
     AlertComponent
   ],
@@ -72,6 +82,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
     SiteBackendService,
+    EmpruntBackendService,
     AuthService,
     AuthGuard,
     {

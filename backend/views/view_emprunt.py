@@ -20,6 +20,8 @@ class EmpruntViewSet(viewsets.ViewSet):
     
     def list(self, request):
         queryset = Emprunt.objects.all()
+        # TODO : order by date
+        # TODO : filter by not passed (today and future)
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(serializer.data)
 

@@ -105,7 +105,7 @@ class UtilisateurTestCase(APITestCase):
 
     def test_retrieve_other(self):
         """
-        On vérifie qu'un utilisateur peux se visualiser un autre utilisateur si il en possède la permission
+        On vérifie qu'un utilisateur peux visualiser un autre utilisateur si il en possède la permission
         """
         self.client.force_login(self.user1)
 
