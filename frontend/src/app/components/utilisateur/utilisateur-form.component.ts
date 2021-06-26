@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'utilisateur-form',
@@ -23,9 +25,12 @@ export class UtilisateurFormComponent implements OnInit {
   }
   ]
 
-  constructor(private _utilisateurBackendService: UtilisateurBackendService,
+  constructor(
+    private _utilisateurBackendService: UtilisateurBackendService,
+    private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private authService: AuthService,
   ) {
     const utilisateurId = this.route.snapshot.paramMap.get('id');
     if (utilisateurId)
@@ -63,7 +68,7 @@ export class UtilisateurFormComponent implements OnInit {
       this.utilisateur.Id = undefined;
       this.utilisateur.Groups = undefined;
       this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
-        console.log(res);
+        this.router.navigate(['Digifleet/liste-utilisateur']);
       });
     } else {
       let object:object = {
@@ -75,9 +80,13 @@ export class UtilisateurFormComponent implements OnInit {
       }
 
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
-        console.log(res);
+        this.authService.getUser().pipe(first()).subscribe(user=>{
+          if(res.Id === user.Id){
+            this.authService.refreshUserData();
+          }
+          this.router.navigate(['Digifleet/liste-utilisateur']);
+        });
       });
-      // ToDo retour liste des utilisateurs
     }
   }
 

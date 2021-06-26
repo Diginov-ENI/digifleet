@@ -1,7 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-
+from django.contrib.auth.models import Permission,Group
+from pprint import pprint
 # model GestionnaireUtilisateur
 """
 modele GestionnaireUtilisateur
@@ -42,16 +43,25 @@ class Utilisateur(AbstractBaseUser,  PermissionsMixin):
     nom = models.CharField(max_length=200)
     prenom = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
-
     objects = GestionnaireUtilisateur()
+    user_permissions = models.ManyToManyField(Permission)
+    groups = models.ManyToManyField(Group)
 
     # Required implementation fields for AbstracBaseUser
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'nom', 'prenom']
-    
+ 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission ?"
-        return self.user_permissions
+        perms = []
+        for onePerm in self.get_user_permissions():
+            perms.append(onePerm.codename)
+        return perm in perms
 
-    
+    def get_user_permissions(self):
+        if not self.is_active:
+            return []
+        if self.is_superuser:
+            return Permission.objects.all()
+        group_ids = Group.objects.all().values_list('id', flat=True).distinct()
+        return (self.user_permissions.all() | Permission.objects.filter(group__id__in=group_ids)).distinct()

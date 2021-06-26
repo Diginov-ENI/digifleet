@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const environmentFile = `export const environment = {
   SENTRY_DSN: "${process.env.SENTRY_DSN}",
+  API_URL: "${process.env.API_URL}",
   production:false
 };
 `;

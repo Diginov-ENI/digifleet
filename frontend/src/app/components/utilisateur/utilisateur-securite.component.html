@@ -1,0 +1,65 @@
+<div class="wrapper-component">
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="7">
+            <ion-row class="ion-justify-content-between">
+                <ion-col class="ion-no-padding">
+                    <h1 class="titre-page">Mon Compte - Sécurité</h1>
+                </ion-col>
+            </ion-row>
+            <h2>Mot de passe</h2>
+            <div *ngIf="errors" id="error-container">
+                <alert type="danger" *ngFor="let message of errors">{{this.messageTranslate(message)}}</alert>
+            </div>
+            <div *ngIf="success" id="success-container">
+                <alert type="success" *ngFor="let message of success">{{this.messageTranslate(message)}}</alert>
+            </div>
+            <form [formGroup]="passwordForm" (ngSubmit)="onFormPasswordChange()">
+                
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Ancien mot de passe</mat-label>
+                        <input formControlName="oldPassword" type="password" matInput>
+                        <mat-error
+                            *ngIf="passwordForm.controls.oldPassword.touched && passwordForm.controls.oldPassword.invalid && passwordForm.controls.oldPassword.errors?.required"
+                            class="alert alert-danger">
+                            Le mot de passe de doit pas etre vide.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nouveau mot de passe</mat-label>
+                        <input formControlName="password" type="password" matInput>
+                        <mat-error
+                            *ngIf="passwordForm.controls.password.touched && passwordForm.controls.password.invalid && passwordForm.controls.password.errors?.required"
+                            class="alert alert-danger">
+                            Le mot de passe de doit pas etre vide.
+                        </mat-error>
+                        <mat-error
+                            *ngIf="passwordForm.controls.password.touched && passwordForm.controls.password.invalid && passwordForm.controls.password.errors?.minlength"
+                            class="alert alert-danger">
+                            Le mot de passe doit faire au minimum 8 caractères.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Répétez le nouveau mot de passe</mat-label>
+                        <input formControlName="passwordAgain" type="password" matInput>
+                        <mat-error
+                            *ngIf="passwordForm.controls.passwordAgain.touched && passwordForm.controls.passwordAgain.invalid && passwordForm.controls.passwordAgain.errors?.required"
+                            class="alert alert-danger">
+                            Le mot de passe de doit pas etre vide.
+                        </mat-error>
+                        <mat-error
+                            *ngIf="passwordForm.controls.passwordAgain.touched && passwordForm.controls.passwordAgain.invalid && passwordForm.controls.passwordAgain.errors?.matchOther"
+                            class="alert alert-danger">
+                            Les deux champs doivent être identique.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <button type="submit" mat-raised-button color="primary">Modifier mon mot de passe</button>
+            </form>
+        </ion-col>
+    </ion-row>
+</div>

@@ -105,5 +105,5 @@ frontend/www/index.html
 frontend/src/environments/environment.dev.ts
 
 ## Database migrations
-/backend/migrations
-/backend/migrations/
+# /backend/migrations
+# /backend/migrations/
