@@ -48,17 +48,28 @@ class UtilisateurSerializer(serializers.ModelSerializer):
 
 
 class VehiculeSerializer(serializers.ModelSerializer):
+    Id = serializers.CharField(source='id', required=False, allow_blank=True)
+    Immatriculation = serializers.CharField(source='immatriculation')
+    Modele = serializers.CharField(source='modele')
+    Marque = serializers.CharField(source='marque')
+    Couleur = serializers.CharField(source='couleur')
+    Nb_place = serializers.IntegerField(source='nb_place')
+
     class Meta:
         model = Vehicule
-        fields = ('id',
-                  'immatriculation',
-                  'modele',
-                  'marque',
-                  'couleur')
+        fields = ('Id',
+                  'Immatriculation',
+                  'Modele',
+                  'Marque',
+                  'Couleur',
+                  'Nb_place')
 
 
 class ClefSerializer(serializers.ModelSerializer):
+    Id = serializers.CharField(source='id', required=False, allow_blank=True)
+    Libelle = serializers.CharField(source='libelle')
+
     class Meta:
         model = Clef
-        fields = ('id',
-                  'libelle')
+        fields = ('Id',
+                  'Libelle')

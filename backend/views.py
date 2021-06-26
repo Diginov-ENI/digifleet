@@ -94,6 +94,8 @@ class UtilisateurViewSet(viewsets.ViewSet):
 
 class VehiculeViewSet(viewsets.ViewSet):
 
+    queryset = Vehicule.objects.all()
+    
     def create(self, request):
         serializer = VehiculeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -108,3 +110,9 @@ class VehiculeViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+    
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}

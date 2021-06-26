@@ -1,3 +1,4 @@
+import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule, ErrorHandler, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,7 +14,8 @@ import { BandeauDigifleetComponent } from './components/bandeau-digifleet/bandea
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { APP_ROUTING, DETAILS_ROUTES } from './app.routing';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { HttpXsrfInterceptor } from './http-interceptors/HttpXsrfInterceptor'
 import * as Sentry from '@sentry/angular';
 import { SentryIonicErrorHandler } from './services/sentry-ionic-error-handler';
@@ -36,7 +38,8 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
-    VehiculeComponent,
+    VehiculeFormComponent,
+    VehiculeListComponent,
     ConnexionFormComponent,
     AlertComponent
   ],
@@ -62,6 +65,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
+    VehiculeBackendService,
     AuthService,
     AuthGuard,
     {
