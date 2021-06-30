@@ -20,7 +20,7 @@
         </ion-col>
       </ion-row>
 
-      <table mat-table [dataSource]="vehicules">
+      <table mat-table *ngIf="dataSource?.filteredData?.length > 0" [dataSource]="dataSource">
         <ng-container matColumnDef="immatriculation">
           <th mat-header-cell *matHeaderCellDef> Immatriculation </th>
           <td mat-cell *matCellDef="let vehicule"> {{vehicule.immatriculation}} </td>
@@ -79,14 +79,19 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-        <tr mat-row *matRowDef="let rowData; columns: tableColumns"></tr>
+        <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
 
         
         
       </table>
 
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator *ngIf="dataSource?.filteredData?.length > 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
+
+      <div *ngIf="dataSource == null || dataSource?.filteredData == null || dataSource?.filteredData?.length == 0"
+        class="bloc-aucune-donnee">
+        <p>Aucun véhicule à afficher.</p>
+      </div>
 
     </ion-col>
   </ion-row>

@@ -19,8 +19,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
-import { ConfirmDeleteDialogComponentVehicule, VehiculeListComponent } from './components/vehicule/vehicule-list.component';
-import { ConfirmArchiveDialogComponentVehicule } from './components/vehicule/vehicule-list.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
@@ -48,7 +47,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
   declarations: [
     AppComponent,
     UtilisateurListComponent,
-    ConfirmDeleteDialogComponentVehicule,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
@@ -64,7 +62,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     EmpruntFormComponent,
     EmpruntActions,
     VehiculeComponent,
-    ConfirmArchiveDialogComponentVehicule,
     AlertComponent,
     DialogConfirmComponent,
   ],

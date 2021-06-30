@@ -9,6 +9,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router} from '@angular/router';
 import { first } from 'rxjs/operators';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
+import { Utilisateur } from 'src/app/models/utilisateur';
 
 @Component({
   selector: 'vehicule-list',
@@ -19,6 +21,7 @@ import { first } from 'rxjs/operators';
 export class VehiculeListComponent implements OnInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  private connectedUser: Utilisateur = null;
   vehicules: Vehicule[];
   vehicule: Vehicule;
   dataSource = new MatTableDataSource();
@@ -29,6 +32,7 @@ export class VehiculeListComponent implements OnInit{
   constructor(private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog,private authService: AuthService,private router: Router,) {}
 
   ngOnInit(){
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
     this.getVehicules();
     this.onResize();
   }
@@ -67,29 +71,41 @@ export class VehiculeListComponent implements OnInit{
     }));
   }
 
-  openConfirmDeleteDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmDeleteDialogComponentVehicule);
-
+  openConfirmDeleteDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez vous supprimer ce véhicule ?`,
+        libBouton: 'Supprimer'
+      }
+    });
+  
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.deleteVehicule(id);
+      if (result) {
+        this.deleteVehicule(vehicule.Id);
       }
     });
   }
 
-  openConfirmArchiveDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmArchiveDialogComponentVehicule);
+    openConfirmArchiveDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation archivage',
+        libConfirmation: `Souhaitez vous archiver ce véhicule ?`,
+        libBouton: 'Archiver'
+      }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.archiveVehicule(id);
+      if (result) {
+        this.archiveVehicule(vehicule.Id);
       }
     });
   }
 
   @HostListener('window:resize', ['$event'])
   private onResize(event?) {
-    /*if (window.innerWidth < 420) {
+    if (window.innerWidth < 420) {
       this.nbColumnsAffiche = 3;
 
     } else if (window.innerWidth < 520) {
@@ -99,28 +115,6 @@ export class VehiculeListComponent implements OnInit{
       this.nbColumnsAffiche = 5;
     } else {
       this.nbColumnsAffiche = 6;
-    }*/
+    }
   }
-
-
-}
-
-@Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './dialogs/confirm-delete-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-
-
-export class ConfirmDeleteDialogComponentVehicule {
-
-}
-
-@Component({
-  selector: 'confirm-archive-dialog',
-  templateUrl: './dialogs/confirm-archive-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-export class ConfirmArchiveDialogComponentVehicule {
-
 }
