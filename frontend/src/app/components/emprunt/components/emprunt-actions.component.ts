@@ -13,6 +13,7 @@ import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendse
     @Input() connectedUser!: Utilisateur;
     @Input() emprunt!: Emprunt;
     @Input() listeStatut;
+    @Input() openConfirmDeleteDialog: (emprunt: Emprunt) => void;
     step: number;
     firstFormGroup: FormGroup;
     secondFormGroup: FormGroup;

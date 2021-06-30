@@ -14,7 +14,7 @@ class EmpruntPermission(permissions.BasePermission):
         elif view.action == "list_by_owner":
             return True
         elif view.action == "destroy":
-            return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("emprunt_destroy")))
+            return True
         if view.action in ['update', 'partial_update']:
             return True
         else:
@@ -33,6 +33,8 @@ class EmpruntPermission(permissions.BasePermission):
             return bool(obj.conducteur == request.user or request.user in obj.passagers.all() or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
         if view.action == 'list_by_owner':
             return bool(obj.conducteur == request.user or (request.user.is_superuser or request.user.has_perm("emprunt_list")))
+        if view.action == 'destroy':
+            return bool((obj.conducteur == request.user and obj.statut == 'DEPOSEE') or (request.user.is_superuser or request.user.has_perm("emprunt_destroy")))
         if view.action in ['update', 'partial_update']:
             return bool(obj.conducteur == request.user or (request.user.is_superuser or request.user.has_perm("emprunt_update")))
         else:

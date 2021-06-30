@@ -6,7 +6,7 @@
 </button>
 
 <!-- Supprimer une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin)-->
-<button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'DEPOSEE'">
+<button mat-raised-button color="primary" (click)="openConfirmDeleteDialog(emprunt)" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'DEPOSEE'">
     <mat-icon class="icon-light-color">delete</mat-icon>
     Supprimer
 </button>

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from 'src/app/services/auth.service';
 import { Utilisateur } from 'src/app/models/utilisateur';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'emprunt-list',
@@ -12,6 +14,8 @@ import { Utilisateur } from 'src/app/models/utilisateur';
 })
 
 export class EmpruntListComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   private connectedUser: Utilisateur = null;
   emprunts: Emprunt[];
   emprunt: Emprunt;
@@ -57,8 +61,27 @@ export class EmpruntListComponent implements OnInit {
 
   deleteEmprunt(id) {
     this._empruntBackendService.deleteEmprunt(id).subscribe(() => {
-      this.getEmprunts();
+      if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+        this.getEmprunts();
+      }else{
+        this.getEmpruntsByOwner(this.connectedUser.Id);
+      }
     })
+  }
+
+  openConfirmDeleteDialog = (emprunt: Emprunt): void => {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez vous supprimer cet emprunt ?`,
+        libBouton: 'Supprimer'
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteEmprunt(emprunt.Id);
+      }
+    });
   }
 }
 

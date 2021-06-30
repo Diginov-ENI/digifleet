@@ -101,7 +101,8 @@
               <emprunt-actions
                 [emprunt]="emprunt"
                 [listeStatut]="listeStatut"
-                [connectedUser]="connectedUser">
+                [connectedUser]="connectedUser"
+                [openConfirmDeleteDialog]="openConfirmDeleteDialog">
               </emprunt-actions> 
             </mat-action-row>
           </mat-expansion-panel>
@@ -110,8 +111,13 @@
         </mat-card-actions>
       </mat-card>
       
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
+
+      <div *ngIf="emprunts?.length < 0"
+        class="bloc-aucune-donnee">
+        <p>Aucune demande à afficher.</p>
+      </div>
 
     </ion-col>
   </ion-row>
