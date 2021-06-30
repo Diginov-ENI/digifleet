@@ -1,0 +1,42 @@
+<!-- Modifier une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin)-->
+<button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id || connectedUser.IsSuperuser) && emprunt.Statut == 'DEPOSEE'"
+    [routerLink]="['../liste-emprunt/emprunt/', emprunt.Id]">
+    <mat-icon class="icon-light-color">edit</mat-icon>
+    Modifier
+</button>
+
+<!-- Supprimer une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin)-->
+<button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'DEPOSEE'">
+    <mat-icon class="icon-light-color">delete</mat-icon>
+    Supprimer
+</button>
+
+<!-- Accepter une demande : si n'est pas encore acceptée ET l'utilisateur courant est backoffice -->
+<button mat-raised-button color="primary" (click)="updateStatut('ATTENTE_CLEF')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'DEPOSEE'">
+    <mat-icon class="icon-light-color">check</mat-icon>
+    Accepter
+</button>
+
+<!-- Refuser une demande : si n'est pas encore acceptée ET l'utilisateur courant est backoffice)-->
+<button mat-raised-button color="primary" (click)="updateStatut('REFUSEE')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'DEPOSEE'">
+    <mat-icon class="icon-light-color">clear</mat-icon>
+    Refuser
+</button>
+
+<!-- Annuler (conducteur) : TODO : définir condition d'annulation)-->
+<button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'ATTENTE_CLEF'">
+    <mat-icon class="icon-light-color">clear</mat-icon>
+    Annuler
+</button>
+
+<!-- Récupération des clefs (conducteur) : si elle est acceptée ET l'utilisateur courant est conducteur)-->
+<button mat-raised-button color="primary" (click)="updateStatut('EN_COURS')" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'ATTENTE_CLEF'">
+    <mat-icon class="icon-light-color">unarchive</mat-icon>
+    Clef récupérée
+</button>
+
+<!-- Dépôt des clefs (conducteur) : si elle est en cours ET l'utilisateur courant est backoffice)-->
+<button mat-raised-button color="primary" (click)="updateStatut('CLOTUREE')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'EN_COURS'">
+    <mat-icon class="icon-light-color">archive</mat-icon>
+    Clef récupérée
+</button>

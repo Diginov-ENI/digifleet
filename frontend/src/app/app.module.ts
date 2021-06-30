@@ -34,7 +34,7 @@ import { SiteBackendService } from './backendservices/site.backendservice';
 
 import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
-import { StepperStatutComponent } from './components/emprunt/emprunt-list.component';
+import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
 
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
@@ -60,6 +60,9 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurSecuriteComponent,
     SiteListComponent,
     SiteFormComponent,
+    EmpruntListComponent,
+    EmpruntFormComponent,
+    EmpruntActions,
     VehiculeComponent,
     ConfirmArchiveDialogComponentVehicule,
     AlertComponent,

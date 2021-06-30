@@ -37,11 +37,28 @@ export class EmpruntBackendService {
     }
 
     /**
+     * Modifier partiellement un emprunt
+     * @param emprunt 
+     */
+    partialUpdateEmprunt(emprunt: object): Observable<Emprunt> {
+        let stringifyItem = JSON.stringify(emprunt);
+        return this._httpClient.patch<Emprunt>(this._apiname + emprunt['Id'] + '/', stringifyItem, this._httpOptions);
+    }
+
+    /**
     * Obtenir les emprunt
     * @returns : Observable<Emprunt[]>
     */
     getEmprunts(): Observable<Emprunt[]> {
         return this._httpClient.get<Emprunt[]>(this._apiname);
+    }
+
+    /**
+    * Obtenir les emprunt d'un utilisateur
+    * @returns : Observable<Emprunt[]>
+    */
+    getEmpruntsByOwner(idOwner): Observable<Emprunt[]> {
+        return this._httpClient.get<Emprunt[]>(this._apiname + idOwner + '/list-by-owner');
     }
 
     /**

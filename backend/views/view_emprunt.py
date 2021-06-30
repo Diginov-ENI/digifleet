@@ -1,6 +1,7 @@
+from backend.models.model_utilisateur import Utilisateur
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, status, generics
+from rest_framework import permissions, serializers, viewsets, status, generics
 from rest_framework.decorators import permission_classes, action
 from django.core.exceptions import FieldError
 from rest_framework.settings import api_settings
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 from backend.models.model_emprunt import Emprunt
 from backend.serializers.serializer_emprunt import EmpruntSerializer
 from backend.permissions.permission_emprunt import EmpruntPermission
+
 
 class EmpruntViewSet(viewsets.ViewSet):
     """
@@ -19,9 +21,13 @@ class EmpruntViewSet(viewsets.ViewSet):
     permission_classes = (EmpruntPermission,)
     
     def list(self, request):
-        queryset = Emprunt.objects.all()
-        # TODO : order by date
-        # TODO : filter by not passed (today and future)
+        queryset = Emprunt.objects.all().order_by('-date_debut').exclude(statut='CLOTUREE')
+        serializer = EmpruntSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, url_path='list-by-owner')
+    def list_by_owner(self, request, pk=None):
+        queryset = Emprunt.objects.filter(conducteur_id=pk).order_by('-date_debut')
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(serializer.data)
 

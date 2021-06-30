@@ -107,15 +107,15 @@ class EmpruntSerializer(serializers.ModelSerializer):
         instance.destination = validated_data.get('destination', instance.destination)
         instance.commentaire = validated_data.get('commentaire', instance.commentaire)
         instance.type = validated_data.get('type', instance.type)
-        if validated_data.get('site'):
+        if validated_data.get('site') is not None:
             site_data = validated_data.pop('site')
             site = get_object_or_404(Site.objects.all(), pk=site_data['id'])
             instance.site = site
-        if validated_data.get('conducteur'):
+        if validated_data.get('conducteur') is not None:
             conducteur_data = validated_data.pop('conducteur')
             conducteur = get_object_or_404(Utilisateur.objects.all(), pk=conducteur_data['id'])
             instance.conducteur = conducteur
-        if validated_data.get('passagers'):
+        if validated_data.get('passagers') is not None:
             passagers_data = validated_data.pop('passagers')
             passagers = []
             for passager in passagers_data:

@@ -1,15 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
 import { MatDialog } from '@angular/material/dialog';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { Utilisateur } from 'src/app/models/utilisateur';
 
 @Component({
   selector: 'emprunt-list',
@@ -18,18 +12,39 @@ import {map, startWith} from 'rxjs/operators';
 })
 
 export class EmpruntListComponent implements OnInit {
-
+  private connectedUser: Utilisateur = null;
   emprunts: Emprunt[];
   emprunt: Emprunt;
+  currentStep: number;
+  listeStatut: { [key: string]: string} = {
+    'DEPOSEE': 'demande déposée',
+    'REFUSEE': 'demande refusée',
+    'ANNULEE': 'demande annulée',
+    'ATTENTE_CLEF': 'clef à récupérer',
+    'EN_COURS': 'emprunt en cours',
+    'CLOTUREE': 'demande cloturée',
+  };
+  format: string = 'dd-MM-yyyy';
 
-  constructor(private _empruntBackendService: EmpruntBackendService, public matDialog: MatDialog) { }
+  constructor(private _empruntBackendService: EmpruntBackendService, public matDialog: MatDialog, private authService: AuthService) { }
 
   ngOnInit() {
-    this.getEmprunts();
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
+    if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+      this.getEmprunts();
+    }else{
+      this.getEmpruntsByOwner(this.connectedUser.Id);
+    }
   }
 
   getEmprunts() {
     this._empruntBackendService.getEmprunts().subscribe((response => {
+      this.emprunts = response;
+    }))
+  }
+
+  getEmpruntsByOwner(idOwner) {
+    this._empruntBackendService.getEmpruntsByOwner(idOwner).subscribe((response => {
       this.emprunts = response;
     }))
   }
@@ -44,26 +59,6 @@ export class EmpruntListComponent implements OnInit {
     this._empruntBackendService.deleteEmprunt(id).subscribe(() => {
       this.getEmprunts();
     })
-  }
-}
-
-@Component({
-  selector: 'stepper-statut',
-  templateUrl: './components/stepper-statut.html',
-})
-export class StepperStatutComponent implements OnInit {
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
-
-  constructor(private _formBuilder: FormBuilder) {}
-
-  ngOnInit() {
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
   }
 }
 

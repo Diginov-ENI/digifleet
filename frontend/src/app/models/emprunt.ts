@@ -6,13 +6,13 @@ export class Emprunt{
     public DateDemande: Date;
     public DateDebut: Date;
     public DateFin: Date;
-    public statut: string;
-    public destination: string;
-    public commentaire: string;
-    public type: string;
-    public site: Site;
-    public conducteur: Utilisateur;
-    public passagers: Utilisateur[];
+    public Statut: string;
+    public Destination: string;
+    public Commentaire: string;
+    public Type: string;
+    public Site: Site;
+    public Conducteur: Utilisateur;
+    public Passagers: Utilisateur[];
 
     public constructor(init?: Partial<Emprunt>) {
         Object.assign(this, init);
