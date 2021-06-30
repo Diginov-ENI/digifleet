@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
-import { identifierModuleUrl } from '@angular/compiler';
 import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 
 @Component({
@@ -29,8 +28,7 @@ export class UtilisateurListComponent implements OnInit {
     private _utilisateurBackendService: UtilisateurBackendService,
     public matDialog: MatDialog,
     private authService: AuthService,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.authService.getUser().subscribe(user => this.connectedUser = user);

@@ -28,7 +28,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
-        queryset = Utilisateur.objects.all()
+        queryset = Utilisateur.objects.all().order_by('id')
         serializer = UtilisateurSerializer(queryset, many=True)
         return Response(serializer.data)
 

@@ -32,7 +32,7 @@
         <ng-container matColumnDef="prenom">
           <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> Prénom
           </th>
-          <td [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+          <td mat-cell [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" *matCellDef="let utilisateur">
             {{utilisateur.Prenom}}</td>
         </ng-container>
 
@@ -111,6 +111,7 @@
       <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
+      
       <div *ngIf="dataSource == null || dataSource?.filteredData == null ||dataSource?.filteredData?.length == 0"
         class="bloc-aucune-donnee">
         <p>Aucun utilisateur à afficher.</p>
