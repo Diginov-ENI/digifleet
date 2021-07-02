@@ -48,11 +48,11 @@
     </p>
     <p>
         <mat-form-field>
-            <input matInput type="number" placeholder="Nb place *" formControlName="Nb_place"
-                id="textNb_place" autocomplete="off">
+            <input matInput type="number" placeholder="Nb place *" formControlName="NbPlace"
+                id="textNbPlace" autocomplete="off">
             <mat-error
-                *ngIf="form.controls.Nb_place.errors && (form.controls.Nb_place.dirty || form.controls.Nb_place.touched)">
-                <span *ngIf="form.controls.Nb_place.errors.required">Le nombre de plae doit être renseigné.</span>
+                *ngIf="form.controls.NbPlace.errors && (form.controls.NbPlace.dirty || form.controls.NbPlace.touched)">
+                <span *ngIf="form.controls.NbPlace.errors.required">Le nombre de plae doit être renseigné.</span>
             </mat-error>
         </mat-form-field>
     </p>

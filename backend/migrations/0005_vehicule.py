@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0005_vehicule_permissions'),
+        ('backend', '0004_site_permissions'),
     ]
 
     operations = [

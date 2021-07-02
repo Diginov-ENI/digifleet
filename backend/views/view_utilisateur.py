@@ -28,7 +28,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
-        queryset = Utilisateur.objects.all()
+        queryset = Utilisateur.objects.all().order_by('id')
         serializer = UtilisateurSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -69,18 +69,6 @@ class UtilisateurViewSet(viewsets.ViewSet):
         user = get_object_or_404(queryset, pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    # TODO - à faire fonctionner ou le "partial_update" suffit ?
-    """
-    @action(detail=False)
-    def archive(self, request, pk=None *args, **kwargs):
-        queryset = Utilisateur.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UtilisateurSerializer(user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-    """
 
     def get_success_headers(self, data):
         try:
@@ -88,41 +76,6 @@ class UtilisateurViewSet(viewsets.ViewSet):
         except (TypeError, KeyError):
             return {}
 
-class VehiculeViewSet(viewsets.ViewSet):
-
-    queryset = Vehicule.objects.all()
-    def create(self, request):
-        serializer = VehiculeSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
-
-    def update(self, request, pk=None, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        vehicule = get_object_or_404(self.queryset, pk=pk)
-        serializer = VehiculeSerializer(vehicule, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    def list(self, request):
-        queryset = Vehicule.objects.all()
-        serializer = VehiculeSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Vehicule.objects.all()
-        vehicule = get_object_or_404(queryset, pk=pk)
-        serializer = VehiculeSerializer(vehicule)
-        self.check_object_permissions(request, vehicule)
-        return Response(serializer.data)
-
-    def destroy(self, request, pk=None, *args, **kwargs):
-        queryset = Vehicule.objects.all()
-        vehicule = get_object_or_404(queryset, pk=pk)
-        vehicule.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 class ChangePasswordView(generics.UpdateAPIView):
 
     queryset = Utilisateur.objects.all()

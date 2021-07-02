@@ -16,9 +16,9 @@ class UtilisateurTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
-        self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
-        self.user2 = Utilisateur.objects.create(email='user2@email', username='user2', nom='nom', prenom='prenom', is_active=False, is_superuser=False, password='mdp')
+        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True)
+        self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False)
+        self.user2 = Utilisateur.objects.create(email='user2@email', username='user2', nom='nom', prenom='prenom', is_active=False, is_superuser=False)
 
         self.admin.set_password("mdp")
         self.admin.save()
@@ -51,29 +51,48 @@ class UtilisateurTestCase(APITestCase):
 
         url = reverse('utilisateur-list')
 
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
-
         # On ajoute la permission
         perm = Permission.objects.get(codename="utilisateur_list")
         self.user1.user_permissions.add(perm)
 
-        # On restest, cette fois ci on a le droit
         response = self.client.get(url)
         self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
 
     def test_list_should_throw_401(self):
         url = reverse('utilisateur-list')
-
         response = self.client.get(url)
 
         self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_list_should_throw_403(self):
+        self.client.force_login(self.user1)
+
+        url = reverse('utilisateur-list')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
+
     # Retrieve tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_retrieve(self):
+        """
+        On vérifie qu'un utilisateur superuser peux visualiser un autre utilisateur
+        """
+        self.client.force_login(self.admin)
+
+        serializer = UtilisateurSerializer(self.user1)
+        url = reverse('utilisateur-detail', args=[self.user1.id])
+
+        response = self.client.get(url)        
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_retrieve_self(self):
+        """
+        On vérifie qu'un utilisateur peux se visualiser lui-même
+        """
         self.client.force_login(self.user1)
 
         serializer = UtilisateurSerializer(self.user1)
@@ -85,30 +104,46 @@ class UtilisateurTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_retrieve_other(self):
+        """
+        On vérifie qu'un utilisateur peux visualiser un autre utilisateur si il en possède la permission
+        """
         self.client.force_login(self.user1)
 
-        serializer = UtilisateurSerializer(self.admin)
-        url = reverse('utilisateur-detail', args=[self.admin.id])
-
-        response = self.client.get(url)        
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        serializer = UtilisateurSerializer(self.user2)
+        url = reverse('utilisateur-detail', args=[self.user2.id])  
         
         # On ajoute la permission
         perm = Permission.objects.get(codename="utilisateur_retrieve")
         self.user1.user_permissions.add(perm)
 
-        # On restest, cette fois ci on a le droit
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
 
+    def test_retrieve_should_throw_401(self):
+        url = reverse('utilisateur-detail', args=[self.admin.id])
+        response = self.client.get(url)  
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_retrieve_should_throw_403(self):
+        """
+        On vérifie qu'un utilisateur sans droit spécifique ne peux pas visualiser un autre utilisateur
+        """
+        self.client.force_login(self.user1)
+
+        url = reverse('utilisateur-detail', args=[self.user2.id])
+        response = self.client.get(url)        
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
 
         url = reverse('utilisateur-detail', args=[-1])
-
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -126,22 +161,47 @@ class UtilisateurTestCase(APITestCase):
             'IsSuperuser': 'False',
         }
         url = reverse('utilisateur-list')
-
-        response = self.client.post(url, json_new_user, format='json')
-
-        
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         
         # On ajoute la permission
         perm = Permission.objects.get(codename="utilisateur_create")
         self.user1.user_permissions.add(perm)
 
-        # On restest, cette fois ci on a le droit
         response = self.client.post(url, json_new_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['Email'], 'newUser@email')
         self.assertIsNot(response.data['Id'], None)
+
+    def test_create_should_throw_401(self):
+        json_new_user = {  
+            'Email': 'newUser@email',
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_create_should_throw_403(self):
+        self.client.force_login(self.user1)
+
+        json_new_user = {  
+            'Email': 'newUser@email',
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
@@ -155,7 +215,6 @@ class UtilisateurTestCase(APITestCase):
             'IsSuperuser': 'False',
         }
         url = reverse('utilisateur-list')
-
         response = self.client.post(url, json_new_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -178,8 +237,29 @@ class UtilisateurTestCase(APITestCase):
 
     # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_partial_update(self):
-        self.client.force_login(self.user1)
+        self.client.force_login(self.admin)
 
+        new_name = 'newName'
+        json_update_user = {  
+            'Nom': new_name,
+        }
+        url = reverse('utilisateur-detail', args=[self.user2.id])
+        
+        # On ajoute la permission
+        perm = Permission.objects.get(codename="utilisateur_update")
+        self.user1.user_permissions.add(perm)
+
+        response = self.client.patch(url, json_update_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['Nom'], new_name)
+        self.assertEqual(response.data['Email'], self.user2.email)
+        self.assertEqual(response.data['Id'], str(self.user2.id))
+
+    def test_partial_update_should_throw_401(self):
+        """
+        On vérifie qu'un utilisateur ne peut PAS 
+        """
         new_name = 'newName'
         json_update_user = {  
             'Nom': new_name,
@@ -188,43 +268,43 @@ class UtilisateurTestCase(APITestCase):
 
         response = self.client.patch(url, json_update_user, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
-        # On ajoute la permission
-        perm = Permission.objects.get(codename="utilisateur_update")
-        self.user1.user_permissions.add(perm)
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_partial_update_should_throw_403(self):
+        self.client.force_login(self.user1)
 
-        # On restest, cette fois ci on a le droit
+        new_name = 'newName'
+        json_update_user = {  
+            'Nom': new_name,
+        }
+        url = reverse('utilisateur-detail', args=[self.user2.id])
         response = self.client.patch(url, json_update_user, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Nom'], new_name)
-        self.assertEqual(response.data['Email'], self.user2.email)
-        self.assertEqual(response.data['Id'], str(self.user2.id))
-
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_change_password(self):
         self.client.force_login(self.user1)
-        url = reverse('auth_change_password',args=[self.user1.id])
 
         json_update_user_password = {  
-            'Password': "nouveaumdp",
             'OldPassword': "mdp",
+            'Password': "nouveaumdp",
         }
+        url = reverse('auth_change_password',args=[self.user1.id])
         response = self.client.patch(url, json_update_user_password, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         userPasswordChanged = Utilisateur.objects.get(email=self.user1.email)
         self.assertEqual(userPasswordChanged.check_password('nouveaumdp'), True)
 
-    def test_change_password_fail(self):
+    def test_change_password_should_throw_403(self):
         self.client.force_login(self.user1)
-        url = reverse('auth_change_password',args=[self.admin.id])
 
         json_update_user_password = {  
             'OldPassword': "mdp",
             'Password': "nouveaumdp"
         }
+        url = reverse('auth_change_password',args=[self.admin.id])
         response = self.client.patch(url, json_update_user_password, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -237,18 +317,29 @@ class UtilisateurTestCase(APITestCase):
 
         url = reverse('utilisateur-detail', args=[self.user2.id])
 
-        response = self.client.delete(url)
-        
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # On ajoute la permission
         perm = Permission.objects.get(codename="utilisateur_destroy")
         self.user1.user_permissions.add(perm)
 
-        # On restest, cette fois ci on a le droit
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Utilisateur.objects.filter(id__exact=self.user2.id))
+
+    def test_destroy_should_throw_403(self):
+        self.client.force_login(self.user1)
+
+        url = reverse('utilisateur-detail', args=[self.user2.id])
+        response = self.client.delete(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_destroy_should_throw_401(self):
+        url = reverse('utilisateur-detail', args=[self.user2.id])
+        response = self.client.delete(url)
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_destroy_should_throw_404(self):
         self.client.force_login(self.admin)

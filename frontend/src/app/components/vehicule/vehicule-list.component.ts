@@ -1,14 +1,12 @@
-import { Component, OnInit, HostListener, ViewChild, Inject } from '@angular/core';
-import { NodeWithI18n } from '@angular/compiler';
+import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
-import { Vehicule } from 'src/app/models/Vehicule';
-import {MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Vehicule } from 'src/app/models/vehicule';
+import { Utilisateur } from 'src/app/models/utilisateur';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router} from '@angular/router';
-import { first } from 'rxjs/operators';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'vehicule-list',
@@ -19,16 +17,22 @@ import { first } from 'rxjs/operators';
 export class VehiculeListComponent implements OnInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  private connectedUser: Utilisateur = null;
   vehicules: Vehicule[];
   vehicule: Vehicule;
   dataSource = new MatTableDataSource();
-  tableColumns = ['immatriculation', 'modele', 'marque', 'couleur', 'nb_place', 'etat', 'actions'];
+  tableColumns: string[] = ['immatriculation', 'modele', 'marque', 'couleur', 'nbPlace', 'etat', 'actions'];
 
   nbColumnsAffiche = 6;
 
-  constructor(private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog,private authService: AuthService,private router: Router,) {}
+  constructor(
+    private _vehiculeBackendService: VehiculeBackendService, 
+    public matDialog: MatDialog, 
+    private authService: AuthService,
+  ) {}
 
   ngOnInit(){
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
     this.getVehicules();
     this.onResize();
   }
@@ -53,43 +57,52 @@ export class VehiculeListComponent implements OnInit{
     })
   }
 
-  archiveVehicule(id){
-    this._vehiculeBackendService.getVehicule(id).subscribe((response => {
-      this.vehicule = response;
+  archiverDesarchiverVehicule(vehicule: Vehicule){
       let object:object = {
-        'id' : id,
-        'is_active' : !this.vehicule.is_active
-      }
+        'Id' : vehicule.Id,
+        'IsActive' : !vehicule.IsActive
+      };
+
       this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
         this.getVehicules();
-        this.router.navigate(['Digifleet/liste-vehicule']);
       });
-    }));
   }
 
-  openConfirmDeleteDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmDeleteDialogComponentVehicule);
-
+  openConfirmDeleteDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez vous supprimer ce véhicule ?`,
+        libBouton: 'Supprimer'
+      }
+    });
+  
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.deleteVehicule(id);
+      if (result) {
+        this.deleteVehicule(vehicule.Id);
       }
     });
   }
 
-  openConfirmArchiveDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmArchiveDialogComponentVehicule);
+    openConfirmArchiveDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation archivage',
+        libConfirmation: `Souhaitez vous archiver ce véhicule ?`,
+        libBouton: vehicule.IsActive ? 'Archiver' : 'Désarchiver'
+      }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.archiveVehicule(id);
+      if (result) {
+        this.archiverDesarchiverVehicule(vehicule);
       }
     });
   }
 
   @HostListener('window:resize', ['$event'])
   private onResize(event?) {
-    /*if (window.innerWidth < 420) {
+    if (window.innerWidth < 420) {
       this.nbColumnsAffiche = 3;
 
     } else if (window.innerWidth < 520) {
@@ -99,28 +112,6 @@ export class VehiculeListComponent implements OnInit{
       this.nbColumnsAffiche = 5;
     } else {
       this.nbColumnsAffiche = 6;
-    }*/
+    }
   }
-
-
-}
-
-@Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './dialogs/confirm-delete-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-
-
-export class ConfirmDeleteDialogComponentVehicule {
-
-}
-
-@Component({
-  selector: 'confirm-archive-dialog',
-  templateUrl: './dialogs/confirm-archive-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-export class ConfirmArchiveDialogComponentVehicule {
-
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { VehiculeListComponent } from '../components/vehicule/vehicule-list.component';
-import { Vehicule } from '../models/Vehicule';
+import { Vehicule } from '../models/vehicule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -33,7 +33,7 @@ export class VehiculeBackendService {
      */
     updateVehicule(vehicule: object): Observable<Vehicule> {
         let stringifyItem = JSON.stringify(vehicule);
-        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**

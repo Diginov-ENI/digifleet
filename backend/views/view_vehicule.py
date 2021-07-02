@@ -14,6 +14,7 @@ class VehiculeViewSet(viewsets.ViewSet):
 
     queryset = Vehicule.objects.all()
     permission_classes = (VehiculePermission,)
+
     def create(self, request):
         serializer = VehiculeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -24,14 +25,14 @@ class VehiculeViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Vehicule.objects.all()
         partial = kwargs.pop('partial', False)
-        vehicule = get_object_or_404(self.queryset, pk=pk)
+        vehicule = get_object_or_404(queryset, pk=pk)
         serializer = VehiculeSerializer(vehicule, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def list(self, request):
-        queryset = Vehicule.objects.all()
+        queryset = Vehicule.objects.all().order_by('id')
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(serializer.data)
 

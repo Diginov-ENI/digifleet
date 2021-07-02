@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators, ReactiveFormsModule  } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { Vehicule } from 'src/app/models/vehicule';
 
@@ -17,6 +17,7 @@ export class VehiculeFormComponent implements OnInit {
   constructor(private _vehiculeBackendService: VehiculeBackendService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
   ) {
       //console.log("constructor")
     const vehiculeId = this.route.snapshot.paramMap.get('id');
@@ -31,10 +32,9 @@ export class VehiculeFormComponent implements OnInit {
       Modele: [''],
       Marque: [''],
       Couleur: [''],
-      Nb_place: ['']
+      NbPlace: ['']
     });
 
-    //todo
     this.form.controls.Immatriculation.setValidators([Validators.required,
       this.noWhitespaceStartEndValidator()]);
 
@@ -47,7 +47,7 @@ export class VehiculeFormComponent implements OnInit {
     this.form.controls.Couleur.setValidators([Validators.required,
       this.noWhitespaceStartEndValidator()]);
 
-    this.form.controls.Nb_place.setValidators([Validators.required]);
+    this.form.controls.NbPlace.setValidators([Validators.required]);
   }
 
   sauver() {
@@ -56,7 +56,7 @@ export class VehiculeFormComponent implements OnInit {
     if (!this.vehicule.Id) {
       this.vehicule.Id = undefined;
       this._vehiculeBackendService.addVehicule(this.vehicule).subscribe(res => {
-        console.log(res);
+        this.router.navigate(['Digifleet/liste-vehicule']);
       });
     } else {
       let object:object = {
@@ -65,11 +65,11 @@ export class VehiculeFormComponent implements OnInit {
         'Modele' : this.vehicule.Modele,
         'Marque' : this.vehicule.Marque,
         'Couleur' : this.vehicule.Couleur,
-        'Nb_place' : this.vehicule.Nb_place
+        'NbPlace' : this.vehicule.NbPlace
       }
 
       this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
-        console.log(res);
+        this.router.navigate(['Digifleet/liste-vehicule']);
       });
     }
   }
@@ -88,7 +88,7 @@ export class VehiculeFormComponent implements OnInit {
     this.form.controls.Modele.setValue(vehicule.Modele);
     this.form.controls.Marque.setValue(vehicule.Marque);
     this.form.controls.Couleur.setValue(vehicule.Couleur);
-    this.form.controls.Nb_place.setValue(vehicule.Nb_place);
+    this.form.controls.NbPlace.setValue(vehicule.NbPlace);
   }
 
   public noWhitespaceValidator(): ValidatorFn {

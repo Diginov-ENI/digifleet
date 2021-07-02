@@ -1,6 +1,6 @@
 from django.db import models
 
-from backend.models.Vehicule import Vehicule
+from backend.models.model_vehicule import Vehicule
 
 
 class Clef(models.Model):

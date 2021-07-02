@@ -13,16 +13,6 @@ export class SiteFormComponent implements OnInit {
   site: Site;
   form;
 
-  ProfilsSite = [{
-    id: 1,
-    valeur: 'Tous les droits'
-  },
-  {
-    id: 2,
-    valeur: 'Back office'
-  }
-  ]
-
   constructor(
     private _siteBackendService: SiteBackendService,
     private router: Router,

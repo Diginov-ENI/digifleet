@@ -3,10 +3,11 @@ import { Observable } from 'rxjs';
 import { SiteListComponent } from '../components/site/site-list.component';
 import { Site } from '../models/site';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class SiteBackendService {
-    private readonly _apiroute = 'http://localhost:8000/api/';
+    private readonly _apiroute = environment.API_URL;
     private readonly _apiname = this._apiroute + 'sites/';
     private readonly _httpOptions = {
         headers: new HttpHeaders({

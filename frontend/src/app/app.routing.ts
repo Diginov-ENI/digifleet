@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
+import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
+import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { AuthGuard } from './services/authGuard.service';
 import {ConnexionFormComponent} from './components/connexion/connexion-form.component';
@@ -43,7 +45,20 @@ export const DETAILS_ROUTES_SITE: Routes =
         {
             path: 'site/:id', component: SiteFormComponent
         },
-    ];   
+    ];
+
+export const DETAILS_ROUTES_EMPRUNT: Routes = 
+    [
+        {
+            path: '', component: EmpruntListComponent
+        },
+        {
+            path: 'emprunt', component: EmpruntFormComponent
+        },
+        {
+            path: 'emprunt/:id', component: EmpruntFormComponent
+        },
+    ];  
     
 export const DETAILS_ROUTES_MON_COMPTE: Routes = [
     {
@@ -77,6 +92,7 @@ export const DETAILS_ROUTES: Routes = [
             { path: 'liste-vehicule', children: DETAILS_ROUTES_VEHICULE },
             { path: 'liste-utilisateur', children: DETAILS_ROUTES_UTILISATEUR },     
             { path: 'liste-site', children: DETAILS_ROUTES_SITE },     
+            { path: 'liste-emprunt', children: DETAILS_ROUTES_EMPRUNT },     
             { path: 'mon-compte', children: DETAILS_ROUTES_MON_COMPTE },     
         ],
         canActivate:[AuthGuard]
