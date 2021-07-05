@@ -1,3 +1,5 @@
+from django.db.models.fields import related
+from backend.models.model_vehicule import Vehicule
 from django.db import models
 from backend.models.model_site import Site
 from backend.models.model_utilisateur import Utilisateur
@@ -14,3 +16,4 @@ class Emprunt(models.Model):
     site = models.ForeignKey(Site, null=True, on_delete=models.RESTRICT)
     conducteur = models.ForeignKey(Utilisateur, null=True,  on_delete=models.RESTRICT, related_name='emprunts')
     passagers = models.ManyToManyField(Utilisateur, related_name='covoits')
+    vehicule = models.ForeignKey(Vehicule, null=True, on_delete=models.RESTRICT, related_name='vehicule')
