@@ -42,9 +42,6 @@ export class UtilisateurBackendService {
      */
      updatePasswordUtilisateur(utilisateur: object): Observable<Utilisateur> {
         let stringifyItem = JSON.stringify(utilisateur);
-
-
-
         return this._httpClient.patch<Utilisateur>(this._apinamePassword + utilisateur['Id'] + '/', stringifyItem, this._httpOptions);
     }
     /**

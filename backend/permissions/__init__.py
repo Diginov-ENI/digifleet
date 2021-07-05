@@ -3,3 +3,4 @@
 
 from .permission_utilisateur import UtilisateurPermission
 from .permission_site import SitePermission
+from .permission_emprunt import EmpruntPermission

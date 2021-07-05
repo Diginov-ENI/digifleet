@@ -29,7 +29,6 @@ class SiteViewSet(viewsets.ViewSet):
         queryset = Site.objects.all()
         site = get_object_or_404(queryset, pk=pk)
         serializer = SiteSerializer(site)
-        self.check_object_permissions(request, site)
         return Response(serializer.data)
 
     def create(self, request):

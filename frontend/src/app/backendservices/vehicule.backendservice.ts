@@ -34,10 +34,7 @@ export class VehiculeBackendService {
      */
     updateVehicule(vehicule: object): Observable<Vehicule> {
         let stringifyItem = JSON.stringify(vehicule);
-
-
-
-        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**

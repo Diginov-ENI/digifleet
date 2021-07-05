@@ -14,12 +14,13 @@ class PermissionSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     Name = serializers.CharField(source='name')
     Permissions = PermissionSerializer(source='permissions', read_only=True, many=True)
+    
     class Meta:
         model = Group
         fields = ('Name','Permissions',)
         
 class UtilisateurSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', required=False, allow_blank=True)
+    Id = serializers.CharField(source='id', read_only=True, required=False, allow_blank=True)
     Email = serializers.CharField(source='email')
     Username = serializers.CharField(source='username')
     Nom = serializers.CharField(source='nom')
@@ -27,7 +28,6 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     IsActive = serializers.BooleanField(source='is_active', required=False, default=False)
     LastLogin = serializers.CharField(source='last_login', required=False, allow_blank=True, default=None)
     IsSuperuser = serializers.BooleanField(source='is_superuser', required=False, default=False)
-    Groups = serializers.CharField(source='groups', required=False, allow_blank=True)
     UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
     Groups = GroupSerializer(source='groups', read_only=True, many=True)
 

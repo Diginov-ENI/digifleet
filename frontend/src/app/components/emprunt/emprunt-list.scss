@@ -1,0 +1,13 @@
+ion-row {
+    padding: 8px;
+}
+
+mat-icon {
+    color: #CC5685;
+}
+
+@media screen and (min-width : 768px) {
+    .padding-sm{
+        padding-left:30px;
+    }
+}

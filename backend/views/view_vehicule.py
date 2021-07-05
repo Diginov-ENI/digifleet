@@ -1,11 +1,8 @@
-from django.db.models import query
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
-from rest_framework import serializers
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from backend.models.model_vehicule import Vehicule
 from backend.serializers import VehiculeSerializer
 from backend.permissions.permission_vehicule import VehiculePermission
@@ -14,9 +11,10 @@ class VehiculeViewSet(viewsets.ViewSet):
 
     queryset = Vehicule.objects.all()
     permission_classes = (VehiculePermission,)
+
     def create(self, request):
         serializer = VehiculeSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)        
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
@@ -24,14 +22,14 @@ class VehiculeViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Vehicule.objects.all()
         partial = kwargs.pop('partial', False)
-        vehicule = get_object_or_404(self.queryset, pk=pk)
+        vehicule = get_object_or_404(queryset, pk=pk)
         serializer = VehiculeSerializer(vehicule, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def list(self, request):
-        queryset = Vehicule.objects.all()
+        queryset = Vehicule.objects.all().order_by('id')
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(serializer.data)
 

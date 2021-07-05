@@ -3,4 +3,5 @@
 
 from .serializer_utilisateur import UtilisateurSerializer
 from .serializer_site import SiteSerializer
+from .serializer_emprunt import EmpruntSerializer
 from .serializer_vehicule import VehiculeSerializer

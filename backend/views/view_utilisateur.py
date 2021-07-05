@@ -28,7 +28,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
-        queryset = Utilisateur.objects.all()
+        queryset = Utilisateur.objects.all().order_by('id')
         serializer = UtilisateurSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -69,18 +69,6 @@ class UtilisateurViewSet(viewsets.ViewSet):
         user = get_object_or_404(queryset, pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    # TODO - à faire fonctionner ou le "partial_update" suffit ?
-    """
-    @action(detail=False)
-    def archive(self, request, pk=None *args, **kwargs):
-        queryset = Utilisateur.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UtilisateurSerializer(user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-    """
 
     def get_success_headers(self, data):
         try:

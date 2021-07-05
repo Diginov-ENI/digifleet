@@ -19,17 +19,23 @@ import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
-import { ConfirmDeleteDialogComponentVehicule, VehiculeListComponent } from './components/vehicule/vehicule-list.component';
-import { ConfirmArchiveDialogComponentVehicule } from './components/vehicule/vehicule-list.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
+
 import { SiteFormComponent } from './components/site/site-form.component';
 import { SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
+
+import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
+import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
+import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
+import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
+
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 
@@ -41,7 +47,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
   declarations: [
     AppComponent,
     UtilisateurListComponent,
-    ConfirmDeleteDialogComponentVehicule,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
@@ -53,8 +58,10 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurSecuriteComponent,
     SiteListComponent,
     SiteFormComponent,
+    EmpruntListComponent,
+    EmpruntFormComponent,
+    EmpruntActions,
     VehiculeComponent,
-    ConfirmArchiveDialogComponentVehicule,
     AlertComponent,
     DialogConfirmComponent,
   ],
@@ -81,6 +88,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
     SiteBackendService,
+    EmpruntBackendService,
     AuthService,
     AuthGuard,
     VehiculeBackendService,

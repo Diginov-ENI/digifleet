@@ -14,7 +14,10 @@ class SiteTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
+        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True)
+        self.admin.set_password("mdp")
+        self.admin.save()
+
         self.site_nantes = Site.objects.create(libelle='ENI Nantes')
         self.site_rennes = Site.objects.create(libelle='ENI Rennes')
 
@@ -97,7 +100,7 @@ class SiteTestCase(APITestCase):
             self.client.post(url, json_existing_site, format='json')
 
     # update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test__update(self):
+    def test_update(self):
         self.client.force_login(self.admin)
 
         new_libelle = 'newLibelle'
