@@ -320,7 +320,7 @@ class EmpruntTestCase(APITestCase):
         self.assertFalse(Emprunt.objects.filter(id__exact=self.emprunt1.id))
 
     def test_destroy_should_throw_401(self):
-        url = reverse('emprunt-detail', args=[self.user2.id])
+        url = reverse('emprunt-detail', args=[self.emprunt1.id])
         response = self.client.delete(url)
 
         self.assertTemplateNotUsed(response, self.CONST_EMPRUNT_BASE_URL)
