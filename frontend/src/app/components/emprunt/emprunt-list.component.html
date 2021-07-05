@@ -69,7 +69,11 @@
                 Véhicule de
                 <span *ngIf="emprunt.Type == 'F'">fonction</span>
                 <span *ngIf="emprunt.Type == 'S'">service</span>
+                <span *ngIf="emprunt.Vehicule">
+                  - <a [routerLink]="['../liste-vehicule/vehicule/', emprunt.Vehicule.Id]">{{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }}</a>
+                </span>
               </ion-col>
+              
               <ion-col size-md="6" size-xs="12">
                   <mat-icon aria-hidden="false" aria-label="site">location_city</mat-icon>
                   Site : {{ emprunt.Site.Libelle }}
