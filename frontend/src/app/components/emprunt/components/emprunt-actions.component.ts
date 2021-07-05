@@ -24,8 +24,10 @@ import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendse
     }
 
     updateStatut(newStatut){
-      this.emprunt.Statut = newStatut
-      this._empruntBackendService.partialUpdateEmprunt(this.emprunt).subscribe((response => {
+      let emprunt = new Emprunt()
+      emprunt.Id = this.emprunt.Id
+      emprunt.Statut = newStatut
+      this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe((response => {
         this.emprunt = response;
       }))
     }

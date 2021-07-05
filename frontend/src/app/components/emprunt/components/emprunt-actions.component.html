@@ -11,14 +11,14 @@
     Supprimer
 </button>
 
-<!-- Accepter une demande : si n'est pas encore acceptée ET l'utilisateur courant est backoffice -->
-<button mat-raised-button color="primary" (click)="updateStatut('ATTENTE_CLEF')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'DEPOSEE'">
+<!-- Accepter une demande : si n'est pas encore acceptée ET l'utilisateur courant possède les droits de validation -->
+<button mat-raised-button color="primary" (click)="updateStatut('ATTENTE_CLEF')" *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status')) && emprunt.Statut == 'DEPOSEE'">
     <mat-icon class="icon-light-color">check</mat-icon>
     Accepter
 </button>
 
-<!-- Refuser une demande : si n'est pas encore acceptée ET l'utilisateur courant est backoffice)-->
-<button mat-raised-button color="primary" (click)="updateStatut('REFUSEE')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'DEPOSEE'">
+<!-- Refuser une demande : si n'est pas encore acceptée ET l'utilisateur courant possède les droits de validation)-->
+<button mat-raised-button color="primary" (click)="updateStatut('REFUSEE')" *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status')) && emprunt.Statut == 'DEPOSEE'">
     <mat-icon class="icon-light-color">clear</mat-icon>
     Refuser
 </button>
@@ -35,8 +35,8 @@
     Clef récupérée
 </button>
 
-<!-- Dépôt des clefs (conducteur) : si elle est en cours ET l'utilisateur courant est backoffice)-->
-<button mat-raised-button color="primary" (click)="updateStatut('CLOTUREE')" *ngIf="(connectedUser.Groups.includes('backoffice')) && emprunt.Statut == 'EN_COURS'">
+<!-- Dépôt des clefs (conducteur) : si elle est en cours ET l'utilisateur courant possède les droits de validation)-->
+<button mat-raised-button color="primary" (click)="updateStatut('CLOTUREE')" *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status')) && emprunt.Statut == 'EN_COURS'">
     <mat-icon class="icon-light-color">archive</mat-icon>
     Clef récupérée
 </button>

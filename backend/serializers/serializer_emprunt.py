@@ -89,6 +89,9 @@ class EmpruntSerializer(serializers.ModelSerializer):
              'Commentaire' : {
                 'required' : False,
             },
+             'Vehicule' : {
+                'required' : False,
+            },
         }
 
     def create(self, validated_data):
@@ -96,7 +99,6 @@ class EmpruntSerializer(serializers.ModelSerializer):
         Il est nécéssaire de surcharger la méthode create par défaut pour 
         définir comment gérer les objets liés à un emprunt.
         """
-
         # Find site object
         site_data = validated_data.pop('site')
         site = get_object_or_404(Site.objects.all(), pk=site_data['id'])
@@ -153,10 +155,9 @@ class EmpruntSerializer(serializers.ModelSerializer):
         Il est nécéssaire de surcharger la méthode update par défaut pour 
         définir comment gérer les objets liés à un emprunt.
         """
-        # TODO : vérifier que le conducteur n'est pas également passagers
-        # TODO : vérifier que le conducteur n'a pas déjà de demande sur cette interval de temps
         instance.date_debut = validated_data.get('date_debut', instance.date_debut)
         instance.date_fin = validated_data.get('date_fin', instance.date_fin)
+        # TODO : Vérification droit de modification du statut
         instance.statut = validated_data.get('statut', instance.statut)
         instance.destination = validated_data.get('destination', instance.destination)
         instance.commentaire = validated_data.get('commentaire', instance.commentaire)
@@ -198,6 +199,7 @@ class EmpruntSerializer(serializers.ModelSerializer):
             
             instance.passagers.set(passagers)
 
+        # TODO : Vérification droit de modification du véhicule
         if validated_data.get('vehicule') is not None:
             vehicule_data = validated_data.pop('vehicule')
             vehicule = get_object_or_404(Vehicule.objects.all(), pk=vehicule_data['id'])
