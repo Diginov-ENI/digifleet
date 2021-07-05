@@ -177,22 +177,22 @@ class EmpruntSerializer(serializers.ModelSerializer):
 
             # ---------- DEBUT VALIDATION ---------- 
             # On récupère tous les passagers sur le meme interval de temps
-            passagers_by_interval = self.list_passagers_by_interval(validated_data['date_fin'], validated_data['date_debut'])
+            passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
 
             # --- VALIDATION ---  On vérifie qu'aucun un des passagers courants ne soit déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
             for passager in passagers:
                 for passager_by_interval in passagers_by_interval:
-                    if passager_by_interval and passager_by_interval.filter(pk=passager['id']).exists():
+                    if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
                         raise FieldError # TODO : add specific exception with message
                 # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
                 if Emprunt.objects.filter(
-                    Q(date_debut__lte=validated_data['date_fin']),
-                    Q(date_fin__gte=validated_data['date_debut']),
-                    Q(conducteur_id=passager['id']),
+                    Q(date_debut__lte=instance.date_fin),
+                    Q(date_fin__gte=instance.date_debut),
+                    Q(conducteur_id=passager.id),
                     ).distinct().exists():
                     raise FieldError # TODO : add specific exception with message
                 #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
-                if passager['id'] == conducteur_data['id']:
+                if passager.id == instance.conducteur.id:
                     raise FieldError # TODO : add specific exception with message
             # ---------- FIN VALIDATION ---------- 
             
