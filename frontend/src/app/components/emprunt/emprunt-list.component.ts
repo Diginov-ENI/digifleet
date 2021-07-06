@@ -41,7 +41,7 @@ export class EmpruntListComponent implements OnInit {
     }
   }
 
-  getEmprunts() {
+  getEmprunts = (): void => {
     this._empruntBackendService.getEmprunts().subscribe((response => {
       this.emprunts = response;
     }))
@@ -57,6 +57,16 @@ export class EmpruntListComponent implements OnInit {
     this._empruntBackendService.getEmprunt(id).subscribe((response => {
       this.emprunt = response;
     }))
+  }
+
+  updateEmprunt = (emprunt: Emprunt): void => {
+    this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe(() => {
+      if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+        this.getEmprunts();
+      }else{
+        this.getEmpruntsByOwner(this.connectedUser.Id);
+      }
+    })
   }
 
   deleteEmprunt(id) {
@@ -80,6 +90,24 @@ export class EmpruntListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteEmprunt(emprunt.Id);
+      }
+    });
+  }
+
+  openConfirmCancelDialog = (emprunt: Emprunt): void => {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation annulation',
+        libConfirmation: `Souhaitez vous annuler cet emprunt ?`,
+        libBouton: 'Confirmer'
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        let empruntToUpdate = new Emprunt()
+        empruntToUpdate.Id = emprunt.Id
+        empruntToUpdate.Statut = 'ANNULEE'
+        this.updateEmprunt(empruntToUpdate);
       }
     });
   }

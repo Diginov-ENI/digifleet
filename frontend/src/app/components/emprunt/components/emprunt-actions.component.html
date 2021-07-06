@@ -24,7 +24,7 @@
 </button>
 
 <!-- Annuler (conducteur) : TODO : définir condition d'annulation)-->
-<button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'ATTENTE_CLEF'">
+<button mat-raised-button color="primary" (click)="openConfirmCancelDialog(emprunt)" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'ATTENTE_CLEF'">
     <mat-icon class="icon-light-color">clear</mat-icon>
     Annuler
 </button>
