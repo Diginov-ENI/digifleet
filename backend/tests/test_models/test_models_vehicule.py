@@ -12,6 +12,3 @@ class VehiculeTestCase(TestCase):
         vehicule = Vehicule.objects.create(marque='Peugot', modele = '406', immatriculation = 'az123er', couleur = 'bleu', nb_place = 4)
         self.assertIsInstance(vehicule, Vehicule)
 
-    #def test_update_vehicule(self):
-    #    vehicule = Vehicule.objects.create(marque='Peugot', modele = '406', immatriculation = 'az123er', couleur = 'bleu', nb_place = 4)
-    #    self.assertEquals(vehicule.immatriculation, 'az123er')
