@@ -66,7 +66,6 @@ export class UtilisateurSecuriteComponent implements OnInit{
           if(typeof error.error.OldPassword == 'object'){
             tmp = tmp.concat(error.error.OldPassword)
           }
-          console.log(tmp)
           this.errors = tmp;
         });
       } catch (error) {

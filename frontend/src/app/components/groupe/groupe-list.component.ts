@@ -55,7 +55,6 @@ export class GroupeListComponent implements OnInit {
   }
 
   openConfirmDeleteDialog(groupe: Groupe) {
-    console.log(groupe)
     const dialogRef = this.matDialog.open(ConfirmDeleteGroupeDialogComponent, {
       data: {
         groupe: groupe

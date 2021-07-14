@@ -25,7 +25,6 @@ class GroupPermission(permissions.BasePermission):
     Authorise la lecture et la modification de son propre profil
     """
     def has_object_permission(self, request, view, obj):
-        print(request.user.groups.filter(id = obj.id).exists())
         if view.action == "destroy":
             return bool(request.user.is_authenticated and (request.user.is_superuser or not request.user.groups.filter(id = obj.id).exists()))
         elif view.action in ['update', 'partial_update']:
