@@ -39,7 +39,6 @@ import { EmpruntBackendService } from './backendservices/emprunt.backendservice'
 import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 import { GroupeBackendService } from './backendservices/groupe.backendservice';
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { GroupeListComponent} from './components/groupe/groupe-list.component';
 import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
 import { GroupeFormComponent } from './components/groupe/groupe-form.component';
@@ -71,7 +70,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurSecuriteComponent,
     UtilisateurChips,
     GroupeChips,
-    ConfirmDeleteUtilisateurDialogComponent,
     SiteListComponent,
     SiteFormComponent,
     GroupeListComponent,
@@ -79,8 +77,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     PermissionTypeComponent,
     PermissionFormComponent,
     ConfirmDeleteGroupeDialogComponent,
-    ConfirmDeleteSiteDialogComponent,
-    VehiculeComponent,
     AlertComponent,
     UtilisateurPermissionComponent,
     SiteListComponent,
