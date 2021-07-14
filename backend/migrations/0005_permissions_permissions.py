@@ -14,7 +14,7 @@ def create_permissions(apps, schema_editor):
     contentUser = ContentType.objects.get(app_label='backend', model='utilisateur')
 
     Permission.objects.create(name='Accès a la liste des permissions', content_type_id=content.id, codename='permission_list')
-    Permission.objects.create(name='Récuperation des informations d\'un permission', content_type_id=content.id, codename='permission_retrieve')
+    Permission.objects.create(name='Récuperation des informations d\'une permission', content_type_id=content.id, codename='permission_retrieve')
 
     Permission.objects.create(name='Création d\'un groupe', content_type_id=content.id, codename='groupe_create')
     Permission.objects.create(name='Accès a la liste des groupes', content_type_id=content.id, codename='groupe_list')
