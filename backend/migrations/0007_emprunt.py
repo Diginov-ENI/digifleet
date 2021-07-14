@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
                 ('conducteur', models.ForeignKey(null=True, on_delete=django.db.models.deletion.RESTRICT, related_name='emprunts', to=settings.AUTH_USER_MODEL)),
                 ('passagers', models.ManyToManyField(related_name='covoits', to=settings.AUTH_USER_MODEL)),
                 ('site', models.ForeignKey(null=True, on_delete=django.db.models.deletion.RESTRICT, to='backend.site')),
+                ('vehicule', models.ForeignKey(null=True, on_delete=django.db.models.deletion.RESTRICT, related_name='vehicule', to='backend.vehicule')),
             ],
         ),
     ]

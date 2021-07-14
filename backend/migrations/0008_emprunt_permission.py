@@ -16,6 +16,7 @@ def create_permissions(apps, schema_editor):
     Permission.objects.create(name='Accès a la liste des emprunt', content_type_id=content.id, codename='emprunt_list')
     Permission.objects.create(name='Suppression d\'un emprunt', content_type_id=content.id, codename='emprunt_destroy')
     Permission.objects.create(name='Modification d\'un emprunt', content_type_id=content.id, codename='emprunt_update')
+    Permission.objects.create(name='Modification du statut d\'emprunt', content_type_id=content.id, codename='emprunt_update_status')
     Permission.objects.create(name='Récuperation des informations d\'un emprunt', content_type_id=content.id, codename='emprunt_retrieve')
 
 

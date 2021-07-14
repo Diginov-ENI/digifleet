@@ -1,9 +1,7 @@
-from backend.models.model_utilisateur import Utilisateur
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.shortcuts import render, get_object_or_404
-from rest_framework import permissions, serializers, viewsets, status, generics
+from rest_framework import viewsets, status
 from rest_framework.decorators import permission_classes, action
-from django.core.exceptions import FieldError
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from backend.models.model_emprunt import Emprunt

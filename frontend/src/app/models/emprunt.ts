@@ -1,5 +1,6 @@
 import { Site } from "./site";
 import { Utilisateur } from "./utilisateur";
+import { Vehicule } from "./vehicule";
 
 export class Emprunt{
     public Id: number;
@@ -13,6 +14,7 @@ export class Emprunt{
     public Site: Site;
     public Conducteur: Utilisateur;
     public Passagers: Utilisateur[];
+    public Vehicule: Vehicule[];
 
     public constructor(init?: Partial<Emprunt>) {
         Object.assign(this, init);

@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
+import { SiteListComponent } from './components/site/site-list.component';
+import { SiteFormComponent } from './components/site/site-form.component';
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
 import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
