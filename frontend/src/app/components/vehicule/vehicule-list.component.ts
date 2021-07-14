@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
-import { Vehicule } from 'src/app/models/Vehicule';
+import { Vehicule } from 'src/app/models/vehicule';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';

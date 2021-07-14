@@ -7,10 +7,12 @@ import { SiteListComponent } from './components/site/site-list.component';
 import { SiteFormComponent } from './components/site/site-form.component';
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
 import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DigifleetHomeComponent } from './digifleet-home.component';
 import { AuthGuard } from './services/authGuard.service';
 import {ConnexionFormComponent} from './components/connexion/connexion-form.component';
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
+import { SiteListComponent } from './components/site/site-list.component';
+import { SiteFormComponent } from './components/site/site-form.component';
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 
 // WIP - la gestion des routes est susceptible de changer, essayez d'ajouter proprement vos routes sur une ligne pour éviter les merge conflicts
@@ -18,6 +20,7 @@ export const APP_ROUTING = RouterModule.forRoot([
     { path: 'Digifleet', component: DigifleetHomeComponent, outlet: 'Digifleet' },
 	{ path: 'connexion', component: ConnexionFormComponent },
 ], { scrollPositionRestoration: 'enabled' });
+
 
 export const DETAILS_ROUTES_UTILISATEUR: Routes = 
     [
@@ -70,15 +73,16 @@ export const DETAILS_ROUTES_MON_COMPTE: Routes = [
       },
     ];
 
+
 export const DETAILS_ROUTES_VEHICULE: Routes = [
     {
         path: '', component: VehiculeListComponent 
         },
         {
-        path: 'vehicule', component: VehiculeComponent
+          path: 'vehicule', component: VehiculeFormComponent
         },
         {
-        path: 'vehicule/:id', component: VehiculeComponent
+          path: 'vehicule/:id', component: VehiculeFormComponent
         },
     ];
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { VehiculeListComponent } from '../components/vehicule/vehicule-list.component';
-import { Vehicule } from '../models/Vehicule';
+import { Vehicule } from '../models/vehicule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -23,7 +23,6 @@ export class VehiculeBackendService {
      * @return : {Observable}
      */
     addVehicule(vehicule: Vehicule): Observable<Vehicule> {
-
         let stringifyItem = JSON.stringify(vehicule);
         return this._httpClient.post<Vehicule>(this._apiname, stringifyItem, this._httpOptions);
     }
@@ -39,14 +38,14 @@ export class VehiculeBackendService {
 
     /**
     * Obtenir les vehicules
-    * @returns : Observable<Utilisateur[]>
+    * @returns : Observable<Vehicule[]>
     */
     getVehicules(): Observable<Vehicule[]> {
         return this._httpClient.get<Vehicule[]>(this._apiname);
     }
 
     /**
-     * Obtenir un utilisateur
+     * Obtenir un vehicule
      * @param id 
      */
     getVehicule(id): Observable<Vehicule> {
@@ -54,9 +53,9 @@ export class VehiculeBackendService {
     }
     
     /**
-     * Suppression d'un utilisateur par son id
+     * Suppression d'un vehicule par son id
      * 
-     * @param idVehicule
+     * @param idVehicule 
      * @returns 
      */
     deleteVehicule(idVehicule) {

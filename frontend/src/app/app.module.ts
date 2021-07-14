@@ -36,7 +36,7 @@ import { EmpruntListComponent } from './components/emprunt/emprunt-list.componen
 import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
 
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
@@ -50,6 +50,8 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
+    VehiculeFormComponent,
+    VehiculeListComponent,
     ConnexionFormComponent,
     AlertComponent,
     VehiculeListComponent,
@@ -61,7 +63,6 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     EmpruntListComponent,
     EmpruntFormComponent,
     EmpruntActions,
-    VehiculeComponent,
     AlertComponent,
     DialogConfirmComponent,
   ],

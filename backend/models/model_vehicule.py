@@ -8,3 +8,4 @@ class Vehicule(models.Model):
     couleur = models.CharField(max_length=30)
     nb_place = models.IntegerField()
     is_active = models.BooleanField(default=True)
+
