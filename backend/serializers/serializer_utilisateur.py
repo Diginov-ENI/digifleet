@@ -1,26 +1,16 @@
+from django.shortcuts import get_object_or_404
+from backend.serializers.serializer_group import GroupSerializer
+from backend.serializers.serializer_permission import PermissionSerializer
 from django.contrib.auth.models import Permission,Group
 from rest_framework import serializers
 from backend.models.model_utilisateur import Utilisateur
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class PermissionSerializer(serializers.ModelSerializer):
-    Codename = serializers.CharField(source='codename')
 
-    class Meta:
-        model = Permission
-        fields = ('Codename',)
-
-class GroupSerializer(serializers.ModelSerializer):
-    Name = serializers.CharField(source='name')
-    Permissions = PermissionSerializer(source='permissions', read_only=True, many=True)
-    
-    class Meta:
-        model = Group
-        fields = ('Name','Permissions',)
         
 class UtilisateurSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', read_only=True, required=False, allow_blank=True)
+    Id = serializers.IntegerField(source='id', required=False)
     Email = serializers.CharField(source='email')
     Username = serializers.CharField(source='username')
     Nom = serializers.CharField(source='nom')
@@ -29,7 +19,8 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     LastLogin = serializers.CharField(source='last_login', required=False, allow_blank=True, default=None)
     IsSuperuser = serializers.BooleanField(source='is_superuser', required=False, default=False)
     UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
-    Groups = GroupSerializer(source='groups', read_only=True, many=True)
+    DirectUserPermissions = PermissionSerializer(source='user_permissions', many=True,required=False)
+    Groups = GroupSerializer(source='groups',required=False, many=True)
 
     class Meta:
         model = Utilisateur
@@ -44,6 +35,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
             'IsSuperuser', 
             'Groups', 
             'UserPermissions',
+            'DirectUserPermissions',
         )
         extra_kwargs = {
             'Id' : {
@@ -61,10 +53,61 @@ class UtilisateurSerializer(serializers.ModelSerializer):
             'UserPermissions' : {
                 'required' : False,
             },
+            'DirectUserPermissions' : {
+                'required' : False,
+            },
             'Groups' : {
                 'required' : False,
             }
         }
+    def validate(self, attrs):
+        if(self.context.get('request') is not None):
+            if attrs.get('user_permissions') is not None and self.context.get('request').user.id == self.instance.id:
+                del attrs['user_permissions']
+            if attrs.get('groups') is not None and self.context.get('request').user.id == self.instance.id:
+                del attrs['groups']
+
+        return attrs
+
+    def create(self, validated_data):
+        groups = []
+        
+        if validated_data.get('user_permissions') is not None:
+            del validated_data['user_permissions']
+
+        if validated_data.get('groups') is not None:
+            groups_data = validated_data.pop('groups')
+            for group in groups_data:
+                groups.append(get_object_or_404(Group.objects.all(), pk=group['id']))
+
+            
+        user = Utilisateur.objects.create(**validated_data)
+        user.groups.set(groups)
+
+        return user
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
+        instance.nom = validated_data.get('nom', instance.nom)
+        instance.prenom = validated_data.get('prenom', instance.prenom)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        if validated_data.get('groups') is not None:
+            groups_data = validated_data.pop('groups')
+            groups = []
+            for group in groups_data:
+                groups.append(get_object_or_404(Group.objects.all(), pk=group['id']))
+            instance.groups.set(groups)
+        if validated_data.get('user_permissions') is not None:
+            permissions_data = validated_data.pop('user_permissions')
+            permissions = []
+            for permission in permissions_data:
+                permissions.append(get_object_or_404(Permission.objects.all(), pk=permission['id']))
+            instance.user_permissions.set(permissions)
+
+        instance.save()
+
+        return instance
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     OldPassword = serializers.CharField(write_only=True, required=True)

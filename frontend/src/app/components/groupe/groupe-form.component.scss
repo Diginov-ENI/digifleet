@@ -1,0 +1,20 @@
+:host::ng-deep.mat-checkbox-layout{
+    white-space: normal !important;
+}
+:host::ng-deep.mat-checkbox-label{
+    line-height: 15px !important;
+}
+:host::ng-deep h2{
+    margin: 0;
+}
+
+:host::ng-deep h2{
+    display: flex;
+}
+:host::ng-deep mat-checkbox{
+    font-size: 14px;
+    margin:5px 0;
+}
+.spacer {
+    flex: 1 1 auto;
+}

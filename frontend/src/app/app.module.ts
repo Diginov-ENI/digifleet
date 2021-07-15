@@ -38,6 +38,16 @@ import { EmpruntBackendService } from './backendservices/emprunt.backendservice'
 
 import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { GroupeBackendService } from './backendservices/groupe.backendservice';
+import { GroupeListComponent} from './components/groupe/groupe-list.component';
+import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
+import { GroupeFormComponent } from './components/groupe/groupe-form.component';
+import { PermissionTypeBackendService } from './backendservices/permissiontype.backendservice';
+import { UtilisateurChips } from './components/groupe/utilisateur-chips/utilisateur-chips.component';
+import { GroupeChips } from './components/utilisateur/groupe-chips/groupe-chips.component';
+import { PermissionTypeComponent } from './components/permission/permission-type.component';
+import { PermissionFormComponent } from './components/permission/permission-form.component';
+import { UtilisateurPermissionComponent } from './components/utilisateur/utilisateur-permission/utilisateur-permission.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -58,6 +68,17 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
+    UtilisateurChips,
+    GroupeChips,
+    SiteListComponent,
+    SiteFormComponent,
+    GroupeListComponent,
+    GroupeFormComponent,
+    PermissionTypeComponent,
+    PermissionFormComponent,
+    ConfirmDeleteGroupeDialogComponent,
+    AlertComponent,
+    UtilisateurPermissionComponent,
     SiteListComponent,
     SiteFormComponent,
     EmpruntListComponent,
@@ -89,6 +110,8 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
     SiteBackendService,
+    GroupeBackendService,
+    PermissionTypeBackendService,
     EmpruntBackendService,
     AuthService,
     AuthGuard,
