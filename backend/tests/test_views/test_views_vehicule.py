@@ -182,7 +182,7 @@ class VehiculeTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['Immatriculation'], 'test')
         self.assertEqual(response.data['Modele'], self.voiture2.modele)
-        self.assertEqual(response.data['Id'], str(self.voiture2.id))
+        self.assertEqual(response.data['Id'], self.voiture2.id)
 
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):

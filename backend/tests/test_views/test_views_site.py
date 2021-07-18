@@ -113,7 +113,7 @@ class SiteTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['Libelle'], new_libelle)
-        self.assertEqual(response.data['Id'], str(self.site_nantes.id))
+        self.assertEqual(response.data['Id'], self.site_nantes.id)
     
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):

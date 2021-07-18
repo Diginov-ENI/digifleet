@@ -9,7 +9,7 @@ from django.core.exceptions import FieldError
 from django.db.models import Q, OuterRef, Exists
 
 class SiteSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id')
+    Id = serializers.IntegerField(source='id')
     Libelle = serializers.CharField(source='libelle', read_only=True)
 
     class Meta:
@@ -20,7 +20,7 @@ class SiteSerializer(serializers.ModelSerializer):
         )
 
 class UtilisateurSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id')
+    Id = serializers.IntegerField(source='id')
     Nom = serializers.CharField(source='nom', required=False)
     Prenom = serializers.CharField(source='prenom', required=False)
 
@@ -34,7 +34,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
 
 
 class VehiculeSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id')
+    Id = serializers.IntegerField(source='id')
     Marque = serializers.CharField(source='marque', required=False)
     Modele = serializers.CharField(source='modele', required=False)
 
@@ -47,7 +47,7 @@ class VehiculeSerializer(serializers.ModelSerializer):
         )
 
 class EmpruntSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', read_only=True, required=False)
+    Id = serializers.IntegerField(source='id', read_only=True, required=False)
     DateDemande = serializers.DateTimeField(source='date_demande', read_only=True, required=False)
     DateDebut = serializers.DateTimeField(source='date_debut', required=True)
     DateFin = serializers.DateTimeField(source='date_fin', required=False)
