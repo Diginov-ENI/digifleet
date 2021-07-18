@@ -34,6 +34,10 @@ $color-accent: #c2185b;
 $color-background: #303030;
 $color-background-wrapper: #424242;
 $color-text-titre: #FFFFFF;
+$color-error: #b90909;
+$color-success: #4caf50;
+$color-warning: #ff9800;
+$color-info: #2196f3;
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -123,11 +127,11 @@ td.mat-cell {
 }
 
 .material-icons.green {
-    color: #3fd475;
+    color: $color-success;
 }
 
 .material-icons.red {
-    color: #ff5353;
+    color: $color-error;
 }
 /* Fin CSS des listes */
 
@@ -169,6 +173,52 @@ mat-dialog-container {
     }
 }
 /* Fin CSS des modales */
+/* Début CSS snackbar / toast */
+.mat-snack-bar-container{
+    background-color: $color-background-wrapper;
+    color: $color-text-titre;
+    padding: min(15px,1vw) !important;
+    min-width: 100px !important;
+    &.is-error {
+        border-left: 15px solid $color-error;
+    }
+    &.is-success {
+        border-left: 15px solid $color-success;
+    }
+}
+
+.toast-wrapper {
+    display: inline-flex;
+}
+.toast-body {
+    display: inline-flex;
+}
+.toast-dismiss {
+    cursor: pointer;
+    opacity: .7;
+    margin-left: min(15px,1vw);
+}
+.toast-icon {
+    margin-right: min(15px,1vw);
+    display: table;
+    .material-icons{
+        font-size: 50px;
+        display: table-cell;
+        vertical-align: middle;
+        &.is-error {
+            color: $color-error;
+        }
+        &.is-success {
+            color: $color-success;
+        }
+    }
+}
+.toast-title {
+    font-weight: bold;
+    font-size: 15px;
+    padding-bottom: min(10px, 1vw);
+}
+/* Fin CSS snackbar / toast */
 
 .bloc-aucune-donnee {
     height: 60vh;

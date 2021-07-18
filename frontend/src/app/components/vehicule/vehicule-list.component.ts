@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router} from '@angular/router';
 import { first } from 'rxjs/operators';
+import { Utilisateur } from 'src/app/models/utilisateur';
 
 @Component({
   selector: 'vehicule-list',
@@ -19,6 +20,7 @@ import { first } from 'rxjs/operators';
 export class VehiculeListComponent implements OnInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  public connectedUser: Utilisateur;
   vehicules: Vehicule[];
   vehicule: Vehicule;
   dataSource = new MatTableDataSource();
@@ -29,6 +31,7 @@ export class VehiculeListComponent implements OnInit{
   constructor(private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog,private authService: AuthService,private router: Router,) {}
 
   ngOnInit(){
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
     this.getVehicules();
     this.onResize();
   }

@@ -62,7 +62,7 @@ class UtilisateurTestCase(APITestCase):
         # On restest, cette fois ci on a le droit
         response = self.client.get(url)
         self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data['Data']), 3)
 
     def test_list_should_throw_401(self):
         url = reverse('utilisateur-list')
@@ -82,7 +82,7 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data['Data'], serializer.data)
 
     def test_retrieve_other(self):
         self.client.force_login(self.user1)
@@ -102,7 +102,7 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data['Data'], serializer.data)
 
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
@@ -136,12 +136,12 @@ class UtilisateurTestCase(APITestCase):
         perm = Permission.objects.get(codename="utilisateur_create")
         self.user1.user_permissions.add(perm)
 
-        # On restest, cette fois ci on a le droit
+        # On re-test, cette fois ci avec le droit
         response = self.client.post(url, json_new_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Email'], 'newUser@email')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data['Data']['Email'], 'newUser@email')
+        self.assertIsNot(response.data['Data']['Id'], None)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
@@ -173,8 +173,9 @@ class UtilisateurTestCase(APITestCase):
         }
         url = reverse('utilisateur-list')
 
-        with self.assertRaises(FieldError):
-            self.client.post(url, json_existing_user, format='json')
+        response = self.client.post(url, json_existing_user, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['IsSuccess'], False)
 
     # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_partial_update(self):
@@ -198,9 +199,9 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.patch(url, json_update_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Nom'], new_name)
-        self.assertEqual(response.data['Email'], self.user2.email)
-        self.assertEqual(response.data['Id'], str(self.user2.id))
+        self.assertEqual(response.data['Data']['Nom'], new_name)
+        self.assertEqual(response.data['Data']['Email'], self.user2.email)
+        self.assertEqual(response.data['Data']['Id'], str(self.user2.id))
 
 
     def test_change_password(self):

@@ -29,8 +29,8 @@ export class UtilisateurSecuriteComponent implements OnInit{
       matchOtherValidator("password")
     ])
   }); 
-  private errors:any;
-  private success:any;
+  public errors:any;
+  public success:any;
   private user:Utilisateur = null;
 
   constructor(private authService: AuthService,

@@ -32,6 +32,7 @@ import { SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
 import { VehiculeComponent } from './components/vehicule/vehicule.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { ToastHelperComponent } from './components/toast-message/toast-message.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -57,6 +58,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     ConfirmArchiveDialogComponentVehicule,
     AlertComponent,
     DialogConfirmComponent,
+    ToastHelperComponent,
   ],
   entryComponents: [],
   imports: [

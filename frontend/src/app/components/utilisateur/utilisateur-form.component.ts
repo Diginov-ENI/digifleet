@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { AuthService } from 'src/app/services/auth.service';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
 
 @Component({
   selector: 'utilisateur-form',
@@ -31,6 +34,7 @@ export class UtilisateurFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private _snackBar: MatSnackBar,
   ) {
     const utilisateurId = this.route.snapshot.paramMap.get('id');
     if (utilisateurId)
@@ -63,42 +67,54 @@ export class UtilisateurFormComponent implements OnInit {
   sauver() {
     this.utilisateur = new Utilisateur(this.form.value);
 
-    // ToDo factoriser le passage des champ vide à undefined
     if (!this.utilisateur.Id) {
       this.utilisateur.Id = undefined;
       this.utilisateur.Groups = undefined;
       this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-utilisateur']);
+        if (res.IsSuccess) {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur ajouté avec succès.'));
+          this.router.navigate(['Digifleet/liste-utilisateur']);
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     } else {
-      let object:object = {
-        'Id' : this.utilisateur.Id,
-        'Username' : this.utilisateur.Username,
-        'Email' : this.utilisateur.Email,
-        'Nom' : this.utilisateur.Nom,
-        'Prenom' : this.utilisateur.Prenom
+      let object: object = {
+        'Id': this.utilisateur.Id,
+        'Username': this.utilisateur.Username,
+        'Email': this.utilisateur.Email,
+        'Nom': this.utilisateur.Nom,
+        'Prenom': this.utilisateur.Prenom
       }
 
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
-        this.authService.getUser().pipe(first()).subscribe(user=>{
-          if(res.Id === user.Id){
-            this.authService.refreshUserData();
-          }
-          this.router.navigate(['Digifleet/liste-utilisateur']);
-        });
+        if (res.IsSuccess) {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur modifié avec succès.'));
+          this.authService.getUser().pipe(first()).subscribe(user => {
+            if (res.Data.Id === user.Id) {
+              this.authService.refreshUserData();
+            }
+            this.router.navigate(['Digifleet/liste-utilisateur']);
+          });
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     }
   }
 
   chargerUtilisateur(id) {
     this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
-      this.utilisateur = new Utilisateur();
-      this.utilisateur = res;
-      this.itemToForm(this.utilisateur);
+      if (res.IsSuccess) {
+        this.utilisateur = res.Data;
+        this.itemToForm(this.utilisateur);
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
     });
   }
 
-  itemToForm(utilisateur: Utilisateur){
+  itemToForm(utilisateur: Utilisateur) {
     this.form.controls.Id.setValue(utilisateur.Id);
     this.form.controls.Username.setValue(utilisateur.Username);
     this.form.controls.Email.setValue(utilisateur.Email);
