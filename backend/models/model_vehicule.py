@@ -1,4 +1,5 @@
 from django.db import models
+from backend.models.model_site import Site
 
 class Vehicule(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
@@ -8,3 +9,4 @@ class Vehicule(models.Model):
     couleur = models.CharField(max_length=30)
     nb_place = models.IntegerField()
     is_active = models.BooleanField(default=True)
+    site = models.ForeignKey(Site, null=True, on_delete=models.RESTRICT, related_name='vehicules')
