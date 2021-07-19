@@ -36,8 +36,18 @@ import { EmpruntListComponent } from './components/emprunt/emprunt-list.componen
 import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
 
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { GroupeBackendService } from './backendservices/groupe.backendservice';
+import { GroupeListComponent} from './components/groupe/groupe-list.component';
+import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
+import { GroupeFormComponent } from './components/groupe/groupe-form.component';
+import { PermissionTypeBackendService } from './backendservices/permissiontype.backendservice';
+import { UtilisateurChips } from './components/groupe/utilisateur-chips/utilisateur-chips.component';
+import { GroupeChips } from './components/utilisateur/groupe-chips/groupe-chips.component';
+import { PermissionTypeComponent } from './components/permission/permission-type.component';
+import { PermissionFormComponent } from './components/permission/permission-form.component';
+import { UtilisateurPermissionComponent } from './components/utilisateur/utilisateur-permission/utilisateur-permission.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -50,18 +60,30 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
+    VehiculeFormComponent,
+    VehiculeListComponent,
     ConnexionFormComponent,
     AlertComponent,
     VehiculeListComponent,
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
+    UtilisateurChips,
+    GroupeChips,
+    SiteListComponent,
+    SiteFormComponent,
+    GroupeListComponent,
+    GroupeFormComponent,
+    PermissionTypeComponent,
+    PermissionFormComponent,
+    ConfirmDeleteGroupeDialogComponent,
+    AlertComponent,
+    UtilisateurPermissionComponent,
     SiteListComponent,
     SiteFormComponent,
     EmpruntListComponent,
     EmpruntFormComponent,
     EmpruntActions,
-    VehiculeComponent,
     AlertComponent,
     DialogConfirmComponent,
   ],
@@ -88,6 +110,8 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
     SiteBackendService,
+    GroupeBackendService,
+    PermissionTypeBackendService,
     EmpruntBackendService,
     AuthService,
     AuthGuard,

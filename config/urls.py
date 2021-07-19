@@ -29,10 +29,11 @@ router = routers.DefaultRouter()
 router.register(r'utilisateurs', views.UtilisateurViewSet)
 router.register(r'vehicules', views.VehiculeViewSet)
 router.register(r'sites', views.SiteViewSet)
+router.register(r'groupes', views.GroupeViewSet)
+router.register(r'permissions', views.PermissionViewSet)
+router.register(r'permission-types', views.PermissionTypeViewSet)
 router.register(r'emprunts', views.EmpruntViewSet)
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include('rest_framework.urls', namespace='rest_framework')),

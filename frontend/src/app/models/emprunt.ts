@@ -1,6 +1,6 @@
 import { Site } from "./site";
 import { Utilisateur } from "./utilisateur";
-import { Vehicule } from "./Vehicule";
+import { Vehicule } from "./vehicule";
 
 export class Emprunt{
     public Id: number;

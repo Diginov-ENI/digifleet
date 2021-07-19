@@ -15,7 +15,7 @@ class SiteSerializer(serializers.ModelSerializer):
         )
 
 class VehiculeSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', required=False, allow_blank=True)
+    Id = serializers.IntegerField(source='id', required=False)
     Immatriculation = serializers.CharField(source='immatriculation')
     Modele = serializers.CharField(source='modele')
     Marque = serializers.CharField(source='marque')

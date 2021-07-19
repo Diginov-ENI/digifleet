@@ -92,6 +92,30 @@
                   </span>
                 </button>
               </ng-template>
+              <ng-template
+                [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_update') && connectedUser.hasPermissionByCodeName('utilisateur_retrieve')">
+                <div *ngIf="connectedUser.Id == utilisateur.Id;then thenBlock else elseBlock"></div>
+                <ng-template #thenBlock>
+                  <div matTooltip="Vous ne pouvez pas modifier vos permissions.">
+                    <button class="button-list" mat-stroked-button disabled
+                      matTooltip="Modifier les permissions utilisateur">
+                      <span class="mat-button-wrapper">
+                        <span class="material-icons">vpn_key</span>
+                      </span>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <button class="button-list" mat-stroked-button
+                    [routerLink]="['../liste-utilisateur/utilisateur/permissions', utilisateur.Id]"
+                    matTooltip="Modifier les permissions utilisateur">
+                    <span class="mat-button-wrapper">
+                      <span class="material-icons">vpn_key</span>
+                    </span>
+                  </button>
+                </ng-template>
+              </ng-template>
+
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_destroy')">
                 <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(utilisateur)"
                   matTooltip="Supprimer un utilisateur" id="btnDeleteUtilisateur">

@@ -1,0 +1,79 @@
+<div class="wrapper-component">
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="7">
+            <ion-row class="ion-justify-content-between">
+                <ion-col class="ion-no-padding">
+                    <h1 *ngIf="!this.form.controls.Id.value">Ajout d'un vehicule</h1>
+                    <h1 *ngIf="this.form.controls.Id.value">Modification d'un vehicule</h1>
+                </ion-col>
+            </ion-row>
+        </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="5">
+            <form [formGroup]="form">
+                <input type="hidden" formControlName="Id">
+
+                    <mat-form-field>
+                        <input matInput type="text" minlength="4" maxLength="50" placeholder="Immatriculation *" formControlName="Immatriculation"
+                            id="textImmatriculation">
+                        <mat-error
+                            *ngIf="form.controls.Immatriculation.errors && (form.controls.Immatriculation.dirty || form.controls.Immatriculation.touched)">
+                            <span *ngIf="form.controls.Immatriculation.errors.required">L'immatriculation doit être renseignée.</span>
+                            <span *ngIf="form.controls.Immatriculation.errors.onlyWhitespace">Ne doit pas contenir d'espace.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="text" minlength="2" maxLength="50" placeholder="Modele *" formControlName="Modele"
+                            id="textModele" autocomplete="off">
+                        <mat-error
+                            *ngIf="form.controls.Modele.errors && (form.controls.Modele.dirty || form.controls.Modele.touched)">
+                            <span *ngIf="form.controls.Modele.errors.required">Le modele doit être renseigné.</span>
+                            <span *ngIf="form.controls.Modele.errors.WhitespaceStartOrEnd">Ne doit pas commencer ou terminer par un espace.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="text" minlength="2" maxLength="50" placeholder="Marque *" formControlName="Marque"
+                            id="textMarque" autocomplete="off">
+                        <mat-error
+                            *ngIf="form.controls.Marque.errors && (form.controls.Marque.dirty || form.controls.Marque.touched)">
+                            <span *ngIf="form.controls.Marque.errors.required">La marque doit être renseignée.</span>
+                            <span *ngIf="form.controls.Marque.errors.WhitespaceStartOrEnd">Ne doit pas commencer ou terminer par un espace.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="text" minlength="2" maxLength="50" placeholder="Couleur *" formControlName="Couleur"
+                            id="textCouleur" autocomplete="off">
+                        <mat-error
+                            *ngIf="form.controls.Couleur.errors && (form.controls.Couleur.dirty || form.controls.Couleur.touched)">
+                            <span *ngIf="form.controls.Couleur.errors.required">La couleur doit être renseignée.</span>
+                            <span *ngIf="form.controls.Couleur.errors.WhitespaceStartOrEnd">Ne doit pas commencer ou terminer par un espace.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="number" placeholder="Nb place *" formControlName="NbPlace"
+                            id="textNbPlace" autocomplete="off">
+                        <mat-error
+                            *ngIf="form.controls.NbPlace.errors && (form.controls.NbPlace.dirty || form.controls.NbPlace.touched)">
+                            <span *ngIf="form.controls.NbPlace.errors.required">Le nombre de places doit être renseigné.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+            
+                <div class="group-button-stick-right">
+                    <button  mat-raised-button color="accent" type="button" routerLink="/" id="btnAnnuler">
+                        <span>Annuler</span>
+                    </button>
+                
+                    <button mat-raised-button color="primary" type="button" (click)="sauver()" id="btnSauver">
+                        <span>Valider</span>
+                    </button>
+                </div>
+            </form>
+        </ion-col>
+    </ion-row>
+</div>
