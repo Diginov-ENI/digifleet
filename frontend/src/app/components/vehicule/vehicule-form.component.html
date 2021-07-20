@@ -3,8 +3,8 @@
         <ion-col size-xl="7">
             <ion-row class="ion-justify-content-between">
                 <ion-col class="ion-no-padding">
-                    <h1 *ngIf="!this.form.controls.Id.value">Ajout d'un vehicule</h1>
-                    <h1 *ngIf="this.form.controls.Id.value">Modification d'un vehicule</h1>
+                    <h1 *ngIf="!this.form.controls.Id.value" class="titre-page">Ajout d'un vehicule</h1>
+                    <h1 *ngIf="this.form.controls.Id.value" class="titre-page">Modification d'un vehicule</h1>
                 </ion-col>
             </ion-row>
         </ion-col>
@@ -62,10 +62,18 @@
                             <span *ngIf="form.controls.NbPlace.errors.required">Le nombre de places doit être renseigné.</span>
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field >
+                        <mat-label>Site *</mat-label>
+                        <mat-select id="inputSite" formControlName="Site">
+                            <mat-option *ngFor="let site of sites" [value]="site.Id">
+                            {{site.Libelle}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
             
                 <div class="group-button-stick-right">
-                    <button  mat-raised-button color="accent" type="button" routerLink="/" id="btnAnnuler">
+                    <button  mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-vehicule" id="btnAnnuler">
                         <span>Annuler</span>
                     </button>
                 

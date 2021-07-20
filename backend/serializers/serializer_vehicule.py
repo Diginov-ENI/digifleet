@@ -4,8 +4,8 @@ from backend.models.model_site import Site
 from django.shortcuts import get_object_or_404
 
 class SiteSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id')
-    Libelle = serializers.CharField(source='libelle', read_only=True)
+    Id = serializers.IntegerField(source='id')
+    Libelle = serializers.CharField(source='libelle', read_only=True, required=False)
 
     class Meta:
         model = Site

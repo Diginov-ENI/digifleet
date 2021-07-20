@@ -19,7 +19,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     LastLogin = serializers.CharField(source='last_login', required=False, allow_blank=True, default=None)
     IsSuperuser = serializers.BooleanField(source='is_superuser', required=False, default=False)
     UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
-    DirectUserPermissions = PermissionSerializer(source='user_permissions', many=True,required=False)
+    DirectUserPermissions = PermissionSerializer(source='user_permissions', many=True, required=False)
     Groups = GroupSerializer(source='groups',required=False, many=True)
 
     class Meta:
