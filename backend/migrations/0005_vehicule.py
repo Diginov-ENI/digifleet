@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0005_vehicule_permissions'),
+        ('backend', '0004_site_permissions'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Vehicule',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, unique=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('immatriculation', models.CharField(max_length=50)),
                 ('modele', models.CharField(max_length=50)),
                 ('marque', models.CharField(max_length=30)),

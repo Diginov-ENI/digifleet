@@ -1,0 +1,128 @@
+<div class="wrapper-component">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size-xl="8">
+      <ion-row class="ion-justify-content-between">
+        <ion-col class="ion-no-padding">
+          <h1 class="titre-page">Emprunts</h1>
+        </ion-col>
+        <ion-col class="ion-no-padding">
+          <div class="button-list-top-container">
+            <button class="button-list color-accent" mat-stroked-button routerLink="emprunt"
+              matTooltip="Ajouter un emprunt" id="btnAjoutEmprunt">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">add</span>
+              </span>
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;">
+        <mat-card-title>{{emprunt.Conducteur.Nom}} {{emprunt.Conducteur.Prenom}} </mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip-list aria-label="dates">
+            <mat-icon aria-hidden="false" aria-label="dates" class="icon">event</mat-icon>
+            Du <mat-chip disableRipple >{{ emprunt.DateDebut | date:format }}</mat-chip> au <mat-chip disableRipple>{{ emprunt.DateFin | date:format }}</mat-chip>
+          </mat-chip-list>
+        </mat-card-subtitle>
+          <mat-divider></mat-divider>
+        <mat-card-content> 
+          <mat-expansion-panel style="margin-top:30px;">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <span>
+                  <mat-icon aria-hidden="false" aria-label="destination">place</mat-icon>
+                  Vers {{ emprunt.Destination }} ({{ listeStatut[emprunt.Statut]}})
+                </span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+ 
+            <!--
+            <ion-row>
+              <ion-col size="12">
+                <mat-icon aria-hidden="false" aria-label="site">track_changes</mat-icon>
+                Etat de la demande :
+                <stepper-statut
+                  [emprunt]="emprunt"
+                  [listeStatut]="listeStatut">
+                </stepper-statut> 
+              </ion-col>
+            </ion-row>
+            -->
+
+            <mat-divider></mat-divider>
+
+            <ion-row>
+              <ion-col size="12">
+                <mat-icon aria-hidden="false" aria-label="passagers">group</mat-icon>
+                Passagers :
+                <div *ngIf="emprunt.Passagers.length < 1">Aucun passagers</div>
+                <ul #elseBlock>
+                  <li *ngFor="let Passager of emprunt.Passagers">{{ Passager.Nom }} {{ Passager.Prenom }}</li>
+                </ul>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size-md="6" size-xs="12">
+                <mat-icon aria-hidden="false" aria-label="site" >directions_car</mat-icon>
+                Véhicule de
+                <span *ngIf="emprunt.Type == 'F'">fonction</span>
+                <span *ngIf="emprunt.Type == 'S'">service</span>
+                <span *ngIf="emprunt.Vehicule">
+                  - <a [routerLink]="['../liste-vehicule/vehicule/', emprunt.Vehicule.Id]">{{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }}</a>
+                </span>
+              </ion-col>
+              
+              <ion-col size-md="6" size-xs="12">
+                  <mat-icon aria-hidden="false" aria-label="site">location_city</mat-icon>
+                  Site : {{ emprunt.Site.Libelle }}
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <mat-icon aria-hidden="false" aria-label="commentaire">chat</mat-icon>
+                Commentaire : 
+                <br/>
+                <mat-form-field appearance="outline" style="padding-bottom:0px;">
+                  <textarea matInput cdkTextareaAutosize disabled >{{ emprunt.Commentaire }}</textarea>
+                </mat-form-field>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                  <mat-chip-list aria-label="dateDemande">
+                  <mat-icon aria-hidden="false" aria-label="dateDemande">access_time</mat-icon>
+                    Demande déposée le <mat-chip disableRipple >{{ emprunt.DateDemande | date:format }}</mat-chip>
+                  </mat-chip-list>
+              </ion-col>
+            </ion-row>
+
+            <!-- Modifier une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin) -->
+            <mat-action-row>
+              <emprunt-actions
+                [emprunt]="emprunt"
+                [listeStatut]="listeStatut"
+                [connectedUser]="connectedUser"
+                [openConfirmDeleteDialog]="openConfirmDeleteDialog">
+              </emprunt-actions> 
+            </mat-action-row>
+          </mat-expansion-panel>
+        </mat-card-content>
+        <mat-card-actions>
+        </mat-card-actions>
+      </mat-card>
+      
+      <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+
+      <div *ngIf="emprunts?.length < 0"
+        class="bloc-aucune-donnee">
+        <p>Aucune demande à afficher.</p>
+      </div>
+
+    </ion-col>
+  </ion-row>
+</div>

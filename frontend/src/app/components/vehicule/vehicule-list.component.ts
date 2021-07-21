@@ -1,15 +1,16 @@
-import { Component, OnInit, HostListener, ViewChild, Inject } from '@angular/core';
-import { NodeWithI18n } from '@angular/compiler';
+import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
-import { Vehicule } from 'src/app/models/Vehicule';
-import {MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Vehicule } from 'src/app/models/vehicule';
+import { Utilisateur } from 'src/app/models/utilisateur';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router} from '@angular/router';
-import { first } from 'rxjs/operators';
-import { Utilisateur } from 'src/app/models/utilisateur';
+import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+
 
 @Component({
   selector: 'vehicule-list',
@@ -17,18 +18,23 @@ import { Utilisateur } from 'src/app/models/utilisateur';
   styleUrls : ['vehicule-list.scss'],
 })
 
-export class VehiculeListComponent implements OnInit{
+export class VehiculeListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public connectedUser: Utilisateur;
   vehicules: Vehicule[];
   vehicule: Vehicule;
   dataSource = new MatTableDataSource();
-  tableColumns = ['immatriculation', 'modele', 'marque', 'couleur', 'nb_place', 'etat', 'actions'];
+  tableColumns: string[] = ['immatriculation', 'modele', 'marque', 'couleur', 'nbPlace', 'etat', 'actions'];
 
   nbColumnsAffiche = 6;
 
-  constructor(private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog,private authService: AuthService,private router: Router,) {}
+  constructor(
+    private _vehiculeBackendService: VehiculeBackendService, 
+    public matDialog: MatDialog, 
+    private authService: AuthService,
+    private _snackBar: MatSnackBar,
+  ) {}
 
   ngOnInit(){
     this.authService.getUser().subscribe(user => this.connectedUser = user);
@@ -38,61 +44,80 @@ export class VehiculeListComponent implements OnInit{
 
   getVehicules() {
     this._vehiculeBackendService.getVehicules().subscribe((response => {
-        this.vehicules = response;
-        this.dataSource = new MatTableDataSource(response);
+      if(response.IsSuccess){
+        this.vehicules = response.Data;
+        this.dataSource = new MatTableDataSource(response.Data);
         this.dataSource.paginator = this.paginator;
-    }))
-  }
-
-  getVehiculeById(id){
-    this._vehiculeBackendService.getVehicule(id).subscribe((response => {
-      this.vehicule = response;
-    }))
-  }
-
-  deleteVehicule(id){
-    this._vehiculeBackendService.deleteVehicule(id).subscribe(() => {
-      this.getVehicules();
-    })
-  }
-
-  archiveVehicule(id){
-    this._vehiculeBackendService.getVehicule(id).subscribe((response => {
-      this.vehicule = response;
-      let object:object = {
-        'id' : id,
-        'is_active' : !this.vehicule.is_active
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
-      this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
-        this.getVehicules();
-        this.router.navigate(['Digifleet/liste-vehicule']);
-      });
-    }));
+    }))
   }
 
-  openConfirmDeleteDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmDeleteDialogComponentVehicule);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.deleteVehicule(id);
+  deleteVehicule(id) {
+    this._vehiculeBackendService.deleteVehicule(id).subscribe(res => {
+      if(res.IsSuccess) {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Véhicule supprimé avec succès.'));
+        this.getVehicules();
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
       }
     });
   }
 
-  openConfirmArchiveDialog(id){
-    const dialogRef = this.matDialog.open(ConfirmArchiveDialogComponentVehicule);
+  archiverDesarchiverVehicule(vehicule: Vehicule){
+      let object:object = {
+        'Id' : vehicule.Id,
+        'IsActive' : !vehicule.IsActive
+      };
+
+    this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
+      if (res.IsSuccess) {
+        this.getVehicules();
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(
+          false, res.Data.IsActive ? 'Véhicule activé avec succès.' : 'Véhicule archivé avec succès.'));
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
+    });
+  }
+
+  openConfirmDeleteDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: 'Confirmation suppression',
+        libConfirmation: `Souhaitez-vous supprimer le véhicule immatriculé "${vehicule.Immatriculation}" ?`,
+        libBouton: 'Supprimer'
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteVehicule(vehicule.Id);
+      }
+    });
+  }
+
+    openConfirmArchiveDialog(vehicule: Vehicule) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: vehicule.IsActive ? 'Archiver un véhicule' : 'Activer un véhicule',
+        libConfirmation: vehicule.IsActive ? `Souhaitez-vous archiver le véhicule immatriculé "${vehicule.Immatriculation}" ?`
+          : `Souhaitez-vous activer le véhicule immatriculé "${vehicule.Immatriculation}" ?`,
+        libBouton: vehicule.IsActive ? 'Archiver' : 'Activer'
+      }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.archiveVehicule(id);
+      if (result) {
+        this.archiverDesarchiverVehicule(vehicule);
       }
     });
   }
 
   @HostListener('window:resize', ['$event'])
   private onResize(event?) {
-    /*if (window.innerWidth < 420) {
+    if (window.innerWidth < 420) {
       this.nbColumnsAffiche = 3;
 
     } else if (window.innerWidth < 520) {
@@ -102,28 +127,6 @@ export class VehiculeListComponent implements OnInit{
       this.nbColumnsAffiche = 5;
     } else {
       this.nbColumnsAffiche = 6;
-    }*/
+    }
   }
-
-
-}
-
-@Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './dialogs/confirm-delete-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-
-
-export class ConfirmDeleteDialogComponentVehicule {
-
-}
-
-@Component({
-  selector: 'confirm-archive-dialog',
-  templateUrl: './dialogs/confirm-archive-dialogVehicule.component.html',
-  styleUrls : ['vehicule-list.scss'],
-})
-export class ConfirmArchiveDialogComponentVehicule {
-
 }

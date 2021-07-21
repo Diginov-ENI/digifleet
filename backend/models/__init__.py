@@ -4,3 +4,4 @@
 from .model_vehicule import Vehicule
 from .model_utilisateur import Utilisateur
 from .model_site import Site
+from .model_emprunt import Emprunt

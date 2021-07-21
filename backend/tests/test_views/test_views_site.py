@@ -14,7 +14,10 @@ class SiteTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
+        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True)
+        self.admin.set_password("mdp")
+        self.admin.save()
+
         self.site_nantes = Site.objects.create(libelle='ENI Nantes')
         self.site_rennes = Site.objects.create(libelle='ENI Rennes')
 
@@ -27,7 +30,7 @@ class SiteTestCase(APITestCase):
         response = self.client.get(url)
 
         self.assertContains(response, self.site_nantes.libelle, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data['Data']), 2)
 
     def test_list_should_throw_401(self):
         url = reverse('site-list')
@@ -47,7 +50,7 @@ class SiteTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data['Data'], serializer.data)
 
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.admin)
@@ -70,8 +73,8 @@ class SiteTestCase(APITestCase):
         response = self.client.post(url, json_new_site, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Libelle'], 'ENI Niort')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data['Data']['Libelle'], 'ENI Niort')
+        self.assertIsNot(response.data['Data']['Id'], None)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
@@ -93,11 +96,12 @@ class SiteTestCase(APITestCase):
         }
         url = reverse('site-list')
 
-        with self.assertRaises(FieldError):
-            self.client.post(url, json_existing_site, format='json')
+        response = self.client.post(url, json_existing_site, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['IsSuccess'], False)
 
     # update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test__update(self):
+    def test_update(self):
         self.client.force_login(self.admin)
 
         new_libelle = 'newLibelle'
@@ -109,8 +113,8 @@ class SiteTestCase(APITestCase):
         response = self.client.put(url, json_update_site, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Libelle'], new_libelle)
-        self.assertEqual(response.data['Id'], str(self.site_nantes.id))
+        self.assertEqual(response.data['Data']['Libelle'], new_libelle)
+        self.assertEqual(response.data['Data']['Id'], self.site_nantes.id)
     
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):

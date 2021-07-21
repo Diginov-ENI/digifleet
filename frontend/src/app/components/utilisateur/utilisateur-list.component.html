@@ -32,7 +32,7 @@
         <ng-container matColumnDef="prenom">
           <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> Prénom
           </th>
-          <td [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
+          <td mat-cell [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'" *matCellDef="let utilisateur">
             {{utilisateur.Prenom}}</td>
         </ng-container>
 
@@ -92,6 +92,30 @@
                   </span>
                 </button>
               </ng-template>
+              <ng-template
+                [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_update') && connectedUser.hasPermissionByCodeName('utilisateur_retrieve')">
+                <div *ngIf="connectedUser.Id == utilisateur.Id;then thenBlock else elseBlock"></div>
+                <ng-template #thenBlock>
+                  <div matTooltip="Vous ne pouvez pas modifier vos permissions.">
+                    <button class="button-list" mat-stroked-button disabled
+                      matTooltip="Modifier les permissions utilisateur">
+                      <span class="mat-button-wrapper">
+                        <span class="material-icons">vpn_key</span>
+                      </span>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <button class="button-list" mat-stroked-button
+                    [routerLink]="['../liste-utilisateur/utilisateur/permissions', utilisateur.Id]"
+                    matTooltip="Modifier les permissions utilisateur">
+                    <span class="mat-button-wrapper">
+                      <span class="material-icons">vpn_key</span>
+                    </span>
+                  </button>
+                </ng-template>
+              </ng-template>
+
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_destroy')">
                 <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(utilisateur)"
                   matTooltip="Supprimer un utilisateur" id="btnDeleteUtilisateur">
@@ -111,6 +135,7 @@
       <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
+      
       <div *ngIf="dataSource == null || dataSource?.filteredData == null ||dataSource?.filteredData?.length == 0"
         class="bloc-aucune-donnee">
         <p>Aucun utilisateur à afficher.</p>

@@ -1,0 +1,16 @@
+<mat-card class="permissions-type">
+    <h3>
+        {{name.charAt(0).toUpperCase() + name.slice(1)}}
+        <span class="spacer"></span>
+        <mat-checkbox (change)="setAllType($event.checked)" [checked]="completed"></mat-checkbox>
+    </h3>
+    <mat-divider></mat-divider>
+    <ion-row class="permissions-list">
+        <ion-col sizeXs="12" size-sm="6" size-xl="4" *ngFor="let permission of type.permissions;">
+            <mat-checkbox (change)="setPermission(permission.data.Id,$event.checked)" [checked]="permission.completed">
+                {{permission.data.Name}}
+            </mat-checkbox>
+
+        </ion-col>
+    </ion-row>
+</mat-card>

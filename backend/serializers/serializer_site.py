@@ -2,7 +2,7 @@ from rest_framework import serializers
 from backend.models.model_site import Site
 
 class SiteSerializer(serializers.ModelSerializer):
-    Id = serializers.CharField(source='id', required=False, allow_blank=True)
+    Id = serializers.IntegerField(source='id', read_only=True, required=False)
     Libelle = serializers.CharField(source='libelle', required=True)
 
     class Meta:

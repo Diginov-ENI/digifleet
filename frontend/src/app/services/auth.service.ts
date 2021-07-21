@@ -73,8 +73,9 @@ export class AuthService {
 
     if(user === null){
       this.logout();
+    }else{
+      this.currentUserSubject.next(utilisateur);
     }
-    this.currentUserSubject.next(utilisateur);
   }
 
   public refreshUserData(){

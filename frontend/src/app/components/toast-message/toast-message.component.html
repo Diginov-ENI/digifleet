@@ -2,7 +2,7 @@
     <div class="toast-body">
         <div class="toast-icon">
             <span *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="material-icons is-error">
-                highlight_off
+                error
             </span>
 
             <span *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="material-icons is-success">
@@ -11,16 +11,16 @@
         </div>
         <div class="toast-message">
             <div *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="toast-title">
-                {{DigiUtils.ETypeToast.Erreur.Libelle}}
+                {{ DigiUtils.ETypeToast.Erreur.Libelle }}
             </div>
             <div *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="toast-title">
-                {{DigiUtils.ETypeToast.Success.Libelle}}
+                {{ DigiUtils.ETypeToast.Success.Libelle }}
             </div>
             <div *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="toast-content">
-                {{ data?.libMessageToast === null ? "L'action s'est déroulée avec succès." : data?.libMessageToast}}
+                {{ !data?.libMessageToast ? "L'action s'est déroulée avec succès." : data?.libMessageToast}}
             </div>
             <div *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="toast-content">
-                {{ data?.libMessageToast === null ? "Une erreur est survenue." : data?.libMessageToast}}
+                {{ !data?.libMessageToast ? "Une erreur est survenue." : data?.libMessageToast}}
             </div>
         </div>
     </div>

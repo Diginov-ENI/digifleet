@@ -34,7 +34,7 @@ $color-accent: #c2185b;
 $color-background: #303030;
 $color-background-wrapper: #424242;
 $color-text-titre: #FFFFFF;
-$color-error: #b90909;
+$color-error: #ba2f2f;
 $color-success: #4caf50;
 $color-warning: #ff9800;
 $color-info: #2196f3;
@@ -87,6 +87,11 @@ digifleet-home{
     .wrapper-component{
         margin: 20px 5px;
     }
+}
+
+mat-icon {
+    margin-right:4px;
+    vertical-align: middle;
 }
 
 /* Début CSS des listes */
@@ -175,6 +180,7 @@ mat-dialog-container {
 /* Fin CSS des modales */
 /* Début CSS snackbar / toast */
 .mat-snack-bar-container{
+    width: unset !important;
     background-color: $color-background-wrapper;
     color: $color-text-titre;
     padding: min(15px,1vw) !important;

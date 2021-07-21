@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SiteBackendService } from 'src/app/backendservices/site.backendservice';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { Site } from 'src/app/models/site';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
 
 @Component({
   selector: 'site-form',
@@ -13,21 +16,12 @@ export class SiteFormComponent implements OnInit {
   site: Site;
   form;
 
-  ProfilsSite = [{
-    id: 1,
-    valeur: 'Tous les droits'
-  },
-  {
-    id: 2,
-    valeur: 'Back office'
-  }
-  ]
-
   constructor(
     private _siteBackendService: SiteBackendService,
     private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
   ) {
     const siteId = this.route.snapshot.paramMap.get('id');
     if (siteId)
@@ -51,29 +45,43 @@ export class SiteFormComponent implements OnInit {
     if (!this.site.Id) {
       this.site.Id = undefined;
       this._siteBackendService.addSite(this.site).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-site']);
+        if (res.IsSuccess) {
+          this.router.navigate(['Digifleet/liste-site']);
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Site ajouté avec succès.'));
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     } else {
-      let object:object = {
-        'Id' : this.site.Id,
-        'Libelle' : this.site.Libelle,
+      let object: object = {
+        'Id': this.site.Id,
+        'Libelle': this.site.Libelle,
       }
 
       this._siteBackendService.updateSite(object).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-site']);
+        if(res.IsSuccess) {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Site modifié avec succès.'));
+          this.router.navigate(['Digifleet/liste-site']);
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     }
   }
 
   chargerSite(id) {
     this._siteBackendService.getSite(id).subscribe(res => {
-      this.site = new Site();
-      this.site = res;
-      this.itemToForm(this.site);
+      if (res.IsSuccess) {
+        this.site = new Site();
+        this.site = res.Data;
+        this.itemToForm(this.site);
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
     });
   }
 
-  itemToForm(site: Site){
+  itemToForm(site: Site) {
     this.form.controls.Id.setValue(site.Id);
     this.form.controls.Libelle.setValue(site.Libelle);
   }

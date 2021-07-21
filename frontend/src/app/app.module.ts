@@ -19,20 +19,36 @@ import { AlertComponent } from './components/alert/alert.component';
 import { AuthService} from './services/auth.service';
 import { AuthGuard } from './services/authGuard.service';
 import { VehiculeBackendService } from './backendservices/vehicule.backendservice';
-import { ConfirmDeleteDialogComponentVehicule, VehiculeListComponent } from './components/vehicule/vehicule-list.component';
-import { ConfirmArchiveDialogComponentVehicule } from './components/vehicule/vehicule-list.component';
+import { VehiculeListComponent } from './components/vehicule/vehicule-list.component';
 import { AuthInterceptor } from './http-interceptors/authInterceptor';
 
 import { UtilisateurFormComponent } from './components/utilisateur/utilisateur-form.component';
 import { UtilisateurSecuriteComponent } from './components/utilisateur/utilisateur-securite.component';
 import { UtilisateurListComponent } from './components/utilisateur/utilisateur-list.component';
 import { UtilisateurBackendService } from './backendservices/utilisateur.backendservice';
+
 import { SiteFormComponent } from './components/site/site-form.component';
 import { SiteListComponent } from './components/site/site-list.component';
 import { SiteBackendService } from './backendservices/site.backendservice';
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
+
+import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
+import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
+import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
+import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
+
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 import { ToastHelperComponent } from './components/toast-message/toast-message.component';
+import { GroupeBackendService } from './backendservices/groupe.backendservice';
+import { GroupeListComponent} from './components/groupe/groupe-list.component';
+import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
+import { GroupeFormComponent } from './components/groupe/groupe-form.component';
+import { PermissionTypeBackendService } from './backendservices/permissiontype.backendservice';
+import { UtilisateurChips } from './components/groupe/utilisateur-chips/utilisateur-chips.component';
+import { GroupeChips } from './components/utilisateur/groupe-chips/groupe-chips.component';
+import { PermissionTypeComponent } from './components/permission/permission-type.component';
+import { PermissionFormComponent } from './components/permission/permission-form.component';
+import { UtilisateurPermissionComponent } from './components/utilisateur/utilisateur-permission/utilisateur-permission.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -42,20 +58,33 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
   declarations: [
     AppComponent,
     UtilisateurListComponent,
-    ConfirmDeleteDialogComponentVehicule,
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
+    VehiculeFormComponent,
+    VehiculeListComponent,
     ConnexionFormComponent,
     AlertComponent,
     VehiculeListComponent,
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
+    UtilisateurChips,
+    GroupeChips,
     SiteListComponent,
     SiteFormComponent,
-    VehiculeComponent,
-    ConfirmArchiveDialogComponentVehicule,
+    GroupeListComponent,
+    GroupeFormComponent,
+    PermissionTypeComponent,
+    PermissionFormComponent,
+    ConfirmDeleteGroupeDialogComponent,
+    AlertComponent,
+    UtilisateurPermissionComponent,
+    SiteListComponent,
+    SiteFormComponent,
+    EmpruntListComponent,
+    EmpruntFormComponent,
+    EmpruntActions,
     AlertComponent,
     DialogConfirmComponent,
     ToastHelperComponent,
@@ -83,6 +112,9 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     UtilisateurBackendService,
     SiteBackendService,
+    GroupeBackendService,
+    PermissionTypeBackendService,
+    EmpruntBackendService,
     AuthService,
     AuthGuard,
     VehiculeBackendService,

@@ -53,16 +53,6 @@ export class UtilisateurListComponent implements OnInit {
     }))
   }
 
-  getUtilisateurById(id) {
-    this._utilisateurBackendService.getUtilisateur(id).subscribe((response => {
-      if (response.IsSuccess) {
-        this.utilisateur = response.Data;
-      } else {
-        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
-      }
-    }))
-  }
-
   deleteUtilisateur(id) {
     this._utilisateurBackendService.deleteUtilisateur(id).subscribe((res => {
       if (res.IsSuccess) {
@@ -78,7 +68,7 @@ export class UtilisateurListComponent implements OnInit {
     const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
         titre: 'Confirmation suppression',
-        libConfirmation: `Souhaitez vous supprimer l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
+        libConfirmation: `Souhaitez-vous supprimer l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
         libBouton: 'Supprimer'
       }
     });

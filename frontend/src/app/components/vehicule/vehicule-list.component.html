@@ -20,56 +20,61 @@
         </ion-col>
       </ion-row>
 
-      <table mat-table [dataSource]="vehicules">
+      <table *ngIf="dataSource?.filteredData?.length > 0" mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="immatriculation">
-          <th mat-header-cell *matHeaderCellDef> Immatriculation </th>
-          <td mat-cell *matCellDef="let vehicule"> {{vehicule.immatriculation}} </td>
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 3 ? 'none' : 'table-cell'"> Immatriculation </th>
+          <td mat-cell *matCellDef="let vehicule" [style.display]="nbColumnsAffiche < 3 ? 'none' : 'table-cell'"> 
+          {{vehicule.Immatriculation}} </td>
         </ng-container>
 
         <ng-container matColumnDef="modele">
-          <th mat-header-cell *matHeaderCellDef> Modèle </th>
-          <td mat-cell *matCellDef="let vehicule"> {{vehicule.modele}} </td>
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'"> Modèle </th>
+          <td mat-cell *matCellDef="let vehicule" [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'"> 
+          {{vehicule.Modele}} </td>
         </ng-container>
 
         <ng-container matColumnDef="marque">
-          <th mat-header-cell *matHeaderCellDef> Marque </th>
-          <td mat-cell *matCellDef="let vehicule"> {{vehicule.marque}} </td>
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> Marque </th>
+          <td mat-cell *matCellDef="let vehicule" [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> 
+          {{vehicule.Marque}} </td>
         </ng-container>
 
         <ng-container matColumnDef="couleur">
-          <th mat-header-cell *matHeaderCellDef> Couleur </th>
-          <td mat-cell *matCellDef="let vehicule"> {{vehicule.couleur}} </td>
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 6 ? 'none' : 'table-cell'"> Couleur </th>
+          <td mat-cell *matCellDef="let vehicule" [style.display]="nbColumnsAffiche < 6 ? 'none' : 'table-cell'"> 
+          {{vehicule.Couleur}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="nb_place">
-          <th mat-header-cell *matHeaderCellDef> Nombre de places </th>
-          <td mat-cell *matCellDef="let vehicule"> {{vehicule.nb_place}} </td>
+        <ng-container matColumnDef="nbPlace">
+          <th mat-header-cell *matHeaderCellDef [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> Nombre de places </th>
+          <td mat-cell *matCellDef="let vehicule" [style.display]="nbColumnsAffiche < 4 ? 'none' : 'table-cell'"> 
+          {{vehicule.NbPlace}} </td>
         </ng-container>
         <ng-container matColumnDef="etat">
           <th mat-header-cell *matHeaderCellDef id="headerEtat">État</th>
           <td mat-cell *matCellDef="let vehicule" id="cellEtat">
-            <span class="material-icons green" *ngIf="vehicule.is_active"  matTooltip="Actif"  >circle     </span>
-            <span class="material-icons red"   *ngIf="!vehicule.is_active" matTooltip="Inactif">hide_source</span>
+            <span class="material-icons green" *ngIf="vehicule.IsActive"  matTooltip="Actif"  >circle     </span>
+            <span class="material-icons red"   *ngIf="!vehicule.IsActive" matTooltip="Inactif">hide_source</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> Actions </th>
           <td mat-cell *matCellDef="let vehicule"> 
-            <button class="button-list" mat-stroked-button (click)="openConfirmArchiveDialog(vehicule.id)"
+            <button class="button-list" mat-stroked-button (click)="openConfirmArchiveDialog(vehicule)"
               matTooltip="Changer l'état du véhicule" id="btnActifObsoleteVehicule">
               <span class="mat-button-wrapper">
                 <span class="material-icons">hourglass_empty</span>
               </span>
             </button>
             <button class="button-list" mat-stroked-button
-              [routerLink]="['../liste-vehicule/vehicule/', vehicule.id]"
+              [routerLink]="['../liste-vehicule/vehicule/', vehicule.Id]"
               matTooltip="Modifier un véhicule">
               <span class="mat-button-wrapper">
                 <span class="material-icons">edit</span>
               </span>
             </button>
-            <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(vehicule.id)"
+            <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(vehicule)"
               matTooltip="Supprimer un vehicule" id="btnDeleteVehicule">
               <span class="mat-button-wrapper">
                 <span class="material-icons">delete</span>
@@ -79,14 +84,17 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-        <tr mat-row *matRowDef="let rowData; columns: tableColumns"></tr>
-
-        
-        
+        <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
       </table>
 
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
+
+      <div *ngIf="dataSource == null || dataSource?.filteredData == null || dataSource?.filteredData?.length == 0"
+        class="bloc-aucune-donnee">
+        <p>Aucun véhicule à afficher.</p>
+      </div>
 
     </ion-col>
   </ion-row>

@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { Groupe } from 'src/app/models/groupe';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { AuthService } from 'src/app/services/auth.service';
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { GroupeChips } from './groupe-chips/groupe-chips.component';
 
 @Component({
   selector: 'utilisateur-form',
@@ -17,17 +19,11 @@ import { ToastHelperComponent } from '../toast-message/toast-message.component';
 export class UtilisateurFormComponent implements OnInit {
   utilisateur: Utilisateur;
   form;
+  private connectedUser: Utilisateur = null;
+  groupeDisabled = false;
+  groupeTooltip = null;
 
-  ProfilsUtilisateur = [{
-    id: 1,
-    valeur: 'Tous les droits'
-  },
-  {
-    id: 2,
-    valeur: 'Back office'
-  }
-  ]
-
+  @ViewChild('groupesChips') groupesChips: GroupeChips;
   constructor(
     private _utilisateurBackendService: UtilisateurBackendService,
     private router: Router,
@@ -42,6 +38,10 @@ export class UtilisateurFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.getUser().subscribe(user => {
+      this.connectedUser = user
+      this.loadDisabled()
+    });
     this.form = this.formBuilder.group({
       Id: [''],
       Username: ['', Validators.required],
@@ -62,6 +62,16 @@ export class UtilisateurFormComponent implements OnInit {
 
     this.form.controls.Nom.setValidators([Validators.required,
     this.noWhitespaceStartEndValidator()]);
+
+  }
+
+  loadDisabled() {
+    this.groupeDisabled = this.connectedUser && typeof this.utilisateur !== 'undefined' && this.utilisateur.Id === this.connectedUser.Id;
+    if (this.groupeDisabled) {
+      this.groupeTooltip = "Vous ne pouvez pas modifier vos groupes."
+    } else {
+      this.groupeTooltip = null;
+    }
   }
 
   sauver() {
@@ -69,7 +79,7 @@ export class UtilisateurFormComponent implements OnInit {
 
     if (!this.utilisateur.Id) {
       this.utilisateur.Id = undefined;
-      this.utilisateur.Groups = undefined;
+      this.utilisateur.Groups = this.getSelectedGroupes();
       this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
         if (res.IsSuccess) {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur ajouté avec succès.'));
@@ -84,7 +94,8 @@ export class UtilisateurFormComponent implements OnInit {
         'Username': this.utilisateur.Username,
         'Email': this.utilisateur.Email,
         'Nom': this.utilisateur.Nom,
-        'Prenom': this.utilisateur.Prenom
+        'Prenom': this.utilisateur.Prenom,
+        'Groups': this.getSelectedGroupes()
       }
 
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
@@ -103,14 +114,21 @@ export class UtilisateurFormComponent implements OnInit {
     }
   }
 
+  getSelectedGroupes(): Groupe[] {
+    return this.groupesChips.getSelectedGroupes();
+  }
+  
   chargerUtilisateur(id) {
     this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
       if (res.IsSuccess) {
         this.utilisateur = res.Data;
         this.itemToForm(this.utilisateur);
+        this.groupesChips.setSelectedGroupes(this.utilisateur.Groups)
+        this.loadDisabled()
       } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
       }
+
     });
   }
 
