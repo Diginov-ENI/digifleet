@@ -55,6 +55,8 @@ class UtilisateurViewSet(viewsets.ViewSet):
         partial = kwargs.pop('partial', False)
         user = get_object_or_404(queryset, pk=pk)
         context = {'request': self.request}
+        
+        self.check_object_permissions(request, user)
         serializer = UtilisateurSerializer(user, data=request.data, partial=partial,context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
