@@ -192,6 +192,9 @@ mat-dialog-container {
         border-left: 15px solid $color-success;
     }
 }
+.mat-snack-bar-handset{
+    display: contents !important;   
+}
 
 .toast-wrapper {
     display: inline-flex;
