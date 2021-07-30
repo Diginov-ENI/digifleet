@@ -6,6 +6,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'utilisateur-list',
@@ -16,7 +19,7 @@ import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.compone
 export class UtilisateurListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  private connectedUser: Utilisateur = null;
+  public connectedUser: Utilisateur = null;
   utilisateurs: Utilisateur[];
   utilisateur: Utilisateur;
   dataSource = new MatTableDataSource();
@@ -28,7 +31,9 @@ export class UtilisateurListComponent implements OnInit {
     private _utilisateurBackendService: UtilisateurBackendService,
     public matDialog: MatDialog,
     private authService: AuthService,
-  ) {}
+    private _snackBar: MatSnackBar,
+  ) {
+  }
 
   ngOnInit() {
     this.authService.getUser().subscribe(user => this.connectedUser = user);
@@ -38,29 +43,32 @@ export class UtilisateurListComponent implements OnInit {
 
   getUtilisateurs() {
     this._utilisateurBackendService.getUtilisateurs().subscribe((response => {
-      this.utilisateurs = response;
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
-    }))
-  }
-
-  getUtilisateurById(id) {
-    this._utilisateurBackendService.getUtilisateur(id).subscribe((response => {
-      this.utilisateur = response;
+      if (response.IsSuccess) {
+        this.utilisateurs = response.Data;
+        this.dataSource = new MatTableDataSource(this.utilisateurs);
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
+      }
     }))
   }
 
   deleteUtilisateur(id) {
-    this._utilisateurBackendService.deleteUtilisateur(id).subscribe(() => {
-      this.getUtilisateurs();
-    })
+    this._utilisateurBackendService.deleteUtilisateur(id).subscribe((res => {
+      if (res.IsSuccess) {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur supprimé avec succès.'));
+        this.getUtilisateurs();
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
+    }));
   }
 
   openConfirmDeleteDialog(utilisateur: Utilisateur) {
     const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
         titre: 'Confirmation suppression',
-        libConfirmation: `Souhaitez vous supprimer l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
+        libConfirmation: `Souhaitez-vous supprimer l'utilisateur "${utilisateur?.Nom} ${utilisateur?.Prenom}" ?`,
         libBouton: 'Supprimer'
       }
     });
@@ -80,9 +88,14 @@ export class UtilisateurListComponent implements OnInit {
     };
 
     if (!utilisateur?.IsActive) {
-      this._utilisateurBackendService.updateUtilisateur(object).subscribe(() => {
-        this.getUtilisateurs();
-      });
+      this._utilisateurBackendService.updateUtilisateur(object).subscribe((res => {
+        if (res.IsSuccess) {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur activé avec succès.'));
+          this.getUtilisateurs();
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
+      }));
     } else {
       const dialogRef = this.matDialog.open(DialogConfirmComponent, {
         data: {
@@ -94,9 +107,14 @@ export class UtilisateurListComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(hasConfirmation => {
         if (hasConfirmation) {
-          this._utilisateurBackendService.updateUtilisateur(object).subscribe(() => {
-            this.getUtilisateurs();
-          });
+          this._utilisateurBackendService.updateUtilisateur(object).subscribe((res => {
+            if (res.IsSuccess) {
+              this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur désactivé avec succès.'));
+              this.getUtilisateurs();
+            } else {
+              this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+            }
+          }));
         }
       });
     }
@@ -106,10 +124,8 @@ export class UtilisateurListComponent implements OnInit {
   private onResize(event?) {
     if (window.innerWidth < 420) {
       this.nbColumnsAffiche = 3;
-
     } else if (window.innerWidth < 520) {
       this.nbColumnsAffiche = 4;
-
     } else if (window.innerWidth < 800) {
       this.nbColumnsAffiche = 5;
     } else {

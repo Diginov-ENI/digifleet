@@ -38,6 +38,7 @@ import { EmpruntBackendService } from './backendservices/emprunt.backendservice'
 
 import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { ToastHelperComponent } from './components/toast-message/toast-message.component';
 import { GroupeBackendService } from './backendservices/groupe.backendservice';
 import { GroupeListComponent} from './components/groupe/groupe-list.component';
 import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
@@ -86,6 +87,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     EmpruntActions,
     AlertComponent,
     DialogConfirmComponent,
+    ToastHelperComponent,
   ],
   entryComponents: [],
   imports: [

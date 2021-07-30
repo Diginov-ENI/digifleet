@@ -23,14 +23,14 @@ class PermissionViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Permission.objects.all()
         serializer = PermissionSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = Permission.objects.all()
         permission = get_object_or_404(queryset, pk=pk)
         serializer = PermissionSerializer(permission)
         self.check_object_permissions(request, serializer)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
     
     def get_success_headers(self, data):
         try:

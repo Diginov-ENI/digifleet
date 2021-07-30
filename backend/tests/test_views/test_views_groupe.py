@@ -47,7 +47,7 @@ class UtilisateurTestCase(APITestCase):
 
         response = self.client.get(url)
         self.assertContains(response, self.group_backoffice, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["Data"]), 2)
 
     def test_list_should_throw_403(self):
         self.client.force_login(self.user1)
@@ -68,9 +68,9 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)    
-        self.assertEqual(len(response.data["Utilisateurs"]), 1)
-        self.assertEqual(len(response.data["Permissions"]), 1)
+        self.assertEqual(response.data["Data"], serializer.data)    
+        self.assertEqual(len(response.data["Data"]["Utilisateurs"]), 1)
+        self.assertEqual(len(response.data["Data"]["Permissions"]), 1)
 
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
@@ -99,8 +99,8 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.post(url, json_new_groupe, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Name'], 'newGroupe')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data["Data"]['Name'], 'newGroupe')
+        self.assertIsNot(response.data["Data"]['Id'], None)
 
     def test_create_should_throw_403(self):
         self.client.force_login(self.user1)
@@ -132,8 +132,8 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.patch(url, json_update_group, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Name'], new_name)
-        self.assertEqual(response.data['Id'], self.group_conducteur.id)
+        self.assertEqual(response.data["Data"]['Name'], new_name)
+        self.assertEqual(response.data["Data"]['Id'], self.group_conducteur.id)
 
     def test_partial_update_add_permission(self):
         self.client.force_login(self.user1)
@@ -151,8 +151,8 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.patch(url, json_update_group, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Permissions'], [serializerPerm.data])
-        self.assertEqual(len(response.data['Permissions']), 1)
+        self.assertEqual(response.data["Data"]['Permissions'], [serializerPerm.data])
+        self.assertEqual(len(response.data["Data"]['Permissions']), 1)
 
     def test_partial_update_add_permission_should_throw_403(self):
         self.client.force_login(self.user1)
@@ -186,8 +186,8 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.patch(url, json_update_group, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['Utilisateurs']), 1)
-        self.assertEqual(response.data['Utilisateurs'][0]['Id'], serializerUser.data['Id'])
+        self.assertEqual(len(response.data["Data"]['Utilisateurs']), 1)
+        self.assertEqual(response.data["Data"]['Utilisateurs'][0]['Id'], serializerUser.data['Id'])
 
     def test_partial_update_add_utilisateur_should_throw_403(self):
         self.client.force_login(self.user1)

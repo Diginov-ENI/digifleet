@@ -17,7 +17,7 @@ class VehiculeViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)        
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Vehicule.objects.all()
@@ -26,25 +26,25 @@ class VehiculeViewSet(viewsets.ViewSet):
         serializer = VehiculeSerializer(vehicule, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def list(self, request):
         queryset = Vehicule.objects.all().order_by('id')
         serializer = VehiculeSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = Vehicule.objects.all()
         vehicule = get_object_or_404(queryset, pk=pk)
         serializer = VehiculeSerializer(vehicule)
         self.check_object_permissions(request, vehicule)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None, *args, **kwargs):
         queryset = Vehicule.objects.all()
         vehicule = get_object_or_404(queryset, pk=pk)
         vehicule.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True

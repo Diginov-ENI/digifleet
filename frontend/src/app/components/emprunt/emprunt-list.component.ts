@@ -53,12 +53,6 @@ export class EmpruntListComponent implements OnInit {
     }))
   }
 
-  getEmpruntById(id) {
-    this._empruntBackendService.getEmprunt(id).subscribe((response => {
-      this.emprunt = response;
-    }))
-  }
-
   deleteEmprunt(id) {
     this._empruntBackendService.deleteEmprunt(id).subscribe(() => {
       if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){

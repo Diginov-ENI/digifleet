@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
-import { VehiculeListComponent } from '../components/vehicule/vehicule-list.component';
 import { Vehicule } from '../models/vehicule';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { DigiResult } from "../models/digiresult";
 
 @Injectable()
 export class VehiculeBackendService {
@@ -22,34 +22,34 @@ export class VehiculeBackendService {
      * @param vehicule 
      * @return : {Observable}
      */
-    addVehicule(vehicule: Vehicule): Observable<Vehicule> {
+    addVehicule(vehicule: Vehicule): Observable<DigiResult<Vehicule>> {
         let stringifyItem = JSON.stringify(vehicule);
-        return this._httpClient.post<Vehicule>(this._apiname, stringifyItem, this._httpOptions);
+        return this._httpClient.post<DigiResult<Vehicule>>(this._apiname, stringifyItem, this._httpOptions);
     }
 
     /**
      * Modifier un vehicule
      * @param vehicule 
      */
-    updateVehicule(vehicule: object): Observable<Vehicule> {
+    updateVehicule(vehicule: object): Observable<DigiResult<Vehicule>> {
         let stringifyItem = JSON.stringify(vehicule);
-        return this._httpClient.patch<Vehicule>(this._apiname + vehicule['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<DigiResult<Vehicule>>(this._apiname + vehicule['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
     * Obtenir les vehicules
     * @returns : Observable<Vehicule[]>
     */
-    getVehicules(): Observable<Vehicule[]> {
-        return this._httpClient.get<Vehicule[]>(this._apiname);
+    getVehicules(): Observable<DigiResult<Vehicule[]>> {
+        return this._httpClient.get<DigiResult<Vehicule[]>>(this._apiname);
     }
 
     /**
      * Obtenir un vehicule
      * @param id 
      */
-    getVehicule(id): Observable<Vehicule> {
-        return this._httpClient.get<Vehicule>(this._apiname + id);
+    getVehicule(id): Observable<DigiResult<Vehicule>> {
+        return this._httpClient.get<DigiResult<Vehicule>>(this._apiname + id);
     }
     
     /**
@@ -58,7 +58,7 @@ export class VehiculeBackendService {
      * @param idVehicule 
      * @returns 
      */
-    deleteVehicule(idVehicule) {
-        return this._httpClient.delete(this._apiname + idVehicule, this._httpOptions);
+    deleteVehicule(idVehicule): Observable<DigiResult<boolean>> {
+        return this._httpClient.delete<DigiResult<boolean>>(this._apiname + idVehicule, this._httpOptions);
     }
 }

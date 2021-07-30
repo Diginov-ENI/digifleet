@@ -23,20 +23,20 @@ class GroupeViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Group.objects.all().order_by('id')
         serializer = GroupSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = Group.objects.all()
         groupe = get_object_or_404(queryset, pk=pk)
         serializer = GroupSerializer(groupe)
         self.check_object_permissions(request, groupe)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = GroupSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if Group.objects.filter(name__exact=serializer.validated_data['name']):
-            raise FieldError # TODO : add specific exception with message
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : "Un groupe existe déjà avec le nom \"" + serializer.validated_data['name'] + "\"."}, status=status.HTTP_200_OK)
 
         serializer.save()
 
@@ -49,7 +49,7 @@ class GroupeViewSet(viewsets.ViewSet):
 
 
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Group.objects.all()
@@ -80,7 +80,7 @@ class GroupeViewSet(viewsets.ViewSet):
 
         group = Group.objects.get(id=serializer.data['Id'])
         groupSeril = GroupSerializer(group)
-        return Response(groupSeril.data)
+        return Response(data= { 'IsSuccess': True, 'Data': groupSeril.data }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
@@ -91,7 +91,7 @@ class GroupeViewSet(viewsets.ViewSet):
         group = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, group)
         group.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
     
     def get_success_headers(self, data):
         try:

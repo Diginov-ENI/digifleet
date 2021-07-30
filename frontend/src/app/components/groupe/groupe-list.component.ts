@@ -1,11 +1,14 @@
-import { Component, OnInit, HostListener, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GroupeBackendService } from 'src/app/backendservices/groupe.backendservice';
 import { Groupe } from 'src/app/models/groupe';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDeleteGroupeDialogComponent } from './dialogs/confirm-delete-groupe-dialog.component';
 import { AuthService } from 'src/app/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 
 @Component({
   selector: 'groupe-list',
@@ -24,33 +27,38 @@ export class GroupeListComponent implements OnInit {
   nbColumnsAffiche = 2;
 
   constructor(
-    private _groupeBackendService: GroupeBackendService, 
+    private _groupeBackendService: GroupeBackendService,
     public matDialog: MatDialog,
-    private authService: AuthService
-    ) { }
+    private authService: AuthService,
+    private _snackBar: MatSnackBar,
+  ) { }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user=>this.connectedUser = user);
+    this.authService.getUser().subscribe(user => this.connectedUser = user);
     this.getGroupes();
   }
 
   getGroupes() {
     this._groupeBackendService.getGroupes().subscribe((response => {
-      this.groupes = response;
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
-    }))
-  }
-
-  getGroupeById(id) {
-    this._groupeBackendService.getGroupe(id).subscribe((response => {
-      this.groupe = response;
+      if (response.IsSuccess) {
+        this.groupes = response.Data;
+        this.dataSource = new MatTableDataSource(response.Data);
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
+      }
     }))
   }
 
   deleteGroupe(id) {
-    this._groupeBackendService.deleteGroupe(id).subscribe(() => {
-      this.getGroupes();
+    this._groupeBackendService.deleteGroupe(id).subscribe(res => {
+      if (res.IsSuccess) {
+        this.getGroupes();
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Groupe supprimé avec succès.'));
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
+      
     })
   }
 

@@ -39,7 +39,7 @@ export class UtilisateurChips implements OnInit{
     }
   ngOnInit(): void {
     this._utilisateurBackendService.getUtilisateurs().subscribe((response => {
-      response.map( user => this.allUsers.push(new Utilisateur(user)))
+      response.Data.map( user => this.allUsers.push(new Utilisateur(user)))
       this.filteredUsers = this.userCtrl.valueChanges.pipe(
         startWith(null),
         map((user: string | null) => this._filter(user)));
@@ -65,9 +65,6 @@ export class UtilisateurChips implements OnInit{
           input.value = '';
         }
       }
-  
-      
-  
       this.userCtrl.setValue(null);
     }
   

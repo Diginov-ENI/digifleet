@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { PermissionType } from "../models/permission_type";
+import { DigiResult } from "../models/digiresult";
 
 @Injectable()
 export class PermissionTypeBackendService {
@@ -18,19 +19,17 @@ export class PermissionTypeBackendService {
 
     /**
     * Obtenir les types de permission
-    * @returns : Observable<Groupe[]>
+    * @returns : Observable<PermissionType[]>
     */
-    getPermissionTypes(): Observable<PermissionType[]> {
-        return this._httpClient.get<PermissionType[]>(this._apiname);
+    getPermissionTypes(): Observable<DigiResult<PermissionType[]>> {
+        return this._httpClient.get<DigiResult<PermissionType[]>>(this._apiname);
     }
 
     /**
      * Obtenir un groupe
      * @param idGroupe 
      */
-     getPermissionType(idPermissionType): Observable<PermissionType> {
-        return this._httpClient.get<PermissionType>(this._apiname + idPermissionType);
+     getPermissionType(idPermissionType): Observable<DigiResult<PermissionType>> {
+        return this._httpClient.get<DigiResult<PermissionType>>(this._apiname + idPermissionType);
     }
-    
-    
 }
