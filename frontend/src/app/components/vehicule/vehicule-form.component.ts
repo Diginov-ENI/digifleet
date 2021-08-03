@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators, ReactiveFormsModule  } from '@angular/forms';
+import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { Vehicule } from 'src/app/models/vehicule';
 import { SiteBackendService } from 'src/app/backendservices/site.backendservice';
 import { Site } from 'src/app/models/site';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
 
 @Component({
   selector: 'vehicule-form',
@@ -24,6 +27,7 @@ export class VehiculeFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private _snackBar: MatSnackBar,
   ) {
     const vehiculeId = this.route.snapshot.paramMap.get('id');
     if (vehiculeId)
@@ -44,16 +48,16 @@ export class VehiculeFormComponent implements OnInit {
     });
 
     this.form.controls.Immatriculation.setValidators([Validators.required,
-      this.noWhitespaceStartEndValidator()]);
+    this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.Modele.setValidators([Validators.required,
-      this.noWhitespaceStartEndValidator()]);
+    this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.Marque.setValidators([Validators.required,
-      this.noWhitespaceStartEndValidator()]);
+    this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.Couleur.setValidators([Validators.required,
-      this.noWhitespaceStartEndValidator()]);
+    this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.NbPlace.setValidators([Validators.required]);
 
@@ -74,7 +78,12 @@ export class VehiculeFormComponent implements OnInit {
       this.vehicule.Id = undefined;
       this.vehicule.Site = site;
       this._vehiculeBackendService.addVehicule(this.vehicule).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-vehicule']);
+        if (res.IsSuccess) {
+          this.router.navigate(['Digifleet/liste-vehicule']);
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Véhicule ajouté avec succès.'));
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     } else {
       let object: object = {
@@ -88,20 +97,29 @@ export class VehiculeFormComponent implements OnInit {
       }
 
       this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-vehicule']);
+        if (res.IsSuccess) {
+          this.router.navigate(['Digifleet/liste-vehicule']);
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Véhicule modifié avec succès.'));
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     }
   }
 
   chargerVehicule(id) {
+    this.vehicule = new Vehicule();
     this._vehiculeBackendService.getVehicule(id).subscribe(res => {
-      this.vehicule = new Vehicule();
-      this.vehicule = res;
-      this.itemToForm(this.vehicule);
+      if (res.IsSuccess) {
+        this.vehicule = res.Data;
+        this.itemToForm(this.vehicule);
+      } else {
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+      }
     });
   }
 
-  itemToForm(vehicule: Vehicule){
+  itemToForm(vehicule: Vehicule) {
     this.form.controls.Id.setValue(vehicule.Id);
     this.form.controls.Immatriculation.setValue(vehicule.Immatriculation);
     this.form.controls.Modele.setValue(vehicule.Modele);

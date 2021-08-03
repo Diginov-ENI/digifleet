@@ -30,35 +30,37 @@ class UtilisateurViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Utilisateur.objects.all().order_by('id')
         serializer = UtilisateurSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = Utilisateur.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UtilisateurSerializer(user)
         self.check_object_permissions(request, user)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = UtilisateurSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         if Utilisateur.objects.filter(email__exact=serializer.validated_data['email']):
-            raise FieldError # TODO : add specific exception with message
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : "Un compte existe déjà avec l'adresse E-Mail \"" + serializer.validated_data['email'] + "\"."}, status=status.HTTP_200_OK)
 
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Utilisateur.objects.all()
         partial = kwargs.pop('partial', False)
         user = get_object_or_404(queryset, pk=pk)
         context = {'request': self.request}
+        
+        self.check_object_permissions(request, user)
         serializer = UtilisateurSerializer(user, data=request.data, partial=partial,context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
@@ -69,7 +71,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
         queryset = Utilisateur.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
 
     def get_success_headers(self, data):
         try:

@@ -15,7 +15,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     Username = serializers.CharField(source='username')
     Nom = serializers.CharField(source='nom')
     Prenom = serializers.CharField(source='prenom')
-    IsActive = serializers.BooleanField(source='is_active', required=False, default=False)
+    IsActive = serializers.BooleanField(source='is_active', required=False, default=True)
     LastLogin = serializers.CharField(source='last_login', required=False, allow_blank=True, default=None)
     IsSuperuser = serializers.BooleanField(source='is_superuser', required=False, default=False)
     UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
@@ -104,7 +104,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
             for permission in permissions_data:
                 permissions.append(get_object_or_404(Permission.objects.all(), pk=permission['id']))
             instance.user_permissions.set(permissions)
-
+        
         instance.save()
 
         return instance

@@ -30,25 +30,30 @@ export class UtilisateurPermissionComponent implements OnInit {
     }
     chargerUtilisateur(id) {
         this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
-            this.utilisateur = new Utilisateur(res);
-            this.loadChecked();
+            if(res.IsSuccess) {
+                this.utilisateur = new Utilisateur(res.Data);
+                this.loadChecked();
+            }
+            
         });
     }
     loadChecked() {
         this.permissionFrom.loadChecked();
     }
     sauver() {
-        var object= {
-            "DirectUserPermissions" : this.permissionFrom.getCheckedPermissions(),
-            "Id" : this.utilisateur.Id
+        var object = {
+            "DirectUserPermissions": this.permissionFrom.getCheckedPermissions(),
+            "Id": this.utilisateur.Id
         }
         this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
-            this.authService.getUser().pipe(first()).subscribe(user => {
-                if (res.Id === user.Id) {
-                    this.authService.refreshUserData();
-                }
-                this.router.navigate(['Digifleet/liste-utilisateur']);
-            });
+            if (res.IsSuccess) {
+                this.authService.getUser().pipe(first()).subscribe(user => {
+                    if (res.Data.Id === user.Id) {
+                        this.authService.refreshUserData();
+                    }
+                    this.router.navigate(['Digifleet/liste-utilisateur']);
+                });
+            }
         });
     }
 }

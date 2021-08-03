@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Groupe } from '../models/groupe';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { DigiResult } from "../models/digiresult";
 
 @Injectable()
 export class GroupeBackendService {
@@ -14,50 +15,49 @@ export class GroupeBackendService {
         })
     };
 
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) { }
 
     /**
      * Ajouter un groupe
      * @param groupe 
      * @return : {Observable}
      */
-    addGroupe(groupe: Groupe): Observable<Groupe> {
+    addGroupe(groupe: Groupe): Observable<DigiResult<Groupe>> {
         let stringifyItem = JSON.stringify(groupe);
-        return this._httpClient.post<Groupe>(this._apiname, stringifyItem, this._httpOptions);
+        return this._httpClient.post<DigiResult<Groupe>>(this._apiname, stringifyItem, this._httpOptions);
     }
 
     /**
      * Modifier un groupe
      * @param groupe 
      */
-    updateGroupe(groupe: object): Observable<Groupe> {
+    updateGroupe(groupe: object): Observable<DigiResult<Groupe>> {
         let stringifyItem = JSON.stringify(groupe);
-        return this._httpClient.put<Groupe>(this._apiname + groupe['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.put<DigiResult<Groupe>>(this._apiname + groupe['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
-    * Obtenir les groupe
+    * Obtenir les groupes
     * @returns : Observable<Groupe[]>
     */
-    getGroupes(): Observable<Groupe[]> {
-        return this._httpClient.get<Groupe[]>(this._apiname);
+    getGroupes(): Observable<DigiResult<Groupe[]>> {
+        return this._httpClient.get<DigiResult<Groupe[]>>(this._apiname);
     }
 
     /**
      * Obtenir un groupe
      * @param idGroupe 
      */
-    getGroupe(idGroupe): Observable<Groupe> {
-        return this._httpClient.get<Groupe>(this._apiname + idGroupe);
+    getGroupe(idGroupe): Observable<DigiResult<Groupe>> {
+        return this._httpClient.get<DigiResult<Groupe>>(this._apiname + idGroupe);
     }
-    
+
     /**
      * Suppression d'un groupe par son id
-     * 
      * @param idGroupe 
-     * @returns 
+     * @returns : Observable<boolean>
      */
-    deleteGroupe(idGroupe) {
-        return this._httpClient.delete(this._apiname + idGroupe, this._httpOptions);
+    deleteGroupe(idGroupe): Observable<DigiResult<boolean>> {
+        return this._httpClient.delete<DigiResult<boolean>>(this._apiname + idGroupe, this._httpOptions);
     }
 }

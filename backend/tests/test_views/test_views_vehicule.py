@@ -56,7 +56,7 @@ class VehiculeTestCase(APITestCase):
         # On restest, cette fois ci on a le droit
         response = self.client.get(url)
         self.assertContains(response, self.voiture1.immatriculation, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data["Data"]), 3)
 
     def test_list_should_throw_401(self):
         url = reverse('vehicule-list')
@@ -87,7 +87,7 @@ class VehiculeTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
@@ -126,8 +126,8 @@ class VehiculeTestCase(APITestCase):
         response = self.client.post(url, json_new_vehicule, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Immatriculation'], 'ja-158-cv')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data["Data"]['Immatriculation'], 'ja-158-cv')
+        self.assertIsNot(response.data["Data"]['Id'], None)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
@@ -167,9 +167,9 @@ class VehiculeTestCase(APITestCase):
         response = self.client.patch(url, json_update_vehicule, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Immatriculation'], 'test')
-        self.assertEqual(response.data['Modele'], self.voiture2.modele)
-        self.assertEqual(response.data['Id'], self.voiture2.id)
+        self.assertEqual(response.data["Data"]['Immatriculation'], 'test')
+        self.assertEqual(response.data["Data"]['Modele'], self.voiture2.modele)
+        self.assertEqual(response.data["Data"]['Id'], self.voiture2.id)
 
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):

@@ -79,7 +79,7 @@ class UtilisateurTestCase(APITestCase):
 
         response = self.client.get(url)
         self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 4)
+        self.assertEqual(len(response.data["Data"]), 4)
 
     def test_list_should_throw_401(self):
         url = reverse('utilisateur-list')
@@ -109,10 +109,10 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(len(response.data["Groups"]), 1)
-        self.assertEqual(len(response.data["UserPermissions"]), 2)
-        self.assertEqual(len(response.data["DirectUserPermissions"]), 1)
+        self.assertEqual(response.data["Data"], serializer.data)
+        self.assertEqual(len(response.data["Data"]["Groups"]), 1)
+        self.assertEqual(len(response.data["Data"]["UserPermissions"]), 2)
+        self.assertEqual(len(response.data["Data"]["DirectUserPermissions"]), 1)
 
     def test_retrieve_self(self):
         """
@@ -126,7 +126,7 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_other(self):
         """
@@ -144,7 +144,7 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_should_throw_401(self):
         url = reverse('utilisateur-detail', args=[self.admin.id])
@@ -194,8 +194,8 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.post(url, json_new_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Email'], 'newUser@email')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data["Data"]['Email'], 'newUser@email')
+        self.assertIsNot(response.data["Data"]['Id'], None)
 
     def test_create_should_throw_401(self):
         json_new_user = {  
@@ -257,8 +257,9 @@ class UtilisateurTestCase(APITestCase):
         }
         url = reverse('utilisateur-list')
 
-        with self.assertRaises(FieldError):
-            self.client.post(url, json_existing_user, format='json')
+        response = self.client.post(url, json_existing_user, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['IsSuccess'], False)
 
     # partial update tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_partial_update(self):
@@ -277,9 +278,9 @@ class UtilisateurTestCase(APITestCase):
         response = self.client.patch(url, json_update_user, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['Nom'], new_name)
-        self.assertEqual(response.data['Email'], self.user2.email)
-        self.assertEqual(response.data['Id'], self.user2.id)
+        self.assertEqual(response.data["Data"]['Nom'], new_name)
+        self.assertEqual(response.data["Data"]['Email'], self.user2.email)
+        self.assertEqual(response.data["Data"]['Id'], self.user2.id)
 
     def test_partial_update_permission(self):
         self.client.force_login(self.user1)
@@ -305,9 +306,9 @@ class UtilisateurTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(len(response.data['UserPermissions']), 2)
-        self.assertEqual(len(response.data['DirectUserPermissions']), 1)
-        self.assertEqual(response.data['DirectUserPermissions'], [serializerPerm.data])
+        self.assertEqual(len(response.data["Data"]['UserPermissions']), 2)
+        self.assertEqual(len(response.data["Data"]['DirectUserPermissions']), 1)
+        self.assertEqual(response.data["Data"]['DirectUserPermissions'], [serializerPerm.data])
 
     def test_partial_update_permission_should_not_update_perm(self):
         self.client.force_login(self.user1)
@@ -334,10 +335,10 @@ class UtilisateurTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(len(response.data['UserPermissions']), 3)
-        self.assertEqual(len(response.data['DirectUserPermissions']), 2)
-        self.assertEqual(response.data['DirectUserPermissions'], [serializerPermGrp2.data,serializerPermTest.data])
-        self.assertEqual(response.data['UserPermissions'], [serializerPermGrp.data,serializerPermGrp2.data,serializerPermTest.data])
+        self.assertEqual(len(response.data["Data"]['UserPermissions']), 3)
+        self.assertEqual(len(response.data["Data"]['DirectUserPermissions']), 2)
+        self.assertEqual(response.data["Data"]['DirectUserPermissions'], [serializerPermGrp2.data,serializerPermTest.data])
+        self.assertEqual(response.data["Data"]['UserPermissions'], [serializerPermGrp.data,serializerPermGrp2.data,serializerPermTest.data])
 
     def test_partial_update_groupe(self):
         self.client.force_login(self.user1)
@@ -359,10 +360,10 @@ class UtilisateurTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(len(response.data['UserPermissions']), 1)
-        self.assertEqual(len(response.data['DirectUserPermissions']), 1)
-        self.assertEqual(len(response.data['Groups']), 1)
-        self.assertEqual(response.data['Groups'][0]['Id'], serializerGroup.data['Id'])
+        self.assertEqual(len(response.data["Data"]['UserPermissions']), 1)
+        self.assertEqual(len(response.data["Data"]['DirectUserPermissions']), 1)
+        self.assertEqual(len(response.data["Data"]['Groups']), 1)
+        self.assertEqual(response.data["Data"]['Groups'][0]['Id'], serializerGroup.data['Id'])
 
     def test_partial_update_groupe_should_not_update_groupe(self):
         self.client.force_login(self.user1)
@@ -384,11 +385,11 @@ class UtilisateurTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(len(response.data['UserPermissions']), 3)
-        self.assertEqual(len(response.data['DirectUserPermissions']), 2)
-        self.assertEqual(len(response.data['Groups']), 1)
-        self.assertNotEqual(response.data['Groups'][0]['Id'], serializerGroup.data['Id'])
-        self.assertEqual(response.data['Groups'][0]['Id'], self.group_backoffice.id)
+        self.assertEqual(len(response.data["Data"]['UserPermissions']), 3)
+        self.assertEqual(len(response.data["Data"]['DirectUserPermissions']), 2)
+        self.assertEqual(len(response.data["Data"]['Groups']), 1)
+        self.assertNotEqual(response.data["Data"]['Groups'][0]['Id'], serializerGroup.data['Id'])
+        self.assertEqual(response.data["Data"]['Groups'][0]['Id'], self.group_backoffice.id)
 
     def test_partial_update_should_throw_401(self):
         """

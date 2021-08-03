@@ -20,7 +20,7 @@
         </ion-col>
       </ion-row>
 
-      <table mat-table [dataSource]="dataSource">
+      <table *ngIf="dataSource?.filteredData?.length > 0" mat-table [dataSource]="dataSource">
         <!-- colonne Name -->
         <ng-container matColumnDef="name">
           <th [style.display]="table-cell" mat-header-cell *matHeaderCellDef> Nom du groupe
@@ -57,7 +57,7 @@
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('groupe_destroy')">
                 <div *ngIf="connectedUser.isInGroupe(groupe.Id);then thenBlock else elseBlock"></div>
                 <ng-template #thenBlock>
-                  <div  matTooltip="Vous ne pouvez pas supprimer un groupe dans lequel vous êtes.">
+                  <div matTooltip="Vous ne pouvez pas supprimer un groupe dans lequel vous êtes.">
                     <button class="button-list" mat-stroked-button disabled matTooltip="Supprimer un groupe">
                       <span class="mat-button-wrapper">
                         <span class="material-icons">delete</span>
@@ -82,9 +82,14 @@
         <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
       </table>
 
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
 
+      <div *ngIf="dataSource == null || dataSource?.filteredData == null ||dataSource?.filteredData?.length == 0"
+        class="bloc-aucune-donnee">
+        <p>Aucun groupe d'utilisateurs à afficher.</p>
+      </div>
     </ion-col>
   </ion-row>
 </div>
