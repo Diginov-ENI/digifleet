@@ -35,6 +35,7 @@ import { EmpruntFormComponent } from './components/emprunt/emprunt-form.componen
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
 import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
+import { DialogSelectVehicule } from './components/emprunt/emprunt-list.component';
 
 import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
@@ -84,6 +85,7 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     SiteFormComponent,
     EmpruntListComponent,
     EmpruntFormComponent,
+    DialogSelectVehicule,
     EmpruntActions,
     AlertComponent,
     DialogConfirmComponent,

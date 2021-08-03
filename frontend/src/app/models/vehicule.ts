@@ -1,3 +1,5 @@
+import { Site } from "./site";
+
 export class Vehicule{
     public Id: number;
     public Immatriculation: string;
@@ -6,6 +8,7 @@ export class Vehicule{
     public Couleur: string;
     public NbPlace: string;
     public IsActive: boolean;
+    public Site: Site;
 
     public constructor(init?: Partial<Vehicule>) {
         Object.assign(this, init);

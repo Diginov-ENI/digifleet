@@ -14,7 +14,7 @@ export class Emprunt{
     public Site: Site;
     public Conducteur: Utilisateur;
     public Passagers: Utilisateur[];
-    public Vehicule: Vehicule[];
+    public Vehicule: Vehicule;
 
     public constructor(init?: Partial<Emprunt>) {
         Object.assign(this, init);

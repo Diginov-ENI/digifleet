@@ -25,9 +25,9 @@ export class VehiculeListComponent implements OnInit {
   vehicules: Vehicule[];
   vehicule: Vehicule;
   dataSource = new MatTableDataSource();
-  tableColumns: string[] = ['immatriculation', 'modele', 'marque', 'couleur', 'nbPlace', 'etat', 'actions'];
+  tableColumns: string[] = ['immatriculation', 'modele', 'marque', 'couleur', 'nbPlace', 'site', 'etat', 'actions'];
 
-  nbColumnsAffiche = 6;
+  nbColumnsAffiche = 7;
 
   constructor(
     private _vehiculeBackendService: VehiculeBackendService, 

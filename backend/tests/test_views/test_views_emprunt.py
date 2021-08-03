@@ -72,7 +72,7 @@ class EmpruntTestCase(APITestCase):
 
         response = self.client.get(url)
         self.assertContains(response, self.emprunt1.destination, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["Data"]), 2)
 
     def test_list_should_throw_401(self):
         url = reverse('emprunt-list')
@@ -102,7 +102,7 @@ class EmpruntTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_as_passager(self):
         """
@@ -116,7 +116,7 @@ class EmpruntTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_other(self):
         """
@@ -135,7 +135,7 @@ class EmpruntTestCase(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_should_throw_401(self):
         url = reverse('emprunt-detail', args=[self.emprunt1.id])
@@ -188,8 +188,8 @@ class EmpruntTestCase(APITestCase):
         response = self.client.post(url, json_new_emprunt, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['Destination'], 'Le Mans')
-        self.assertIsNot(response.data['Id'], None)
+        self.assertEqual(response.data["Data"]['Destination'], 'Le Mans')
+        self.assertIsNot(response.data["Data"]['Id'], None)
 
     def test_create_should_throw_401(self):
         json_new_emprunt = {  
@@ -257,8 +257,8 @@ class EmpruntTestCase(APITestCase):
 
 
         self.assertContains(response, self.site2.id, status_code=status.HTTP_200_OK)
-        self.assertEqual(response.data['Destination'], 'Paris')
-        self.assertEqual(response.data['Id'], self.emprunt1.id)
+        self.assertEqual(response.data["Data"]['Destination'], 'Paris')
+        self.assertEqual(response.data["Data"]['Id'], self.emprunt1.id)
 
     def test_partial_update_as_conducteur(self):
         """
@@ -274,8 +274,8 @@ class EmpruntTestCase(APITestCase):
         response = self.client.patch(url, json_update_emprunt, format='json')
 
         self.assertContains(response, self.site2.id, status_code=status.HTTP_200_OK)
-        self.assertEqual(response.data['Destination'], 'Paris')
-        self.assertEqual(response.data['Id'], self.emprunt1.id)
+        self.assertEqual(response.data["Data"]['Destination'], 'Paris')
+        self.assertEqual(response.data["Data"]['Id'], self.emprunt1.id)
 
     def test_partial_update_should_throw_401(self):
         json_update_emprunt = {  

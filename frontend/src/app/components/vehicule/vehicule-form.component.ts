@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { Vehicule } from 'src/app/models/vehicule';
+import { SiteBackendService } from 'src/app/backendservices/site.backendservice';
+import { Site } from 'src/app/models/site';
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
 
 @Component({
@@ -14,10 +16,14 @@ import { ToastHelperComponent } from '../toast-message/toast-message.component';
 
 export class VehiculeFormComponent implements OnInit {
   vehicule: Vehicule;
+  sites: Site[];
+  site: Site;
   form;
 
 
-  constructor(private _vehiculeBackendService: VehiculeBackendService,
+  constructor(
+    private _vehiculeBackendService: VehiculeBackendService,
+    private _siteBackendService: SiteBackendService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
@@ -29,13 +35,16 @@ export class VehiculeFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getSites();
+
     this.form = this.formBuilder.group({
       Id: [''],
       Immatriculation: [''],
       Modele: [''],
       Marque: [''],
       Couleur: [''],
-      NbPlace: ['']
+      NbPlace: [''],
+      Site: ['']
     });
 
     this.form.controls.Immatriculation.setValidators([Validators.required,
@@ -51,13 +60,23 @@ export class VehiculeFormComponent implements OnInit {
     this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.NbPlace.setValidators([Validators.required]);
+
+    this.form.controls.Site.setValidators([Validators.required]);
+  }
+
+  getSites() {
+    this._siteBackendService.getSites().subscribe(response => {
+      this.sites = response.Data;
+    })
   }
 
   sauver() {
     this.vehicule = new Vehicule(this.form.value);
+    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined}
 
     if (!this.vehicule.Id) {
       this.vehicule.Id = undefined;
+      this.vehicule.Site = site;
       this._vehiculeBackendService.addVehicule(this.vehicule).subscribe(res => {
         if (res.IsSuccess) {
           this.router.navigate(['Digifleet/liste-vehicule']);
@@ -68,12 +87,13 @@ export class VehiculeFormComponent implements OnInit {
       });
     } else {
       let object: object = {
-        'Id': this.vehicule.Id,
-        'Immatriculation': this.vehicule.Immatriculation,
-        'Modele': this.vehicule.Modele,
-        'Marque': this.vehicule.Marque,
-        'Couleur': this.vehicule.Couleur,
-        'NbPlace': this.vehicule.NbPlace
+        'Id' : this.vehicule.Id,
+        'Immatriculation' : this.vehicule.Immatriculation,
+        'Modele' : this.vehicule.Modele,
+        'Marque' : this.vehicule.Marque,
+        'Couleur' : this.vehicule.Couleur,
+        'NbPlace' : this.vehicule.NbPlace,
+        'Site' : site,
       }
 
       this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
@@ -106,6 +126,7 @@ export class VehiculeFormComponent implements OnInit {
     this.form.controls.Marque.setValue(vehicule.Marque);
     this.form.controls.Couleur.setValue(vehicule.Couleur);
     this.form.controls.NbPlace.setValue(vehicule.NbPlace);
+    this.form.controls.Site.setValue(vehicule.Site.Id);
   }
 
   public noWhitespaceValidator(): ValidatorFn {

@@ -7,10 +7,8 @@ from rest_framework import status
 
 from backend.serializers.serializer_vehicule import VehiculeSerializer
 from backend.models.model_vehicule import Vehicule
-
-from backend.serializers.serializer_utilisateur import UtilisateurSerializer
 from backend.models.model_utilisateur import Utilisateur
-
+from backend.models.model_site import Site
 
 # Create your tests here.
 class VehiculeTestCase(APITestCase):
@@ -19,9 +17,13 @@ class VehiculeTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.voiture  = Vehicule.objects.create(immatriculation = "ja-158-cv", modele = "Clio"  ,marque = "Renault",couleur = "Noire"  , nb_place = 5)
-        self.voiture1 = Vehicule.objects.create(immatriculation = "jb-159-cv", modele = "Mégane",marque = "Renault",couleur = "Blanche", nb_place = 5)
-        self.voiture2 = Vehicule.objects.create(immatriculation = "jc-160-cv", modele = "Captur",marque = "Renault",couleur = "Vert"   , nb_place = 5)
+
+        self.site1 = Site.objects.create(libelle='ENI Nantes')
+        self.site2 = Site.objects.create(libelle='ENI Rennes')
+
+        self.voiture  = Vehicule.objects.create(immatriculation = "ja-158-cv", modele = "Clio"  ,marque = "Renault",couleur = "Noire"  , nb_place = 5, site = self.site1)
+        self.voiture1 = Vehicule.objects.create(immatriculation = "jb-159-cv", modele = "Mégane",marque = "Renault",couleur = "Blanche", nb_place = 5, site = self.site1)
+        self.voiture2 = Vehicule.objects.create(immatriculation = "jc-160-cv", modele = "Captur",marque = "Renault",couleur = "Vert"   , nb_place = 5, site = self.site2)
 
         self.client = APIClient()
         self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
@@ -36,23 +38,6 @@ class VehiculeTestCase(APITestCase):
         
         self.user2.set_password("mdp")
         self.user2.save()
- 
-
-    # Permissions tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test_api_jwt(self):
-        url = reverse('jwt_login')
-
-        resp = self.client.post(url, {'email':self.admin.email, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        resp = self.client.post(url, {'email':self.admin.username, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        resp = self.client.post(url, {'email':self.admin.email, 'password':'wrongmdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
-
-        resp = self.client.post(url, {'email':self.user2.email, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
@@ -124,6 +109,7 @@ class VehiculeTestCase(APITestCase):
             'Couleur' : 'Noire'  ,
             'NbPlace' : 5,
             'IsActive':'True',
+            'Site':  {'Id': self.site1.id},
         }
         url = reverse('vehicule-list')
 
@@ -153,6 +139,7 @@ class VehiculeTestCase(APITestCase):
             'Couleur' : 'Noire'  ,
             'NbPlace' : 5,
             'IsActive': 5  , #Wrong field
+            'Site':  {'Id': self.site1.id},
         }
         url = reverse('vehicule-list')
 
