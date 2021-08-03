@@ -60,7 +60,7 @@ export class EmpruntFormComponent implements OnInit {
   chargerEmprunt(id) {
     this._empruntBackendService.getEmprunt(id).subscribe(res => {
       this.emprunt = new Emprunt();
-      this.emprunt = res;
+      this.emprunt = res.Data;
       this.itemToForm(this.emprunt);
     });
   }

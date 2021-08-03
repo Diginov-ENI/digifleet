@@ -3,6 +3,9 @@ import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendse
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from 'src/app/services/auth.service';
 import { Utilisateur } from 'src/app/models/utilisateur';
@@ -36,7 +39,12 @@ export class EmpruntListComponent implements OnInit {
   };
   format: string = 'dd-MM-yyyy';
 
-  constructor(private _empruntBackendService: EmpruntBackendService, private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog, private authService: AuthService) { }
+  constructor(
+    private _empruntBackendService: EmpruntBackendService, 
+    private _vehiculeBackendService: VehiculeBackendService, 
+    public matDialog: MatDialog, private authService: AuthService,
+    private _snackBar: MatSnackBar,
+    ) { }
 
   ngOnInit() {
     this.authService.getUser().subscribe(user => this.connectedUser = user);
@@ -49,38 +57,58 @@ export class EmpruntListComponent implements OnInit {
 
   getEmprunts = (): void => {
     this._empruntBackendService.getEmprunts().subscribe((response => {
-      this.emprunts = response;
+      if(response.IsSuccess){
+        this.emprunts = response.Data;
+      }else{
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
+      }
     }))
   }
 
   getEmpruntsByOwner(idOwner) {
     this._empruntBackendService.getEmpruntsByOwner(idOwner).subscribe((response => {
-      this.emprunts = response;
+      if(response.IsSuccess){
+        this.emprunts = response.Data;
+      }else{
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
+      }
     }))
   }
 
   getEmpruntById(id) {
-    this._empruntBackendService.getEmprunt(id).subscribe((response => {
-      this.emprunt = response;
-    }))
+    this._empruntBackendService.getEmprunt(id).subscribe(response => {
+      if(response.IsSuccess){
+        this.emprunt = response.Data;
+      }else{
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
+      }
+    })
   }
 
   updateEmprunt = (emprunt: Emprunt): void => {
-    this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe(() => {
-      if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
-        this.getEmprunts();
+    this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe(response => {
+      if(response.IsSuccess){
+        if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+          this.getEmprunts();
+        }else{
+          this.getEmpruntsByOwner(this.connectedUser.Id);
+        }
       }else{
-        this.getEmpruntsByOwner(this.connectedUser.Id);
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
   }
 
   deleteEmprunt(id) {
-    this._empruntBackendService.deleteEmprunt(id).subscribe(() => {
-      if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
-        this.getEmprunts();
+    this._empruntBackendService.deleteEmprunt(id).subscribe(response => {
+      if(response.IsSuccess){
+        if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+          this.getEmprunts();
+        }else{
+          this.getEmpruntsByOwner(this.connectedUser.Id);
+        }
       }else{
-        this.getEmpruntsByOwner(this.connectedUser.Id);
+        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
   }
@@ -120,8 +148,10 @@ export class EmpruntListComponent implements OnInit {
 
   openSelectVehiculeDialog = (emprunt: Emprunt): void => {
     // fetch vehicules (available on this timeline + same site)
-    this._vehiculeBackendService.getAvailableVehiculesForEmprunt(emprunt.Site, emprunt.DateDebut, emprunt.DateFin).subscribe((response => {
-      this.availableVehicules = response;
+    this._vehiculeBackendService.getAvailableVehiculesForEmprunt(emprunt.Site, emprunt.DateDebut, emprunt.DateFin).subscribe(response => {
+      this.availableVehicules = response.Data;
+
+      console.log(this.availableVehicules);
 
       // Open dialog with input select vehicule
       const dialogRef = this.matDialog.open(DialogSelectVehicule, {
@@ -132,7 +162,6 @@ export class EmpruntListComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        // TODO : update emprunt with result
         if(result){
           let vehicule: Vehicule = {'Id': result, 'Immatriculation': undefined, 'Modele': undefined, 'Marque': undefined, 'Couleur': undefined, 'NbPlace': undefined, 'IsActive': undefined, 'Site': undefined};
           let object: object = {
@@ -140,16 +169,20 @@ export class EmpruntListComponent implements OnInit {
             'Statut' : 'ATTENTE_CLEF',
             'Vehicule' : vehicule,
           }
-          this._empruntBackendService.partialUpdateEmprunt(object).subscribe(() => {
-            if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
-              this.getEmprunts();
+          this._empruntBackendService.partialUpdateEmprunt(object).subscribe(response => {
+            if(response.IsSuccess){
+              if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+                this.getEmprunts();
+              }else{
+                this.getEmpruntsByOwner(this.connectedUser.Id);
+              }
             }else{
-              this.getEmpruntsByOwner(this.connectedUser.Id);
+              this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
             }
           })
         }
       });
-    }))
+    })
   }
 }
 

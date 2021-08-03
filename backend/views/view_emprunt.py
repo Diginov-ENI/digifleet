@@ -21,28 +21,28 @@ class EmpruntViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Emprunt.objects.all().order_by('-date_debut').exclude(statut='CLOTUREE')
         serializer = EmpruntSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     @action(detail=False, url_path='list-by-owner', url_name='list_by_owner')
     def list_by_owner(self, request):
         params = request.query_params
         queryset = Emprunt.objects.filter(conducteur_id=params['id']).order_by('-date_debut')
         serializer = EmpruntSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = Emprunt.objects.all()
         emprunt = get_object_or_404(queryset, pk=pk)
         serializer = EmpruntSerializer(emprunt)
         self.check_object_permissions(request, emprunt)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = EmpruntSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)    
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
         queryset = Emprunt.objects.all()
@@ -52,7 +52,7 @@ class EmpruntViewSet(viewsets.ViewSet):
         self.check_object_permissions(request, emprunt)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
@@ -64,8 +64,8 @@ class EmpruntViewSet(viewsets.ViewSet):
         emprunt = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, emprunt)
         emprunt.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-        
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+
     def get_success_headers(self, data):
         try:
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}

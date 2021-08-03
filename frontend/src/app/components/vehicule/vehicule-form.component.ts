@@ -65,9 +65,9 @@ export class VehiculeFormComponent implements OnInit {
   }
 
   getSites() {
-    this._siteBackendService.getSites().subscribe((response => {
-      this.sites = response;
-    }))
+    this._siteBackendService.getSites().subscribe(response => {
+      this.sites = response.Data;
+    })
   }
 
   sauver() {

@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Choix du véhicule</h1>
 <div mat-dialog-content>
-    <span *ngIf="(data.availableVehicules.length < 1)">
+    <span *ngIf="(data.availableVehicules && data.availableVehicules.length < 1)">
         <p>Aucun véhicule disponible pour ce site !</p>
     </span>
-    <span *ngIf="(data.availableVehicules.length > 0)">
+    <span *ngIf="(data.availableVehicules && data.availableVehicules.length > 0)">
         <p>Quel véhicule attribuer à cette demande ?</p>
         <mat-form-field >
             <mat-label>Véhicule</mat-label>

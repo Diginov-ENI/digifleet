@@ -48,13 +48,13 @@ export class VehiculeBackendService {
     * Obtenir les vehicules avec des filtres
     * @returns : Observable<Vehicule[]>
     */
-    getAvailableVehiculesForEmprunt(site, dateDebut, dateFin): Observable<Vehicule[]> {
+    getAvailableVehiculesForEmprunt(site, dateDebut, dateFin): Observable<DigiResult<Vehicule[]>> {
         let params = new HttpParams()
             .set('siteId', site.Id)
             .set('dateDebut', dateDebut)
             .set('dateFin', dateFin);
         
-        return this._httpClient.get<Vehicule[]>(this._apiname + 'filter', {params: params});
+        return this._httpClient.get<DigiResult<Vehicule[]>>(this._apiname + 'filter', {params: params});
     }
 
     /**
