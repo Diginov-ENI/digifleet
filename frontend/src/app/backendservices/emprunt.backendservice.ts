@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { EmpruntListComponent } from '../components/emprunt/emprunt-list.component';
 import { Emprunt } from '../models/emprunt';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable()
@@ -58,7 +58,10 @@ export class EmpruntBackendService {
     * @returns : Observable<Emprunt[]>
     */
     getEmpruntsByOwner(idOwner): Observable<Emprunt[]> {
-        return this._httpClient.get<Emprunt[]>(this._apiname + idOwner + '/list-by-owner');
+        let params = new HttpParams()
+            .set('id', idOwner);
+
+        return this._httpClient.get<Emprunt[]>(this._apiname + 'list-by-owner', {params: params});
     }
 
     /**

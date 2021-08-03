@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { VehiculeListComponent } from '../components/vehicule/vehicule-list.component';
 import { Vehicule } from '../models/vehicule';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable()
@@ -42,6 +42,19 @@ export class VehiculeBackendService {
     */
     getVehicules(): Observable<Vehicule[]> {
         return this._httpClient.get<Vehicule[]>(this._apiname);
+    }
+
+    /**
+    * Obtenir les vehicules avec des filtres
+    * @returns : Observable<Vehicule[]>
+    */
+    getAvailableVehiculesForEmprunt(site, dateDebut, dateFin): Observable<Vehicule[]> {
+        let params = new HttpParams()
+            .set('siteId', site.Id)
+            .set('dateDebut', dateDebut)
+            .set('dateFin', dateFin);
+        
+        return this._httpClient.get<Vehicule[]>(this._apiname + 'filter', {params: params});
     }
 
     /**

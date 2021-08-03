@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from backend.models.model_emprunt import Emprunt
 from backend.serializers.serializer_emprunt import EmpruntSerializer
 from backend.permissions.permission_emprunt import EmpruntPermission
-
+from rest_framework.reverse import reverse
 
 class EmpruntViewSet(viewsets.ViewSet):
     """
@@ -23,9 +23,10 @@ class EmpruntViewSet(viewsets.ViewSet):
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, url_path='list-by-owner')
-    def list_by_owner(self, request, pk=None):
-        queryset = Emprunt.objects.filter(conducteur_id=pk).order_by('-date_debut')
+    @action(detail=False, url_path='list-by-owner', url_name='list_by_owner')
+    def list_by_owner(self, request):
+        params = request.query_params
+        queryset = Emprunt.objects.filter(conducteur_id=params['id']).order_by('-date_debut')
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(serializer.data)
 

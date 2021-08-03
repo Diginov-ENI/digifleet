@@ -69,8 +69,12 @@
                 Véhicule de
                 <span *ngIf="emprunt.Type == 'F'">fonction</span>
                 <span *ngIf="emprunt.Type == 'S'">service</span>
+                -
                 <span *ngIf="emprunt.Vehicule">
-                  - <a [routerLink]="['../liste-vehicule/vehicule/', emprunt.Vehicule.Id]">{{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }}</a>
+                  <a *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status'))" [routerLink]="['../liste-vehicule/vehicule/', emprunt.Vehicule.Id]">{{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }} {{ emprunt.Vehicule.Couleur }} - {{ emprunt.Vehicule.Immatriculation }}</a>
+                  <span *ngIfElse>
+                    {{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }} de couleur {{ emprunt.Vehicule.Couleur }} ({{ emprunt.Vehicule.Immatriculation }})
+                  </span>
                 </span>
               </ion-col>
               
@@ -108,6 +112,7 @@
                 [connectedUser]="connectedUser"
                 [openConfirmDeleteDialog]="openConfirmDeleteDialog"
                 [openConfirmCancelDialog]="openConfirmCancelDialog"
+                [openSelectVehiculeDialog]="openSelectVehiculeDialog"
                 [updateEmprunt]="updateEmprunt">
               </emprunt-actions> 
             </mat-action-row>

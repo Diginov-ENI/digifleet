@@ -13,6 +13,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
     @Input() listeStatut;
     @Input() openConfirmDeleteDialog: (emprunt: Emprunt) => void;
     @Input() openConfirmCancelDialog: (emprunt: Emprunt) => void;
+    @Input() openSelectVehiculeDialog: (emprunt: Emprunt) => void;
     @Input() updateEmprunt: (emprunt: Emprunt) => void;
   
     constructor() {}

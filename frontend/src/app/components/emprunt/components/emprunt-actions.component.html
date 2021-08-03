@@ -12,7 +12,7 @@
 </button>
 
 <!-- Accepter une demande : si n'est pas encore acceptée ET l'utilisateur courant possède les droits de validation -->
-<button mat-raised-button color="primary" (click)="updateStatut('ATTENTE_CLEF')" *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status')) && emprunt.Statut == 'DEPOSEE'">
+<button mat-raised-button color="primary" (click)="openSelectVehiculeDialog(emprunt)" *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status')) && emprunt.Statut == 'DEPOSEE'">
     <mat-icon class="icon-light-color">check</mat-icon>
     Accepter
 </button>

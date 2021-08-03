@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from backend.models.model_vehicule import Vehicule
 from backend.serializers import VehiculeSerializer
 from backend.permissions.permission_vehicule import VehiculePermission
+from django.db.models import Q 
 
 class VehiculeViewSet(viewsets.ViewSet):
 
@@ -30,6 +31,22 @@ class VehiculeViewSet(viewsets.ViewSet):
 
     def list(self, request):
         queryset = Vehicule.objects.all().order_by('id')
+        serializer = VehiculeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, url_path='filter', url_name='list_by_filter')
+    def list_by_filter(self, request):
+        """
+        On récupère la liste de tous les véhicules disponibles avec le même site
+        """
+        params = request.query_params
+        queryset = Vehicule.objects.filter(
+            Q(site_id=params['siteId']),
+        ).exclude(
+            Q(emprunts__date_debut__lte=params['dateFin']),
+            Q(emprunts__date_fin__gte=params['dateDebut'])
+        ).order_by('id')
+
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(serializer.data)
 

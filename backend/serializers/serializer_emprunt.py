@@ -37,13 +37,17 @@ class VehiculeSerializer(serializers.ModelSerializer):
     Id = serializers.IntegerField(source='id')
     Marque = serializers.CharField(source='marque', required=False)
     Modele = serializers.CharField(source='modele', required=False)
+    Immatriculation = serializers.CharField(source='immatriculation')
+    Couleur = serializers.CharField(source='couleur')
 
     class Meta:
-        model = Utilisateur
+        model = Vehicule
         fields = (
             'Id', 
             'Marque', 
-            'Modele', 
+            'Modele',
+            'Couleur',
+            'Immatriculation',
         )
 
 class EmpruntSerializer(serializers.ModelSerializer):

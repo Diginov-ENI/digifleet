@@ -1,11 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
+import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from 'src/app/services/auth.service';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
+import { Vehicule } from 'src/app/models/vehicule';
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+
+
+import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators, ReactiveFormsModule  } from '@angular/forms';
 
 @Component({
   selector: 'emprunt-list',
@@ -19,7 +25,7 @@ export class EmpruntListComponent implements OnInit {
   private connectedUser: Utilisateur = null;
   emprunts: Emprunt[];
   emprunt: Emprunt;
-  currentStep: number;
+  availableVehicules: Vehicule[];
   listeStatut: { [key: string]: string} = {
     'DEPOSEE': 'demande déposée',
     'REFUSEE': 'demande refusée',
@@ -30,7 +36,7 @@ export class EmpruntListComponent implements OnInit {
   };
   format: string = 'dd-MM-yyyy';
 
-  constructor(private _empruntBackendService: EmpruntBackendService, public matDialog: MatDialog, private authService: AuthService) { }
+  constructor(private _empruntBackendService: EmpruntBackendService, private _vehiculeBackendService: VehiculeBackendService, public matDialog: MatDialog, private authService: AuthService) { }
 
   ngOnInit() {
     this.authService.getUser().subscribe(user => this.connectedUser = user);
@@ -111,8 +117,55 @@ export class EmpruntListComponent implements OnInit {
       }
     });
   }
+
+  openSelectVehiculeDialog = (emprunt: Emprunt): void => {
+    // fetch vehicules (available on this timeline + same site)
+    this._vehiculeBackendService.getAvailableVehiculesForEmprunt(emprunt.Site, emprunt.DateDebut, emprunt.DateFin).subscribe((response => {
+      this.availableVehicules = response;
+
+      // Open dialog with input select vehicule
+      const dialogRef = this.matDialog.open(DialogSelectVehicule, {
+        width: '250px',
+        data: {
+          availableVehicules: this.availableVehicules,
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        // TODO : update emprunt with result
+        if(result){
+          let vehicule: Vehicule = {'Id': result, 'Immatriculation': undefined, 'Modele': undefined, 'Marque': undefined, 'Couleur': undefined, 'NbPlace': undefined, 'IsActive': undefined, 'Site': undefined};
+          let object: object = {
+            'Id' : emprunt.Id,
+            'Statut' : 'ATTENTE_CLEF',
+            'Vehicule' : vehicule,
+          }
+          this._empruntBackendService.partialUpdateEmprunt(object).subscribe(() => {
+            if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+              this.getEmprunts();
+            }else{
+              this.getEmpruntsByOwner(this.connectedUser.Id);
+            }
+          })
+        }
+      });
+    }))
+  }
 }
 
-export interface DialogData {
-  emprunt: Emprunt;
+@Component({
+  selector: 'select-vehicule-dialog',
+  templateUrl: './components/select-vehicule-dialog.html',
+})
+export class DialogSelectVehicule {
+  constructor(
+    public dialogRef: MatDialogRef<DialogSelectVehicule>,
+    @Inject(MAT_DIALOG_DATA) public data: { availableVehicules: Vehicule[] }) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }
+
+
