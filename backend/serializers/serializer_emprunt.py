@@ -6,8 +6,8 @@ from backend.models.model_emprunt import Emprunt
 from backend.models.model_site import Site
 from backend.models.model_utilisateur import Utilisateur
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 from django.db.models import Q
+
 
 class SiteSerializer(serializers.ModelSerializer):
     Id = serializers.IntegerField(source='id')
@@ -123,7 +123,7 @@ class EmpruntSerializer(serializers.ModelSerializer):
             Q(date_fin__gte=validated_data['date_debut']),
             Q(conducteur_id=conducteur_data['id']),
             ).distinct().exists():
-            return Response(data= { 'IsSuccess': False, 'LibErreur' : "Ce conducteur est déjà conducteur d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
+            raise Exception("Ce conducteur est déjà conducteur d'une autre demande sur cet interval de temps.")
 
         # On récupère tous les passagers sur le meme interval de temps
         passagers_by_interval = self.list_passagers_by_interval(validated_data['date_fin'], validated_data['date_debut'])
@@ -131,14 +131,13 @@ class EmpruntSerializer(serializers.ModelSerializer):
         # --- VALIDATION ---  On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
         for passager_by_interval in passagers_by_interval:
             if passager_by_interval and passager_by_interval.filter(pk=conducteur_data['id']).exists():
-                return Response(data= { 'IsSuccess': False, 'LibErreur' : "Ce conducteur est déjà passager d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
-
+                raise Exception("Ce conducteur est déjà passager d'une autre demande sur cet interval de temps.")
 
         # --- VALIDATION ---  On vérifie qu'aucun des passagers courants ne soit associé à un autre emprunt sur le même interval temporaire en tant que passagers
         for passager_data in passagers_data:
             for passager_by_interval in passagers_by_interval:
                 if passager_by_interval and passager_by_interval.filter(pk=passager_data['id']).exists():
-                    return Response(data= { 'IsSuccess': False, 'LibErreur' : "L'un des passager est déjà passager d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
+                    raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
 
             # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
             if Emprunt.objects.filter(
@@ -146,11 +145,11 @@ class EmpruntSerializer(serializers.ModelSerializer):
                 Q(date_fin__gte=validated_data['date_debut']),
                 Q(conducteur_id=passager_data['id']),
                 ).distinct().exists():
-                return Response(data= { 'IsSuccess': False, 'LibErreur' : "Ce conducteur est déjà conduteur d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
+                raise Exception("Ce conducteur est déjà conduteur d'une autre demande sur cet interval de temps.")
 
             #  --- VALIDATION --- On vérifie que le conducteur courant ne soit pas passagers courants
             if passager_data['id'] == conducteur_data['id']:
-                return Response(data= { 'IsSuccess': False, 'LibErreur' : "Le conducteur ne peut pas être passager de sa propre demande."}, status=status.HTTP_200_OK)
+                raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
 
         # ---------- FIN VALIDATION ---------- 
        
@@ -180,7 +179,7 @@ class EmpruntSerializer(serializers.ModelSerializer):
             conducteur = get_object_or_404(Utilisateur.objects.all(), pk=conducteur_data['id'])
             instance.conducteur = conducteur
         if validated_data.get('passagers') is not None:
-            passagers_data = validated_data.pop('passagers')
+            passagers_data = validated_data.get('passagers')
             passagers = []
             for passager in passagers_data:
                 passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
@@ -193,18 +192,18 @@ class EmpruntSerializer(serializers.ModelSerializer):
             for passager in passagers:
                 for passager_by_interval in passagers_by_interval:
                     if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
-                        return Response(data= { 'IsSuccess': False, 'LibErreur' : "L'un des passager est déjà passager d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
+                        raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
                 # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
                 if Emprunt.objects.filter(
                     Q(date_debut__lte=instance.date_fin),
                     Q(date_fin__gte=instance.date_debut),
                     Q(conducteur_id=passager.id),
                     ).distinct().exists():
-                    return Response(data= { 'IsSuccess': False, 'LibErreur' : "L'un des passager déjà conducteur d'une autre demande sur cet interval de temps."}, status=status.HTTP_200_OK)
+                    raise Exception("L'un des passager déjà conducteur d'une autre demande sur cet interval de temps.")
 
                 #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
                 if passager.id == instance.conducteur.id:
-                    return Response(data= { 'IsSuccess': False, 'LibErreur' : "Le conducteur ne peut pas être passager de sa propre demande."}, status=status.HTTP_200_OK)
+                    raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
 
             # ---------- FIN VALIDATION ---------- 
             
@@ -214,12 +213,17 @@ class EmpruntSerializer(serializers.ModelSerializer):
         if validated_data.get('vehicule') is not None:
             vehicule_data = validated_data.pop('vehicule')
             vehicule = get_object_or_404(Vehicule.objects.all(), pk=vehicule_data['id'])
+            #  --- VALIDATION --- On vérifie qu'il n'y a pas plus de passagers que de places dans le véhicule
+            # nbPasagers = Emprunt.objects.filter(pk=instance.id).annotate(Count('passagers'))
+            nbPasagers = Utilisateur.objects.filter(covoits__id=instance.id).count()
+            if nbPasagers > vehicule.nb_place:
+                raise Exception("Il y a plus de passagers que le véhicule ne peut en accueillir.")
             # --- VALIDATION --- On vérifie que le véhicule n'est pas déjà associé à un autre emprunt sur le même interval temporaire
             if Emprunt.objects.filter(
                 Q(date_debut__lte=instance.date_fin),
                 Q(date_fin__gte=instance.date_debut),
                 vehicule_id=vehicule_data['id'],).distinct().exists():
-                return Response(data= { 'IsSuccess': False, 'LibErreur' : "Ce véhicule est déjà associé à un autre emprunt sur le même interval de temps."}, status=status.HTTP_200_OK)
+                raise Exception("Ce véhicule est déjà associé à un autre emprunt sur le même interval de temps.")
 
             instance.vehicule = vehicule
 

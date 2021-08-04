@@ -151,9 +151,6 @@ export class EmpruntListComponent implements OnInit {
     // fetch vehicules (available on this timeline + same site)
     this._vehiculeBackendService.getAvailableVehiculesForEmprunt(emprunt.Site, emprunt.DateDebut, emprunt.DateFin).subscribe(response => {
       this.availableVehicules = response.Data;
-
-      console.log(this.availableVehicules);
-
       // Open dialog with input select vehicule
       const dialogRef = this.matDialog.open(DialogSelectVehicule, {
         width: '250px',
@@ -172,6 +169,7 @@ export class EmpruntListComponent implements OnInit {
           }
           this._empruntBackendService.partialUpdateEmprunt(object).subscribe(response => {
             if(response.IsSuccess){
+              this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Emprunt validé avec succès.'));
               if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
                 this.getEmprunts();
               }else{

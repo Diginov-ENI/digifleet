@@ -16,10 +16,6 @@ import { ConfigMatsnackbar } from 'src/app/models/digiutils';
   export class EmpruntFilters implements OnInit {
     @Output() newEmpruntsEvent = new EventEmitter<Emprunt[]>();
     @Input() connectedUser;
-    filtreDateDebut: Date;
-    filtreDateFin: Date;
-    filtreSite: Site;
-    filtreCloturee: boolean;
     sites: Site[];
     format: string = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
     form;

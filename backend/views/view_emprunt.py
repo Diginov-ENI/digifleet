@@ -62,7 +62,10 @@ class EmpruntViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = EmpruntSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            serializer.save()
+        except Exception as e:
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : str(e)}, status=status.HTTP_200_OK)
         headers = self.get_success_headers(serializer.data)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -73,7 +76,10 @@ class EmpruntViewSet(viewsets.ViewSet):
         serializer = EmpruntSerializer(emprunt, data=request.data, partial=partial)
         self.check_object_permissions(request, emprunt)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            serializer.save()
+        except Exception as e:
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : str(e)}, status=status.HTTP_200_OK)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
