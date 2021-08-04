@@ -27,8 +27,11 @@ export class EmpruntFormComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       Id: [''],
-      //Libelle: ['', Validators.required],
-      // TODO all fields
+      date_debut: ['', Validators.required],
+      date_fin: ['', Validators.required],
+      destination : ['', Validators.required],
+      commentaire : [''],
+      type : ['', Validators.required],
     });
 
     // TODO all fields
@@ -38,17 +41,22 @@ export class EmpruntFormComponent implements OnInit {
 
   sauver() {
     this.emprunt = new Emprunt(this.form.value);
-
-    // ToDo factoriser le passage des champ vide à undefined
     if (!this.emprunt.Id) {
       this.emprunt.Id = undefined;
+      this.emprunt.Type = undefined;
+      this.emprunt.Site = undefined;
+      this.emprunt.Conducteur = undefined;
       this._empruntBackendService.addEmprunt(this.emprunt).subscribe(res => {
         this.router.navigate(['Digifleet/liste-emprunt']);
       });
     } else {
       let object:object = {
         'Id' : this.emprunt.Id,
-        // TODO all fields
+        'date_debut': this.emprunt.DateDebut,
+        'date_fin': this.emprunt.DateFin,
+        'destination': this.emprunt.Destination,
+        'commentaire': this.emprunt.Commentaire,
+        'type': this.emprunt.Type,
       }
 
       this._empruntBackendService.updateEmprunt(object).subscribe(res => {
@@ -67,7 +75,11 @@ export class EmpruntFormComponent implements OnInit {
 
   itemToForm(emprunt: Emprunt){
     this.form.controls.Id.setValue(emprunt.Id);
-    // TODO all fields
+    this.form.controls.date_debut.setValue(emprunt.DateDebut);
+    this.form.controls.date_fin.setValue(emprunt.DateFin);
+    this.form.controls.destination.setValue(emprunt.Destination);
+    this.form.controls.commentaire.setValue(emprunt.Commentaire);
+    this.form.controls.type.setValue(emprunt.Type);
   }
 
   public noWhitespaceValidator(): ValidatorFn {
