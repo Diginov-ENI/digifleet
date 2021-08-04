@@ -33,6 +33,7 @@ jobs:
       run: 
         touch ./docker/.env &&
         echo "PORT=$PORT_WEB" > ./docker/.env &&
+        echo "BACKUP_SCHEDULE=@every 0h30m00s" > ./docker/.env &&
         echo "PORT_DB=$PORT_DB" >> ./docker/.env &&
         echo "SENTRY_DSN_BACK=" >> ./config/.env &&
         echo "SENTRY_DSN_FRONT=" >> ./config/.env
