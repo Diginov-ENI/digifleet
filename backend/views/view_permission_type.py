@@ -28,14 +28,14 @@ class PermissionTypeViewSet(viewsets.ViewSet):
             if len(t['Permissions']) > 0:
                 types.append(t)
 
-        return Response(types)
+        return Response(data= { 'IsSuccess': True, 'Data': types })
 
     def retrieve(self, request, pk=None):
         queryset = ContentType.objects.all()
         permissiontype = get_object_or_404(queryset, pk=pk)
         serializer = PermissionTypeSerializer(permissiontype)
         self.check_object_permissions(request, serializer)
-        return Response(serializer.data)
+        return Response(data= { 'IsSuccess': True, 'Data': serializer.data })
     
     def get_success_headers(self, data):
         try:
