@@ -127,8 +127,8 @@
         <mat-card-actions>
         </mat-card-actions>
       </mat-card>
-      
-      <div *ngIf="emprunts?.length < 0"
+
+      <div *ngIf="!emprunts?.length"
         class="bloc-aucune-donnee">
         <p>Aucune demande à afficher.</p>
       </div>
