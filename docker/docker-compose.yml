@@ -4,6 +4,7 @@ services:
     image: postgres:13
     volumes:
       - ./database/data:/var/lib/postgresql/data/
+      - ./backup/:/backup/
     restart: always
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
@@ -109,3 +110,25 @@ services:
       POSTGRES_DB: sentry
     volumes:
       - ./sentry/postgres:/var/lib/postgresql/data
+
+  pgbackups:
+    container_name: Backup
+    image: prodrigestivill/postgres-backup-local
+    restart: always
+    volumes:
+      - ./backup:/backups
+    links:
+      - db:db
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_EXTRA_OPTS=-Z9 --schema=public --blobs
+      - SCHEDULE=${BACKUP_SCHEDULE}
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+      - HEALTHCHECK_PORT=81
