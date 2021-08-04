@@ -8,6 +8,7 @@ from backend.models.model_emprunt import Emprunt
 from backend.serializers.serializer_emprunt import EmpruntSerializer
 from backend.permissions.permission_emprunt import EmpruntPermission
 from rest_framework.reverse import reverse
+from django.db.models import Q, query
 
 class EmpruntViewSet(viewsets.ViewSet):
     """
@@ -19,7 +20,19 @@ class EmpruntViewSet(viewsets.ViewSet):
     permission_classes = (EmpruntPermission,)
     
     def list(self, request):
-        queryset = Emprunt.objects.all().order_by('-date_debut').exclude(statut='CLOTUREE')
+        params = request.query_params
+        queryset = Emprunt.objects.all().order_by('-date_debut')
+        if 'dateDebut' in params:
+            queryset = queryset.filter(Q(date_debut__gte=params['dateDebut']))
+        if 'dateFin' in params:
+            queryset = queryset.filter(Q(date_fin__lte=params['dateFin']))
+        if 'siteId' in params:
+            queryset = queryset.filter(site_id=params['siteId'])
+        if 'isCloturee' in params and params['isCloturee'] == 'true':
+            queryset = queryset.filter(statut='CLOTUREE')
+        else:
+            queryset = queryset.exclude(statut='CLOTUREE')
+        
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
@@ -27,6 +40,15 @@ class EmpruntViewSet(viewsets.ViewSet):
     def list_by_owner(self, request):
         params = request.query_params
         queryset = Emprunt.objects.filter(conducteur_id=params['id']).order_by('-date_debut')
+        if 'dateDebut' in params:
+            queryset = queryset.filter(Q(date_debut__gte=params['dateDebut']))
+        if 'dateFin' in params:
+            queryset = queryset.filter(Q(date_fin__lte=params['dateFin']))
+        if 'isCloturee' in params and params['isCloturee'] == 'true':
+            queryset = queryset.filter(statut='CLOTUREE')
+        else:
+            queryset = queryset.exclude(statut='CLOTUREE')
+        
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
