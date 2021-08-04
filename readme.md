@@ -18,6 +18,7 @@ PORT_DB=
 SENTRY_DSN_BACK=
 SENTRY_DSN_FRONT=
 FRONT_API_URL=
+BACKUP_SCHEDULE=@every 0h30m00s
 ```
 Pour **FRONT_API_URL** il faut que l'url termine avec un */*, par exemple *http://localhost:8080/api/*
 
