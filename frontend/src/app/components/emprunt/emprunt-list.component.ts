@@ -13,9 +13,6 @@ import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.compone
 import { Vehicule } from 'src/app/models/vehicule';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
-
-import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators, ReactiveFormsModule  } from '@angular/forms';
-
 @Component({
   selector: 'emprunt-list',
   templateUrl: 'emprunt-list.component.html',
@@ -83,6 +80,10 @@ export class EmpruntListComponent implements OnInit {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
+  }
+  
+  updateEmpruntsList(emprunts: Emprunt[]){
+    this.emprunts = emprunts;
   }
 
   updateEmprunt = (emprunt: Emprunt): void => {

@@ -49,17 +49,42 @@ export class EmpruntBackendService {
     * Obtenir les emprunt
     * @returns : Observable<Emprunt[]>
     */
-    getEmprunts(): Observable<DigiResult<Emprunt[]>> {
-        return this._httpClient.get<DigiResult<Emprunt[]>>(this._apiname);
+    getEmprunts(dateDebut?, dateFin?, siteId?, isCloturee?): Observable<DigiResult<Emprunt[]>> {
+        let params = new HttpParams().set('isCloturee', isCloturee);
+        if(dateDebut){
+            params = params.set('dateDebut', dateDebut);
+        }
+        if(dateFin){
+            params = params.set('dateFin', dateFin);
+        }
+        if(siteId){
+            params = params.set('siteId', siteId);
+        }
+        if(isCloturee){
+            params = params.set('isCloturee', isCloturee);
+        }
+        return this._httpClient.get<DigiResult<Emprunt[]>>(this._apiname, {params: params});
     }
 
     /**
     * Obtenir les emprunt d'un utilisateur
     * @returns : Observable<Emprunt[]>
     */
-    getEmpruntsByOwner(idOwner): Observable<DigiResult<Emprunt[]>> {
+    getEmpruntsByOwner(idOwner, dateDebut?, dateFin?, siteId?, isCloturee?): Observable<DigiResult<Emprunt[]>> {
         let params = new HttpParams()
             .set('id', idOwner);
+        if(dateDebut){
+            params = params.set('dateDebut', dateDebut);
+        }
+        if(dateFin){
+            params = params.set('dateFin', dateFin);
+        }
+        if(siteId){
+            params = params.set('siteId', siteId);
+        }
+        if(isCloturee){
+            params = params.set('isCloturee', isCloturee);
+        }
 
         return this._httpClient.get<DigiResult<Emprunt[]>>(this._apiname + 'list-by-owner', {params: params});
     }

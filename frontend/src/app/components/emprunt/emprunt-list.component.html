@@ -16,6 +16,12 @@
           </div>
         </ion-col>
       </ion-row>
+      
+      <emprunt-filters 
+        (newEmpruntsEvent)="updateEmpruntsList($event)"
+        [connectedUser]="connectedUser"
+      >
+      </emprunt-filters>
 
       <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;">
         <mat-card-title>{{emprunt.Conducteur.Nom}} {{emprunt.Conducteur.Prenom}} </mat-card-title>
