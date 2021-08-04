@@ -4,3 +4,6 @@
 from .permission_utilisateur import UtilisateurPermission
 from .permission_site import SitePermission
 from .permission_emprunt import EmpruntPermission
+from .permission_permission import PermissionPermission
+from .permission_permission_type import PermissionTypePermission
+from .permission_emprunt import EmpruntPermission

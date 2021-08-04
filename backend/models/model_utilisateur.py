@@ -63,5 +63,5 @@ class Utilisateur(AbstractBaseUser,  PermissionsMixin):
             return []
         if self.is_superuser:
             return Permission.objects.all()
-        group_ids = Group.objects.all().values_list('id', flat=True).distinct()
+        group_ids = self.groups.values_list('id', flat=True).distinct()
         return (self.user_permissions.all() | Permission.objects.filter(group__id__in=group_ids)).distinct()

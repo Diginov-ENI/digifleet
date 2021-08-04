@@ -16,6 +16,12 @@
           </div>
         </ion-col>
       </ion-row>
+      
+      <emprunt-filters 
+        (newEmpruntsEvent)="updateEmpruntsList($event)"
+        [connectedUser]="connectedUser"
+      >
+      </emprunt-filters>
 
       <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;">
         <mat-card-title>{{emprunt.Conducteur.Nom}} {{emprunt.Conducteur.Prenom}} </mat-card-title>
@@ -69,7 +75,15 @@
                 Véhicule de
                 <span *ngIf="emprunt.Type == 'F'">fonction</span>
                 <span *ngIf="emprunt.Type == 'S'">service</span>
+                -
+                <span *ngIf="emprunt.Vehicule">
+                  <a *ngIf="(connectedUser.hasPermissionByCodeName('emprunt_update_status'))" [routerLink]="['../liste-vehicule/vehicule/', emprunt.Vehicule.Id]">{{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }} {{ emprunt.Vehicule.Couleur }} - {{ emprunt.Vehicule.Immatriculation }}</a>
+                  <span *ngIfElse>
+                    {{ emprunt.Vehicule.Marque }} {{ emprunt.Vehicule.Modele }} de couleur {{ emprunt.Vehicule.Couleur }} ({{ emprunt.Vehicule.Immatriculation }})
+                  </span>
+                </span>
               </ion-col>
+              
               <ion-col size-md="6" size-xs="12">
                   <mat-icon aria-hidden="false" aria-label="site">location_city</mat-icon>
                   Site : {{ emprunt.Site.Libelle }}
@@ -102,7 +116,10 @@
                 [emprunt]="emprunt"
                 [listeStatut]="listeStatut"
                 [connectedUser]="connectedUser"
-                [openConfirmDeleteDialog]="openConfirmDeleteDialog">
+                [openConfirmDeleteDialog]="openConfirmDeleteDialog"
+                [openConfirmCancelDialog]="openConfirmCancelDialog"
+                [openSelectVehiculeDialog]="openSelectVehiculeDialog"
+                [updateEmprunt]="updateEmprunt">
               </emprunt-actions> 
             </mat-action-row>
           </mat-expansion-panel>
@@ -111,13 +128,13 @@
         </mat-card-actions>
       </mat-card>
       
-      <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
-
       <div *ngIf="emprunts?.length < 0"
         class="bloc-aucune-donnee">
         <p>Aucune demande à afficher.</p>
       </div>
+      
+      <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
 
     </ion-col>
   </ion-row>

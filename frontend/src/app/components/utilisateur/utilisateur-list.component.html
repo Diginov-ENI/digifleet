@@ -75,12 +75,25 @@
           <td mat-cell *matCellDef="let utilisateur">
             <div class="mat-button-list-container">
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_archive')">
-                <button class="button-list" mat-stroked-button (click)="ActiverDesactiverCompte(utilisateur)"
-                  matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
-                  <span class="mat-button-wrapper">
-                    <span class="material-icons">hourglass_empty</span>
-                  </span>
-                </button>
+                <div *ngIf="connectedUser.Id == utilisateur.Id;then thenBlockActive else elseBlockActive"></div>
+                <ng-template #thenBlockActive>
+                  <div matTooltip="Vous ne pouvez pas vous désactiver vous meme.">
+                  <button class="button-list" mat-stroked-button disabled
+                    matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
+                    <span class="mat-button-wrapper">
+                      <span class="material-icons">hourglass_empty</span>
+                    </span>
+                  </button>
+                  </div>
+                </ng-template>
+                <ng-template #elseBlockActive>
+                  <button class="button-list" mat-stroked-button (click)="ActiverDesactiverCompte(utilisateur)"
+                    matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
+                    <span class="mat-button-wrapper">
+                      <span class="material-icons">hourglass_empty</span>
+                    </span>
+                  </button>
+                </ng-template>
               </ng-template>
               <ng-template
                 [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_update') && connectedUser.hasPermissionByCodeName('utilisateur_retrieve')">
@@ -92,6 +105,30 @@
                   </span>
                 </button>
               </ng-template>
+              <ng-template
+                [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_update') && connectedUser.hasPermissionByCodeName('utilisateur_retrieve')">
+                <div *ngIf="connectedUser.Id == utilisateur.Id;then thenBlockPerm else elseBlockPerm"></div>
+                <ng-template #thenBlockPerm>
+                  <div matTooltip="Vous ne pouvez pas modifier vos permissions.">
+                    <button class="button-list" mat-stroked-button disabled
+                      matTooltip="Modifier les permissions utilisateur">
+                      <span class="mat-button-wrapper">
+                        <span class="material-icons">vpn_key</span>
+                      </span>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template #elseBlockPerm>
+                  <button class="button-list" mat-stroked-button
+                    [routerLink]="['../liste-utilisateur/utilisateur/permissions', utilisateur.Id]"
+                    matTooltip="Modifier les permissions utilisateur">
+                    <span class="mat-button-wrapper">
+                      <span class="material-icons">vpn_key</span>
+                    </span>
+                  </button>
+                </ng-template>
+              </ng-template>
+
               <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('utilisateur_destroy')">
                 <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(utilisateur)"
                   matTooltip="Supprimer un utilisateur" id="btnDeleteUtilisateur">

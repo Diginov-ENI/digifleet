@@ -7,10 +7,8 @@ from rest_framework import status
 
 from backend.serializers.serializer_vehicule import VehiculeSerializer
 from backend.models.model_vehicule import Vehicule
-
-from backend.serializers.serializer_utilisateur import UtilisateurSerializer
 from backend.models.model_utilisateur import Utilisateur
-
+from backend.models.model_site import Site
 
 # Create your tests here.
 class VehiculeTestCase(APITestCase):
@@ -19,9 +17,13 @@ class VehiculeTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.voiture  = Vehicule.objects.create(immatriculation = "ja-158-cv", modele = "Clio"  ,marque = "Renault",couleur = "Noire"  , nb_place = 5)
-        self.voiture1 = Vehicule.objects.create(immatriculation = "jb-159-cv", modele = "Mégane",marque = "Renault",couleur = "Blanche", nb_place = 5)
-        self.voiture2 = Vehicule.objects.create(immatriculation = "jc-160-cv", modele = "Captur",marque = "Renault",couleur = "Vert"   , nb_place = 5)
+
+        self.site1 = Site.objects.create(libelle='ENI Nantes')
+        self.site2 = Site.objects.create(libelle='ENI Rennes')
+
+        self.voiture  = Vehicule.objects.create(immatriculation = "ja-158-cv", modele = "Clio"  ,marque = "Renault",couleur = "Noire"  , nb_place = 5, site = self.site1)
+        self.voiture1 = Vehicule.objects.create(immatriculation = "jb-159-cv", modele = "Mégane",marque = "Renault",couleur = "Blanche", nb_place = 5, site = self.site1)
+        self.voiture2 = Vehicule.objects.create(immatriculation = "jc-160-cv", modele = "Captur",marque = "Renault",couleur = "Vert"   , nb_place = 5, site = self.site2)
 
         self.client = APIClient()
         self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
@@ -36,23 +38,6 @@ class VehiculeTestCase(APITestCase):
         
         self.user2.set_password("mdp")
         self.user2.save()
- 
-
-    # Permissions tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def test_api_jwt(self):
-        url = reverse('jwt_login')
-
-        resp = self.client.post(url, {'email':self.admin.email, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        resp = self.client.post(url, {'email':self.admin.username, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        resp = self.client.post(url, {'email':self.admin.email, 'password':'wrongmdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
-
-        resp = self.client.post(url, {'email':self.user2.email, 'password':'mdp'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
@@ -71,7 +56,7 @@ class VehiculeTestCase(APITestCase):
         # On restest, cette fois ci on a le droit
         response = self.client.get(url)
         self.assertContains(response, self.voiture1.immatriculation, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data["Data"]), 3)
 
     def test_list_should_throw_401(self):
         url = reverse('vehicule-list')
@@ -102,7 +87,7 @@ class VehiculeTestCase(APITestCase):
         response = self.client.get(url)        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data["Data"], serializer.data)
 
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
@@ -118,12 +103,13 @@ class VehiculeTestCase(APITestCase):
         self.client.force_login(self.user1)
 
         json_new_vehicule = {  
-            'immatriculation' : 'ja-158-cv', 
-            'modele' : 'Clio'  ,
-            'marque' : 'Renault',
-            'couleur' : 'Noire'  ,
-            'nb_place' : 5,
-            'is_active':'True',
+            'Immatriculation' : 'ja-158-cv', 
+            'Modele' : 'Clio'  ,
+            'Marque' : 'Renault',
+            'Couleur' : 'Noire'  ,
+            'NbPlace' : 5,
+            'IsActive':'True',
+            'Site':  {'Id': self.site1.id},
         }
         url = reverse('vehicule-list')
 
@@ -140,19 +126,20 @@ class VehiculeTestCase(APITestCase):
         response = self.client.post(url, json_new_vehicule, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['immatriculation'], 'ja-158-cv')
-        self.assertIsNot(response.data['id'], None)
+        self.assertEqual(response.data["Data"]['Immatriculation'], 'ja-158-cv')
+        self.assertIsNot(response.data["Data"]['Id'], None)
 
     def test_create_should_throw_invalid_serializer(self):
         self.client.force_login(self.admin)
 
         json_new_vehicule = {  
-            'immatriculation' : 'ja-158-cv', 
-            'modele' : "Clio",
-            'marque' : 'Renault',
-            'couleur' : 'Noire'  ,
-            'nb_place' : 5,
-            'is_active': 5  , #Wrong field
+            'Immatriculation' : 'ja-158-cv', 
+            'Modele' : "Clio",
+            'Marque' : 'Renault',
+            'Couleur' : 'Noire'  ,
+            'NbPlace' : 5,
+            'IsActive': 5  , #Wrong field
+            'Site':  {'Id': self.site1.id},
         }
         url = reverse('vehicule-list')
 
@@ -165,7 +152,7 @@ class VehiculeTestCase(APITestCase):
         self.client.force_login(self.user1)
 
         json_update_vehicule = {  
-            'immatriculation' : 'test',
+            'Immatriculation' : 'test',
         }
         url = reverse('vehicule-detail', args=[self.voiture2.id])
         response = self.client.patch(url, json_update_vehicule, format='json')
@@ -180,10 +167,10 @@ class VehiculeTestCase(APITestCase):
         response = self.client.patch(url, json_update_vehicule, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['immatriculation'], 'test')
-        self.assertEqual(response.data['modele'], self.voiture2.modele)
-        self.assertEqual(response.data['id'], self.voiture2.id)
-    
+        self.assertEqual(response.data["Data"]['Immatriculation'], 'test')
+        self.assertEqual(response.data["Data"]['Modele'], self.voiture2.modele)
+        self.assertEqual(response.data["Data"]['Id'], self.voiture2.id)
+
     # Destroy tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_destroy(self):
         self.client.force_login(self.user1)

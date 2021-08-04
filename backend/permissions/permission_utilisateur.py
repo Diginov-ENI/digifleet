@@ -31,6 +31,11 @@ class UtilisateurPermission(permissions.BasePermission):
 
         if view.action == 'retrieve':
             return bool(obj == request.user or (request.user.is_superuser or request.user.has_perm("utilisateur_retrieve")))
+        elif view.action in ['update','partial_update']:
+            if "IsActive" in request.data and request.data["IsActive"] is not None and obj == request.user:
+                return False
+            else:
+                return True
         else:
             return True
 

@@ -22,7 +22,7 @@
                         <mat-error
                             *ngIf="passwordForm.controls.oldPassword.touched && passwordForm.controls.oldPassword.invalid && passwordForm.controls.oldPassword.errors?.required"
                             class="alert alert-danger">
-                            Le mot de passe de doit pas etre vide.
+                            Le mot de passe ne doit pas etre vide.
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -33,7 +33,7 @@
                         <mat-error
                             *ngIf="passwordForm.controls.password.touched && passwordForm.controls.password.invalid && passwordForm.controls.password.errors?.required"
                             class="alert alert-danger">
-                            Le mot de passe de doit pas etre vide.
+                            Le mot de passe ne doit pas etre vide.
                         </mat-error>
                         <mat-error
                             *ngIf="passwordForm.controls.password.touched && passwordForm.controls.password.invalid && passwordForm.controls.password.errors?.minlength"
@@ -49,7 +49,7 @@
                         <mat-error
                             *ngIf="passwordForm.controls.passwordAgain.touched && passwordForm.controls.passwordAgain.invalid && passwordForm.controls.passwordAgain.errors?.required"
                             class="alert alert-danger">
-                            Le mot de passe de doit pas etre vide.
+                            Le mot de passe ne doit pas etre vide.
                         </mat-error>
                         <mat-error
                             *ngIf="passwordForm.controls.passwordAgain.touched && passwordForm.controls.passwordAgain.invalid && passwordForm.controls.passwordAgain.errors?.matchOther"

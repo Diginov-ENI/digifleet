@@ -39,23 +39,24 @@ export class AuthService {
     this.setCurrentUser(payload.user_id);
   }
 
-  private setCurrentUser(id){
+  private setCurrentUser(id) {
     var self = this;
-    this._utilisateurBackendService.getUtilisateur(id).subscribe(user => {
-      var utilisateur = new Utilisateur(user);
-      localStorage.setItem('user', JSON.stringify(user));
+    this._utilisateurBackendService.getUtilisateur(id).subscribe(result => {
+      if (result.IsSuccess) {
+        var utilisateur = new Utilisateur(result.Data);
+        localStorage.setItem('user', JSON.stringify(result.Data));
 
-      Sentry.addBreadcrumb({
-        category: "info",
-        message: "Sauvegarde des informations de l'utilisateur dans le localstorage",
-        data: {
-          user:user
-        },
-        level: Sentry.Severity.Info,
-      });
-
-      self.currentUserSubject.next(utilisateur);
-     });
+        Sentry.addBreadcrumb({
+          category: "info",
+          message: "Sauvegarde des informations de l'utilisateur dans le localstorage",
+          data: {
+            user: result.Data
+          },
+          level: Sentry.Severity.Info,
+        });
+        self.currentUserSubject.next(utilisateur);
+      }
+    });
   }
 
   private loadUserFromLocalStorage(){
@@ -72,8 +73,9 @@ export class AuthService {
 
     if(user === null){
       this.logout();
+    }else{
+      this.currentUserSubject.next(utilisateur);
     }
-    this.currentUserSubject.next(utilisateur);
   }
 
   public refreshUserData(){

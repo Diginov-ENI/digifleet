@@ -21,9 +21,9 @@
       <table *ngIf="dataSource?.filteredData?.length > 0" mat-table [dataSource]="dataSource">
         <!-- colonne Libellé -->
         <ng-container matColumnDef="libelle">
-          <th [style.display]="table-cell" mat-header-cell *matHeaderCellDef> Libellé
+          <th [style.display]="'table-cell'" mat-header-cell *matHeaderCellDef> Libellé
           </th>
-          <td [style.display]="table-cell" mat-cell *matCellDef="let site">
+          <td [style.display]="'table-cell'" mat-cell *matCellDef="let site">
             {{site.Libelle}} </td>
         </ng-container>
 

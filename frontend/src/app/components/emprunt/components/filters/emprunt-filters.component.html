@@ -1,0 +1,54 @@
+<mat-expansion-panel style="margin-top:30px;">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon  aria-hidden="false">search</mat-icon>
+            Filtres de recherche
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ion-row>
+        <form [formGroup]="form">
+            <ion-col size="3">
+                <mat-form-field appearance="fill">
+                    <mat-label>Début à partir du</mat-label>
+                    <input matInput [matDatepicker]="pickerStart" formControlName="DateDebut">
+                    <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+            </ion-col>
+            <ion-col size="3">
+                <mat-form-field appearance="fill">
+                    <mat-label>Fin avant le</mat-label>
+                    <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin">
+                    <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+            </ion-col>
+            <ion-col size="3" *ngIf="(connectedUser.hasPermissionByCodeName('site_list'))">
+                <mat-form-field appearance="fill">
+                    <mat-label>Site de rattachement</mat-label>
+                    <mat-select id="inputSite" formControlName="Site">
+                        <mat-option  [value]="0">Tous</mat-option>
+                        <mat-option *ngFor="let site of sites" [value]="site.Id">
+                        {{site.Libelle}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ion-col>
+            <ion-col size="3">
+                <mat-checkbox color="primary" formControlName="IsCloturee">
+                    Cloturées uniquement 
+                </mat-checkbox>
+            </ion-col>
+        </form>
+    </ion-row>
+
+    <ion-row>
+        <ion-col size="12">
+            <button mat-raised-button color="primary" (click)="filtrer()">
+                <mat-icon class="icon-light-color" aria-hidden="false">filter_list</mat-icon>
+                FILTRER
+            </button>
+        </ion-col>
+    </ion-row>        
+</mat-expansion-panel>

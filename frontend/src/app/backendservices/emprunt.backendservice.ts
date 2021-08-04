@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
-import { EmpruntListComponent } from '../components/emprunt/emprunt-list.component';
 import { Emprunt } from '../models/emprunt';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { DigiResult } from "../models/digiresult";
 
 @Injectable()
 export class EmpruntBackendService {
@@ -22,51 +22,79 @@ export class EmpruntBackendService {
      * @param emprunt 
      * @return : {Observable}
      */
-    addEmprunt(emprunt: Emprunt): Observable<Emprunt> {
+    addEmprunt(emprunt: Emprunt): Observable<DigiResult<Emprunt>> {
         let stringifyItem = JSON.stringify(emprunt);
-        return this._httpClient.post<Emprunt>(this._apiname, stringifyItem, this._httpOptions);
+        return this._httpClient.post<DigiResult<Emprunt>>(this._apiname, stringifyItem, this._httpOptions);
     }
 
     /**
      * Modifier un emprunt
      * @param emprunt 
      */
-    updateEmprunt(emprunt: object): Observable<Emprunt> {
+    updateEmprunt(emprunt: object): Observable<DigiResult<Emprunt>> {
         let stringifyItem = JSON.stringify(emprunt);
-        return this._httpClient.put<Emprunt>(this._apiname + emprunt['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.put<DigiResult<Emprunt>>(this._apiname + emprunt['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
      * Modifier partiellement un emprunt
      * @param emprunt 
      */
-    partialUpdateEmprunt(emprunt: object): Observable<Emprunt> {
+    partialUpdateEmprunt(emprunt: object): Observable<DigiResult<Emprunt>> {
         let stringifyItem = JSON.stringify(emprunt);
-        return this._httpClient.patch<Emprunt>(this._apiname + emprunt['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<DigiResult<Emprunt>>(this._apiname + emprunt['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
     * Obtenir les emprunt
     * @returns : Observable<Emprunt[]>
     */
-    getEmprunts(): Observable<Emprunt[]> {
-        return this._httpClient.get<Emprunt[]>(this._apiname);
+    getEmprunts(dateDebut?, dateFin?, siteId?, isCloturee?): Observable<DigiResult<Emprunt[]>> {
+        let params = new HttpParams().set('isCloturee', isCloturee);
+        if(dateDebut){
+            params = params.set('dateDebut', dateDebut);
+        }
+        if(dateFin){
+            params = params.set('dateFin', dateFin);
+        }
+        if(siteId){
+            params = params.set('siteId', siteId);
+        }
+        if(isCloturee){
+            params = params.set('isCloturee', isCloturee);
+        }
+        return this._httpClient.get<DigiResult<Emprunt[]>>(this._apiname, {params: params});
     }
 
     /**
     * Obtenir les emprunt d'un utilisateur
     * @returns : Observable<Emprunt[]>
     */
-    getEmpruntsByOwner(idOwner): Observable<Emprunt[]> {
-        return this._httpClient.get<Emprunt[]>(this._apiname + idOwner + '/list-by-owner');
+    getEmpruntsByOwner(idOwner, dateDebut?, dateFin?, siteId?, isCloturee?): Observable<DigiResult<Emprunt[]>> {
+        let params = new HttpParams()
+            .set('id', idOwner);
+        if(dateDebut){
+            params = params.set('dateDebut', dateDebut);
+        }
+        if(dateFin){
+            params = params.set('dateFin', dateFin);
+        }
+        if(siteId){
+            params = params.set('siteId', siteId);
+        }
+        if(isCloturee){
+            params = params.set('isCloturee', isCloturee);
+        }
+
+        return this._httpClient.get<DigiResult<Emprunt[]>>(this._apiname + 'list-by-owner', {params: params});
     }
 
     /**
      * Obtenir un emprunt
      * @param idEmprunt 
      */
-    getEmprunt(idEmprunt): Observable<Emprunt> {
-        return this._httpClient.get<Emprunt>(this._apiname + idEmprunt);
+    getEmprunt(idEmprunt): Observable<DigiResult<Emprunt>> {
+        return this._httpClient.get<DigiResult<Emprunt>>(this._apiname + idEmprunt);
     }
     
     /**
@@ -75,7 +103,7 @@ export class EmpruntBackendService {
      * @param idEmprunt 
      * @returns 
      */
-    deleteEmprunt(idEmprunt) {
-        return this._httpClient.delete(this._apiname + idEmprunt, this._httpOptions);
+    deleteEmprunt(idEmprunt): Observable<DigiResult<boolean>> {
+        return this._httpClient.delete<DigiResult<boolean>>(this._apiname + idEmprunt, this._httpOptions);
     }
 }

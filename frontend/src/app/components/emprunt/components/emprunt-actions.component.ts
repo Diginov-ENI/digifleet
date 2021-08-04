@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Emprunt } from 'src/app/models/emprunt';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Utilisateur } from 'src/app/models/utilisateur';
-import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
 
 @Component({
     selector: 'emprunt-actions',
@@ -14,19 +12,19 @@ import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendse
     @Input() emprunt!: Emprunt;
     @Input() listeStatut;
     @Input() openConfirmDeleteDialog: (emprunt: Emprunt) => void;
-    step: number;
-    firstFormGroup: FormGroup;
-    secondFormGroup: FormGroup;
+    @Input() openConfirmCancelDialog: (emprunt: Emprunt) => void;
+    @Input() openSelectVehiculeDialog: (emprunt: Emprunt) => void;
+    @Input() updateEmprunt: (emprunt: Emprunt) => void;
   
-    constructor(private _empruntBackendService: EmpruntBackendService) {}
+    constructor() {}
   
     ngOnInit() {
     }
 
     updateStatut(newStatut){
-      this.emprunt.Statut = newStatut
-      this._empruntBackendService.partialUpdateEmprunt(this.emprunt).subscribe((response => {
-        this.emprunt = response;
-      }))
+      let emprunt = new Emprunt()
+      emprunt.Id = this.emprunt.Id
+      emprunt.Statut = newStatut
+      this.updateEmprunt(emprunt);
     }
   }

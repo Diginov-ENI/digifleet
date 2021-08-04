@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Choix du véhicule</h1>
+<div mat-dialog-content>
+    <span *ngIf="(data.availableVehicules && data.availableVehicules.length < 1)">
+        <p>Aucun véhicule disponible pour ce site !</p>
+    </span>
+    <span *ngIf="(data.availableVehicules && data.availableVehicules.length > 0)">
+        <p>Quel véhicule attribuer à cette demande ?</p>
+        <mat-form-field >
+            <mat-label>Véhicule</mat-label>
+                <mat-select id="inputVehicule" [(value)]="selected" required>
+                    <mat-option *ngFor="let vehicule of data.availableVehicules" [value]="vehicule.Id">
+                    {{vehicule.Marque}} - {{vehicule.Modele}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </span>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [mat-dialog-close]="selected" cdkFocusInitial>Ok</button>
+</div>

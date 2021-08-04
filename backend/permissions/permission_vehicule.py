@@ -9,7 +9,7 @@ class VehiculePermission(permissions.BasePermission):
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("vehicule_create")))
         elif view.action == "retrieve":
             return True
-        elif view.action == "list":
+        elif view.action in ['list', 'list_by_filter']:
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("vehicule_list")))
         elif view.action == "destroy":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("vehicule_destroy")))

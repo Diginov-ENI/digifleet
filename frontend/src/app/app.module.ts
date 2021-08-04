@@ -1,5 +1,5 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgModule, ErrorHandler, Injectable } from '@angular/core';
+import { NgModule, ErrorHandler, Injectable,  } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouteReuseStrategy, RouterModule, Router } from '@angular/router';
@@ -34,14 +34,39 @@ import { SiteBackendService } from './backendservices/site.backendservice';
 import { EmpruntFormComponent } from './components/emprunt/emprunt-form.component';
 import { EmpruntListComponent } from './components/emprunt/emprunt-list.component';
 import { EmpruntActions } from './components/emprunt/components/emprunt-actions.component';
+import { EmpruntFilters } from './components/emprunt/components/filters/emprunt-filters.component';
 import { EmpruntBackendService } from './backendservices/emprunt.backendservice';
+import { DialogSelectVehicule } from './components/emprunt/emprunt-list.component';
 
-import { VehiculeComponent } from './components/vehicule/vehicule.component';
+import { VehiculeFormComponent } from './components/vehicule/vehicule-form.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { ToastHelperComponent } from './components/toast-message/toast-message.component';
+import { GroupeBackendService } from './backendservices/groupe.backendservice';
+import { GroupeListComponent} from './components/groupe/groupe-list.component';
+import { ConfirmDeleteGroupeDialogComponent } from './components/groupe/dialogs/confirm-delete-groupe-dialog.component';
+import { GroupeFormComponent } from './components/groupe/groupe-form.component';
+import { PermissionTypeBackendService } from './backendservices/permissiontype.backendservice';
+import { UtilisateurChips } from './components/groupe/utilisateur-chips/utilisateur-chips.component';
+import { GroupeChips } from './components/utilisateur/groupe-chips/groupe-chips.component';
+import { PermissionTypeComponent } from './components/permission/permission-type.component';
+import { PermissionFormComponent } from './components/permission/permission-form.component';
+import { UtilisateurPermissionComponent } from './components/utilisateur/utilisateur-permission/utilisateur-permission.component';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
-
+export const DATE_FORMAT = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @NgModule({
   declarations: [
@@ -50,20 +75,35 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     UtilisateurFormComponent,
     BandeauDigifleetComponent,
     DigifleetHomeComponent,
+    VehiculeFormComponent,
+    VehiculeListComponent,
     ConnexionFormComponent,
     AlertComponent,
     VehiculeListComponent,
     UtilisateurListComponent,
     UtilisateurFormComponent,
     UtilisateurSecuriteComponent,
+    UtilisateurChips,
+    GroupeChips,
+    SiteListComponent,
+    SiteFormComponent,
+    GroupeListComponent,
+    GroupeFormComponent,
+    PermissionTypeComponent,
+    PermissionFormComponent,
+    ConfirmDeleteGroupeDialogComponent,
+    AlertComponent,
+    UtilisateurPermissionComponent,
     SiteListComponent,
     SiteFormComponent,
     EmpruntListComponent,
     EmpruntFormComponent,
+    DialogSelectVehicule,
     EmpruntActions,
-    VehiculeComponent,
+    EmpruntFilters,
     AlertComponent,
     DialogConfirmComponent,
+    ToastHelperComponent,
   ],
   entryComponents: [],
   imports: [
@@ -86,8 +126,12 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT},
     UtilisateurBackendService,
     SiteBackendService,
+    GroupeBackendService,
+    PermissionTypeBackendService,
     EmpruntBackendService,
     AuthService,
     AuthGuard,
@@ -103,4 +147,5 @@ Sentry.init({ dsn: environment.SENTRY_DSN });
     RouterModule,
   ],
 })
+
 export class AppModule {}
