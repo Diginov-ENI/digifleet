@@ -91,7 +91,7 @@ class GroupeViewSet(viewsets.ViewSet):
         group = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, group)
         group.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
     
     def get_success_headers(self, data):
         try:

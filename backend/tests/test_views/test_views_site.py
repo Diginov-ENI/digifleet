@@ -113,7 +113,7 @@ class SiteTestCase(APITestCase):
         url = reverse('site-detail', args=[self.site_nantes.id])
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(Site.objects.filter(id__exact=self.site_nantes.id))
 
     def test_destroy_should_throw_404(self):

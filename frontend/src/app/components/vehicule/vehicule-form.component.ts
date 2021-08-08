@@ -35,7 +35,7 @@ export class VehiculeFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getSites();
+    this.getAvailablesSites();
 
     this.form = this.formBuilder.group({
       Id: [''],
@@ -64,15 +64,15 @@ export class VehiculeFormComponent implements OnInit {
     this.form.controls.Site.setValidators([Validators.required]);
   }
 
-  getSites() {
-    this._siteBackendService.getSites().subscribe(response => {
+  getAvailablesSites() {
+    this._siteBackendService.getAvailablesSites().subscribe(response => {
       this.sites = response.Data;
     })
   }
 
   sauver() {
     this.vehicule = new Vehicule(this.form.value);
-    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined}
+    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined, 'IsActive': undefined}
 
     if (!this.vehicule.Id) {
       this.vehicule.Id = undefined;

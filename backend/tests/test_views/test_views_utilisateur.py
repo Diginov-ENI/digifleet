@@ -165,6 +165,25 @@ class UtilisateurTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
+    def test_retrieve_should_throw_401(self):
+        url = reverse('utilisateur-detail', args=[self.admin.id])
+        response = self.client.get(url)  
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_retrieve_should_throw_403(self):
+        """
+        On vérifie qu'un utilisateur sans droit spécifique ne peux pas visualiser un autre utilisateur
+        """
+        self.client.force_login(self.user1)
+
+        url = reverse('utilisateur-detail', args=[self.user2.id])
+        response = self.client.get(url)        
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
     def test_retrieve_should_throw_404(self):
         self.client.force_login(self.user1)
 
@@ -196,6 +215,37 @@ class UtilisateurTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["Data"]['Email'], 'newUser@email')
         self.assertIsNot(response.data["Data"]['Id'], None)
+
+    def test_create_should_throw_401(self):
+        json_new_user = {  
+            'Email': 'newUser@email',
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_create_should_throw_403(self):
+        self.client.force_login(self.user1)
+
+        json_new_user = {  
+            'Email': 'newUser@email',
+            'Username': 'newUser',
+            'Nom': 'newUser',
+            'Prenom': 'newUser',
+            'IsActive': 'True',
+            'IsSuperuser': 'False',
+        }
+        url = reverse('utilisateur-list')
+        response = self.client.post(url, json_new_user, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_should_throw_401(self):
         json_new_user = {  
@@ -458,7 +508,7 @@ class UtilisateurTestCase(APITestCase):
 
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(Utilisateur.objects.filter(id__exact=self.user2.id))
 
     def test_destroy_should_throw_403(self):
