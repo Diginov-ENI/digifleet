@@ -44,6 +44,8 @@ class EmpruntViewSet(viewsets.ViewSet):
             queryset = queryset.filter(Q(date_debut__gte=params['dateDebut']))
         if 'dateFin' in params:
             queryset = queryset.filter(Q(date_fin__lte=params['dateFin']))
+        if 'siteId' in params:
+            queryset = queryset.filter(site_id=params['siteId'])
         if 'isCloturee' in params and params['isCloturee'] == 'true':
             queryset = queryset.filter(statut='CLOTUREE')
         else:
