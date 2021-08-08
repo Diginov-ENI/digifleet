@@ -58,7 +58,7 @@ export class SiteFormComponent implements OnInit {
         'Libelle': this.site.Libelle,
       }
 
-      this._siteBackendService.updateSite(object).subscribe(res => {
+      this._siteBackendService.partialUpdateSite(object).subscribe(res => {
         if(res.IsSuccess) {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Site modifié avec succès.'));
           this.router.navigate(['Digifleet/liste-site']);

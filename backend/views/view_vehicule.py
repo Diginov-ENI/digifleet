@@ -1,10 +1,10 @@
 from re import I
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
-from rest_framework.decorators import permission_classes, action
+from rest_framework.decorators import action
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
-from rest_framework.utils.model_meta import is_abstract_model
+from backend.models.model_emprunt import Emprunt
 from backend.models.model_vehicule import Vehicule
 from backend.serializers import VehiculeSerializer
 from backend.permissions.permission_vehicule import VehiculePermission
@@ -63,6 +63,10 @@ class VehiculeViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None, *args, **kwargs):
         queryset = Vehicule.objects.all()
         vehicule = get_object_or_404(queryset, pk=pk)
+
+        if Emprunt.objects.filter(vehicule_id=vehicule.id).exists() :
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : "Impossible de supprimer ce véhicule car il est lié à un emprunt (privilégier l'archivage)"}, status=status.HTTP_200_OK)
+
         vehicule.delete()
         return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 
