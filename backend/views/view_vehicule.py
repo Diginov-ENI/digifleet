@@ -61,7 +61,7 @@ class VehiculeViewSet(viewsets.ViewSet):
         queryset = Vehicule.objects.all()
         vehicule = get_object_or_404(queryset, pk=pk)
         vehicule.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True

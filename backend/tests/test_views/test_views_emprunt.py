@@ -316,7 +316,7 @@ class EmpruntTestCase(APITestCase):
 
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(Emprunt.objects.filter(id__exact=self.emprunt1.id))
 
     def test_destroy_should_throw_401(self):

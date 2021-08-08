@@ -152,8 +152,6 @@ export class EmpruntListComponent implements OnInit {
     this._vehiculeBackendService.getAvailableVehiculesForEmprunt(emprunt.Site, emprunt.DateDebut, emprunt.DateFin).subscribe(response => {
       this.availableVehicules = response.Data;
 
-      console.log(this.availableVehicules);
-
       // Open dialog with input select vehicule
       const dialogRef = this.matDialog.open(DialogSelectVehicule, {
         width: '250px',

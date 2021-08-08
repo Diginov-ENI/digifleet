@@ -55,7 +55,7 @@ class SiteViewSet(viewsets.ViewSet):
         queryset = Site.objects.all()
         site = get_object_or_404(queryset, pk=pk)
         site.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
     
     def get_success_headers(self, data):
         try:

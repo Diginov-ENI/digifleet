@@ -71,7 +71,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
         queryset = Utilisateur.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         user.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 
     def get_success_headers(self, data):
         try:
