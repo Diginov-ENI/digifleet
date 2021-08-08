@@ -21,9 +21,9 @@ export class SiteListComponent implements OnInit {
   sites: Site[];
   site: Site;
   dataSource = new MatTableDataSource();
-  tableColumns: string[] = ['libelle', 'actions'];
+  tableColumns: string[] = ['libelle', 'etat', 'actions'];
 
-  nbColumnsAffiche = 2;
+  nbColumnsAffiche = 3;
 
   constructor(
     private _siteBackendService: SiteBackendService,
@@ -58,6 +58,23 @@ export class SiteListComponent implements OnInit {
     })
   }
 
+  archiverDesarchiverSite(site: Site){
+    let object:object = {
+      'Id' : site.Id,
+      'IsActive' : !site.IsActive
+    };
+
+  this._siteBackendService.partialUpdateSite(object).subscribe(res => {
+    if (res.IsSuccess) {
+      this.getSites();
+      this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(
+        false, res.Data.IsActive ? 'Site activé avec succès.' : 'Site archivé avec succès.'));
+    } else {
+      this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+    }
+  });
+}
+
   openConfirmDeleteDialog(site: Site) {
     const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
@@ -72,4 +89,22 @@ export class SiteListComponent implements OnInit {
       }
     });
   }
+
+  openConfirmArchiveDialog(site: Site) {
+    const dialogRef = this.matDialog.open(DialogConfirmComponent, {
+      data: {
+        titre: site.IsActive ? 'Archiver un site' : 'Activer un site',
+        libConfirmation: site.IsActive ? `Souhaitez-vous archiver le site  "${site.Libelle}" ?`
+          : `Souhaitez-vous activer le site  "${site.Libelle}" ?`,
+        libBouton: site.IsActive ? 'Archiver' : 'Activer'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.archiverDesarchiverSite(site);
+      }
+    });
+  }
+
 }
