@@ -170,6 +170,7 @@ export class EmpruntListComponent implements OnInit {
           }
           this._empruntBackendService.partialUpdateEmprunt(object).subscribe(response => {
             if(response.IsSuccess){
+              this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Emprunt validé avec succès.'));
               if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
                 this.getEmprunts();
               }else{
