@@ -1,8 +1,10 @@
+from re import I
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
+from rest_framework.utils.model_meta import is_abstract_model
 from backend.models.model_vehicule import Vehicule
 from backend.serializers import VehiculeSerializer
 from backend.permissions.permission_vehicule import VehiculePermission
@@ -34,13 +36,14 @@ class VehiculeViewSet(viewsets.ViewSet):
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_path='filter', url_name='list_by_filter')
-    def list_by_filter(self, request):
+    @action(detail=False, url_path='availables', url_name='list_availables')
+    def list_availables(self, request):
         """
         On récupère la liste de tous les véhicules disponibles avec le même site
         """
         params = request.query_params
-        queryset = Vehicule.objects.filter(
+        queryset = Vehicule.objects.exclude(is_active=False
+        ).filter(
             Q(site_id=params['siteId']),
         ).exclude(
             Q(emprunts__date_debut__lte=params['dateFin']),

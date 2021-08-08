@@ -1,5 +1,4 @@
 from backend.permissions.permission_site import SitePermission
-from django.core.exceptions import FieldError
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import permission_classes, action

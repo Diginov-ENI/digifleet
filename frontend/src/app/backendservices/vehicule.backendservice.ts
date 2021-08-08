@@ -54,7 +54,7 @@ export class VehiculeBackendService {
             .set('dateDebut', dateDebut)
             .set('dateFin', dateFin);
         
-        return this._httpClient.get<DigiResult<Vehicule[]>>(this._apiname + 'filter', {params: params});
+        return this._httpClient.get<DigiResult<Vehicule[]>>(this._apiname + 'availables', {params: params});
     }
 
     /**
