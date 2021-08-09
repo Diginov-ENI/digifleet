@@ -41,8 +41,8 @@ export class ConnexionFormComponent {
   }
   handleError(error) {
     this.errors = []
-    if (error.status >= 500 && error.status <= 599) {
-      this.errors.push("Erreur serveur")
+    if ((error.status >= 500 && error.status <= 599) || error.status == 0) {
+      this.errors.push("Erreur serveur");
     } else {
       var errorsObj = error.error;
       var errorsSorted = [];
@@ -53,19 +53,17 @@ export class ConnexionFormComponent {
             message: errorsObj[key]
           })
         } else {
-
-          for (let message of errorsObj[key]) {
-            errorsSorted.push({
-              type: key,
-              message: message
-            })
-          }
+            for (let message of errorsObj[key]) {
+              errorsSorted.push({
+                type: key,
+                message: message
+              })
+            }
         }
       }
       for (let error of errorsSorted) {
         switch (error.type) {
           case "email":
-
             switch (error.message) {
               case "This field may not be blank.":
                 this.errors.push("L'adresse email ne doit pas etre vide")
@@ -75,7 +73,6 @@ export class ConnexionFormComponent {
                 break;
             }
             break;
-
           case "password":
             switch (error.message) {
               case "This field may not be blank.":
@@ -109,7 +106,6 @@ export class ConnexionFormComponent {
           default:
             this.errors.push(error.type + ": " + error.message);
             break;
-
         }
       }
     }

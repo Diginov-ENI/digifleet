@@ -31,9 +31,9 @@ export class SiteBackendService {
      * Modifier un site
      * @param site 
      */
-    updateSite(site: object): Observable<DigiResult<Site>> {
+    partialUpdateSite(site: object): Observable<DigiResult<Site>> {
         let stringifyItem = JSON.stringify(site);
-        return this._httpClient.put<DigiResult<Site>>(this._apiname + site['Id'] + '/', stringifyItem, this._httpOptions);
+        return this._httpClient.patch<DigiResult<Site>>(this._apiname + site['Id'] + '/', stringifyItem, this._httpOptions);
     }
 
     /**
@@ -43,6 +43,15 @@ export class SiteBackendService {
     getSites(): Observable<DigiResult<Site[]>> {
         return this._httpClient.get<DigiResult<Site[]>>(this._apiname);
     }
+
+    /**
+    * Obtenir les sites non archivés
+    * @returns : Observable<Site[]>
+    */
+    getAvailablesSites(): Observable<DigiResult<Site[]>> {
+        return this._httpClient.get<DigiResult<Site[]>>(this._apiname + 'availables');
+    }
+
 
     /**
      * Obtenir un site

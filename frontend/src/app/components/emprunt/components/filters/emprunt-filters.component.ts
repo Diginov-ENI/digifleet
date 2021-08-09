@@ -28,9 +28,7 @@ import { ConfigMatsnackbar } from 'src/app/models/digiutils';
     ) {}
   
     ngOnInit() {
-      if(this.connectedUser.hasPermissionByCodeName('site_list')){
         this.getSites();
-      }
 
         this.form = this.formBuilder.group({
             DateDebut: [''],

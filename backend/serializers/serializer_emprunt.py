@@ -10,6 +10,7 @@ from django.db.models import Q
 from datetime import date
 
 
+
 class SiteSerializer(serializers.ModelSerializer):
     Id = serializers.IntegerField(source='id')
     Libelle = serializers.CharField(source='libelle', read_only=True)

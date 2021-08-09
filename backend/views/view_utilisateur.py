@@ -2,13 +2,9 @@ from django.core.exceptions import NON_FIELD_ERRORS
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, generics
 from rest_framework.decorators import permission_classes, action
-from django.core.exceptions import FieldError
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
-
-from backend.models.model_vehicule import Vehicule
-from backend.serializers import VehiculeSerializer
-
+from backend.models.model_emprunt import Emprunt
 from backend.models.model_utilisateur import Utilisateur
 from backend.serializers.serializer_utilisateur import UtilisateurSerializer
 from backend.permissions.permission_utilisateur import UtilisateurPermission
@@ -70,8 +66,12 @@ class UtilisateurViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None, *args, **kwargs):
         queryset = Utilisateur.objects.all()
         user = get_object_or_404(queryset, pk=pk)
+
+        if Emprunt.objects.filter(conducteur_id=user.id).exists() or Emprunt.objects.filter(passagers__id__contains=user.id).exists():
+            return Response(data= { 'IsSuccess': False, 'LibErreur' : "Impossible de supprimer cet utilisateur car il est lié à un emprunt (privilégier l'archivage)"}, status=status.HTTP_200_OK)
+
         user.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 
     def get_success_headers(self, data):
         try:

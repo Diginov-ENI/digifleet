@@ -23,22 +23,12 @@ class SiteTestCase(APITestCase):
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
-        self.client.force_login(self.admin)
-
         url = reverse('site-list')
 
         response = self.client.get(url)
 
         self.assertContains(response, self.site_nantes.libelle, status_code=status.HTTP_200_OK)
         self.assertEqual(len(response.data['Data']), 2)
-
-    def test_list_should_throw_401(self):
-        url = reverse('site-list')
-
-        response = self.client.get(url)
-
-        self.assertTemplateNotUsed(response, self.CONST_SITE_BASE_URL)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Retrieve tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_retrieve(self):
@@ -123,7 +113,7 @@ class SiteTestCase(APITestCase):
         url = reverse('site-detail', args=[self.site_nantes.id])
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(Site.objects.filter(id__exact=self.site_nantes.id))
 
     def test_destroy_should_throw_404(self):

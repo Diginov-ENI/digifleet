@@ -74,7 +74,7 @@ export class EmpruntFormComponent implements OnInit {
 
   sauver() {
     this.emprunt = new Emprunt(this.form.value);
-    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined}
+    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined, 'IsActive': undefined}
     if (!this.emprunt.Id) {
       this.emprunt.Id = undefined;
       this.emprunt.Passagers = [];

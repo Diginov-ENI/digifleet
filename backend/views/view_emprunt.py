@@ -44,6 +44,8 @@ class EmpruntViewSet(viewsets.ViewSet):
             queryset = queryset.filter(Q(date_debut__gte=params['dateDebut']))
         if 'dateFin' in params:
             queryset = queryset.filter(Q(date_fin__lte=params['dateFin']))
+        if 'siteId' in params:
+            queryset = queryset.filter(site_id=params['siteId'])
         if 'isCloturee' in params and params['isCloturee'] == 'true':
             queryset = queryset.filter(statut='CLOTUREE')
         else:
@@ -92,7 +94,7 @@ class EmpruntViewSet(viewsets.ViewSet):
         emprunt = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, emprunt)
         emprunt.delete()
-        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_204_NO_CONTENT)
+        return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 
     def get_success_headers(self, data):
         try:
