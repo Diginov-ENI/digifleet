@@ -7,6 +7,7 @@ from backend.models.model_site import Site
 from backend.models.model_utilisateur import Utilisateur
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from datetime import date
 
 
 class SiteSerializer(serializers.ModelSerializer):
@@ -88,6 +89,9 @@ class EmpruntSerializer(serializers.ModelSerializer):
              'DateDemande' : {
                 'required' : False,
             },
+             'DateFin' : {
+                'required' : False,
+            },
              'Statut' : {
                 'required' : False,
             },
@@ -117,6 +121,14 @@ class EmpruntSerializer(serializers.ModelSerializer):
             passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
         
         # ---------- DEBUT VALIDATION ---------- 
+        # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
+        if validated_data['date_fin'] < validated_data['date_debut']:
+            raise Exception("La date de début ne peut pas être après la date de fin.")
+        
+        # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date actuelle
+        if validated_data['date_fin'] < date.today():
+            raise Exception("Il n'est pas possible de créer un emprunt terminé.")
+            
         # --- VALIDATION --- On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt sur le même interval temporaire en tant que conducteur
         if Emprunt.objects.filter(
             Q(date_debut__lte=validated_data['date_fin']),

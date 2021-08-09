@@ -48,7 +48,7 @@ export class EmpruntFormComponent implements OnInit {
     this.form = this.formBuilder.group({
       Id: [''],
       DateDebut: ['', Validators.required],
-      DateFin: ['', Validators.required],
+      DateFin: [''],
       Destination : ['', Validators.required],
       Commentaire : [''],
       Type : ['', Validators.required],
@@ -79,8 +79,9 @@ export class EmpruntFormComponent implements OnInit {
       this.emprunt.Id = undefined;
       this.emprunt.Passagers = [];
       this.emprunt.DateDebut = this.form.controls.DateDebut.value.format(this.format);
-      this.emprunt.DateFin = this.form.controls.DateFin.value.format(this.format);
+      this.emprunt.DateFin = this.form.controls.DateFin.value ? this.form.controls.DateFin.value.format(this.format) : null;
       this.emprunt.Site = site;
+      this.emprunt.Statut="DEPOSEE";
       this.emprunt.Conducteur = this.connectedUser;
       this._empruntBackendService.addEmprunt(this.emprunt).subscribe(res => {
         this.router.navigate(['Digifleet/liste-emprunt']);

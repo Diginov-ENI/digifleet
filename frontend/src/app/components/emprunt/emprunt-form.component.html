@@ -16,7 +16,8 @@
 
                 <mat-form-field>
                     <mat-select placeholder="Type de véhicule" formControlName="Type" id="selectType">
-                        <mat-option value="one">First option</mat-option>
+                        <mat-option value="F">Fonction</mat-option>
+                        <mat-option value="S">Service</mat-option>
                     </mat-select>
                     <!-- <mat-error
                         *ngIf="form.controls.type.errors && (form.controls.type.dirty || form.controls.type.touched)">
@@ -42,15 +43,15 @@
                     </mat-error> 
                 </mat-form-field> -->
 
-                    <mat-form-field appearance="fill">
+                    <mat-form-field>
                         <mat-label>Date de début *</mat-label>
                         <input matInput [matDatepicker]="pickerStart" formControlName="DateDebut">
                         <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
                         <mat-datepicker #pickerStart></mat-datepicker>
                     </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Date de fin *</mat-label>
-                        <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin">
+                    <mat-form-field>
+                        <mat-label>Date de fin</mat-label>
+                        <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin" [required]="this.form.controls.Type.value != 'F'">
                         <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                         <mat-datepicker #pickerEnd></mat-datepicker>
                     </mat-form-field>
