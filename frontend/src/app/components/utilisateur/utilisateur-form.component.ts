@@ -46,8 +46,8 @@ export class UtilisateurFormComponent implements OnInit {
       Id: [''],
       Username: ['', Validators.required],
       Email: ['', [Validators.email, Validators.required]],
-      Nom: [''],
-      Prenom: [''],
+      Nom: ['', Validators.required],
+      Prenom: ['', Validators.required],
       Groups: ['']
     });
 
