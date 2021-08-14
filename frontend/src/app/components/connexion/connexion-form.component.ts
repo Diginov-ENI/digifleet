@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Utilisateur } from 'src/app/models/utilisateur';
 
 @Component({
   selector: 'connexion-form',
@@ -9,6 +10,8 @@ import { Router } from '@angular/router';
 })
 export class ConnexionFormComponent {
   HOME_ROUTE = '/Digifleet';
+  SECU_ROUTE = this.HOME_ROUTE + '/mon-compte/securite';
+  private connectedUser: Utilisateur = null;
 
   password = '';
   username = '';
@@ -37,7 +40,15 @@ export class ConnexionFormComponent {
   handleSuccess() {
     this.username = '';
     this.password = '';
-    this.router.navigate([this.HOME_ROUTE]);
+
+    this.authService.getUser().subscribe(user=>this.connectedUser = user);
+
+    if(this.connectedUser != null && this.connectedUser.IsPasswordToChange) {
+      this.router.navigate([this.SECU_ROUTE])
+    }
+    else {
+      this.router.navigate([this.HOME_ROUTE]);
+    }
   }
   handleError(error) {
     this.errors = []

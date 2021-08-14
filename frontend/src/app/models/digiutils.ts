@@ -28,6 +28,18 @@ export class ConfigMatsnackbar {
         horizontalPosition: 'center',
         verticalPosition: 'top'
     }
+    public static configWarning: MatSnackBarConfig = {
+        panelClass: 'is-warning',
+        duration: 6000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+    }
+    public static configInfo: MatSnackBarConfig = {
+        panelClass: 'is-info',
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+    }
 
     public static setToast(isErreur, libMessage): any {
         return {
@@ -36,6 +48,16 @@ export class ConfigMatsnackbar {
                 libMessageToast: libMessage,
             },
             ...isErreur ? ConfigMatsnackbar.configError : ConfigMatsnackbar.configSuccess
+        }
+    }
+
+    public static setInfoToast(isCritical, libMessage): any {
+        return {
+            data: {
+                type: isCritical ? DigiUtils.ETypeToast.Warning.Code : DigiUtils.ETypeToast.Info.Code,
+                libMessageToast: libMessage,
+            },
+            ...isCritical ? ConfigMatsnackbar.configWarning : ConfigMatsnackbar.configInfo
         }
     }
 }

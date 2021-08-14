@@ -8,6 +8,10 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'utilisateur-securite',
   templateUrl: 'utilisateur-securite.component.html',
@@ -34,12 +38,16 @@ export class UtilisateurSecuriteComponent implements OnInit{
   private user:Utilisateur = null;
 
   constructor(private authService: AuthService,
-    private _utilisateurBackendService: UtilisateurBackendService){
-          this.authService.getUser().subscribe(user=>this.user = user);
-      }
+    private _utilisateurBackendService: UtilisateurBackendService,
+    private _snackBar: MatSnackBar,
+    ){
+      this.authService.getUser().subscribe(user=>this.user = user);
+    }
 
   ngOnInit(){
-    
+    if (this.user.IsPasswordToChange) {
+      this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setInfoToast(true, 'Veuillez changer votre mot de passe'));
+    }
   }
 
   onFormPasswordChange(){
@@ -70,7 +78,6 @@ export class UtilisateurSecuriteComponent implements OnInit{
         });
       } catch (error) {
       }
-    
     }
   }
 
