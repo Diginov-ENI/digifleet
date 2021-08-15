@@ -88,6 +88,8 @@ class UtilisateurSerializer(serializers.ModelSerializer):
             
         user = Utilisateur.objects.create(**validated_data)
         user.groups.set(groups)
+        user.set_password((validated_data.get("prenom")[0] + validated_data.get("nom")).lower())
+        user.save()
 
         return user
 
@@ -123,15 +125,15 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields = ('OldPassword','Password',)
 
     def validate(self, attrs):
-
         return attrs
-    def validate_OldPassword(self, value):
-            user = self.context['request'].user
-            if not user.check_password(value):
-                raise serializers.ValidationError(["L'ancien mot de passe est incorrect."])
-            return value
-    def update(self, instance, validated_data):
 
+    def validate_OldPassword(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError(["L'ancien mot de passe est incorrect."])
+        return value
+
+    def update(self, instance, validated_data):
         instance.set_password(validated_data['Password'])
         instance.is_password_to_change = False
         instance.save()
