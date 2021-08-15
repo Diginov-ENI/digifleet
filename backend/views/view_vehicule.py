@@ -42,15 +42,15 @@ class VehiculeViewSet(viewsets.ViewSet):
         On récupère la liste de tous les véhicules disponibles avec le même site
         """
         params = request.query_params
-        queryset = Vehicule.objects.exclude(is_active=False
+        queryset = Vehicule.objects.exclude(
+            is_active=False
         ).filter(
             Q(site_id=params['siteId']),
         ).exclude(
-             Q(emprunts__date_fin__gte=params['dateDebut'])
+            (Q(emprunts__date_debut__lte=params['dateFin']))&
+            (Q(emprunts__date_fin__gte=params['dateDebut']))&
+            (Q(emprunts__statut__in=['EN_COURS', 'ATTENTE_CLEF']))
         ).order_by('id')
-
-        if params.get('dateFin') is not None:
-            queryset = queryset.exclude(Q(emprunts__date_debut__lte=params['dateFin']))
 
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
