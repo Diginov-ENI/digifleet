@@ -16,41 +16,21 @@
 
                 <mat-form-field>
                     <mat-select placeholder="Type de véhicule" formControlName="Type" id="selectType">
-                        <mat-option value="one">First option</mat-option>
+                        <mat-option value="F">Fonction</mat-option>
+                        <mat-option value="S">Service</mat-option>
                     </mat-select>
-                    <!-- <mat-error
-                        *ngIf="form.controls.type.errors && (form.controls.type.dirty || form.controls.type.touched)">
-                        <span *ngIf="form.controls.type.errors.required">Le type doit être renseigné.</span>
-                    </mat-error> -->
                 </mat-form-field>
 
-                <!-- <mat-form-field>
-                    <input matInput type="date" placeholder="Date de début *"
-                        formControlName="DateDebut" id="textDateDebut">
-                     <mat-error
-                        *ngIf="form.controls.date_debut.errors && (form.controls.date_debut.dirty || form.controls.date_debut.touched)">
-                        <span *ngIf="form.controls.date_fin.errors.required">La date doit être renseigné.</span>
-                    </mat-error> 
-                </mat-form-field>
-
-                <mat-form-field>
-                    <input matInput type="date" placeholder="Date de fin *"
-                        formControlName="DateFin" id="textDateFin">
-                     <mat-error
-                        *ngIf="form.controls.date_fin.errors && (form.controls.date_fin.dirty || form.controls.date_ddate_finebut.touched)">
-                        <span *ngIf="form.controls.date_fin.errors.required">La date doit être renseigné.</span>
-                    </mat-error> 
-                </mat-form-field> -->
-
-                    <mat-form-field appearance="fill">
+                
+                    <mat-form-field>
                         <mat-label>Date de début *</mat-label>
                         <input matInput [matDatepicker]="pickerStart" formControlName="DateDebut">
                         <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
                         <mat-datepicker #pickerStart></mat-datepicker>
                     </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Date de fin *</mat-label>
-                        <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin">
+                    <mat-form-field>
+                        <mat-label>Date de fin</mat-label>
+                        <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin" [required]="this.form.controls.Type.value != 'F'">
                         <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
                         <mat-datepicker #pickerEnd></mat-datepicker>
                     </mat-form-field>
@@ -59,18 +39,11 @@
                 <mat-form-field>
                     <input matInput type="text" minlength="3" maxLength="500" placeholder="Destination *"
                         formControlName="Destination" id="textDestination">
-                    <!-- <mat-error
-                        *ngIf="form.controls.destination.errors && (form.controls.destination.dirty || form.controls.destination.touched)">
-                        <span *ngIf="form.controls.destination.errors.required">La destination doit être renseigné.</span>
-                    </mat-error> -->
                 </mat-form-field>
 
                 <mat-form-field>
                     <input matInput type="text" minlength="3" maxLength="2000" placeholder="Commentaire"
                         formControlName="Commentaire" id="textCommentaire">
-                    <!-- <mat-error *ngIf="form.controls.commentaire.errors && (form.controls.commentaire.dirty || form.controls.commentaire.touched)">
-                        
-                    </mat-error> -->
                 </mat-form-field>
                 <mat-form-field >
                     <mat-label>Site *</mat-label>
@@ -80,32 +53,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <!-- <mat-form-field class="chip-list" appearance="fill">
-                    <mat-label>Passagers</mat-label>
-                    <mat-chip-list #chipList aria-label="Passagers">
-                      <mat-chip
-                        *ngFor="let passager of passagers"
-                        [selectable]="selectable"
-                        [removable]="removable"
-                        (removed)="remove(utilisateur)">
-                        {{passager.nom}} {{passager.prenom}}
-                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                      </mat-chip>
-                      <input
-                        placeholder="Nouveau passager..."
-                        #passagerInput
-                        [formControl]="passager"
-                        [matAutocomplete]="auto"
-                        [matChipInputFor]="utilisateurs"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        (matChipInputTokenEnd)="add($event)">
-                    </mat-chip-list>
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                      <mat-option *ngFor="let utilisateur of utilisateurs | async" [value]="utilisateur.Id">
-                        {{utilisateur.nom}} {{utilisateur.prenom}}
-                      </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field> -->
+                <passager-chips #passagerChips [matTooltip]="this.passagerTooltip"></passager-chips>
                
 
 
