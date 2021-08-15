@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0010_site_is_active'),
+        ('backend', '0011_utilisateur_is_password_to_change'),
     ]
 
     operations = [
