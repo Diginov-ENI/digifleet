@@ -127,7 +127,7 @@ class EmpruntSerializer(serializers.ModelSerializer):
             raise Exception("La date de début ne peut pas être après la date de fin.")
         
         # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date actuelle
-        if validated_data['date_fin'] < date.today():
+        if validated_data['date_fin'].date() < date.today():
             raise Exception("Il n'est pas possible de créer un emprunt terminé.")
             
         # --- VALIDATION --- On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt sur le même interval temporaire en tant que conducteur
@@ -198,6 +198,14 @@ class EmpruntSerializer(serializers.ModelSerializer):
                 passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
 
             # ---------- DEBUT VALIDATION ---------- 
+            # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
+            if validated_data['date_fin'] < validated_data['date_debut']:
+                raise Exception("La date de début ne peut pas être après la date de fin.")
+        
+            # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date actuelle
+            if validated_data['date_fin'].date() < date.today():
+                raise Exception("Il n'est pas possible de créer un emprunt terminé.")
+            
             # On récupère tous les passagers sur le meme interval de temps
             passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
 

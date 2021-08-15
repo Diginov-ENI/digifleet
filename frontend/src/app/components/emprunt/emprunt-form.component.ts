@@ -14,6 +14,7 @@ import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
 import { AuthService } from 'src/app/services/auth.service';
+import { PassagerChips } from './passager-chips/passager-chips.component';
 
 @Component({
   selector: 'emprunt-form',
@@ -28,8 +29,10 @@ export class EmpruntFormComponent implements OnInit {
   site: Site;
   format: string = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
   form;
+  groupeTooltip = null;
   private connectedUser: Utilisateur = null;
 
+  @ViewChild('passagerChips') passagerChips: PassagerChips;
   constructor(
     private _empruntBackendService: EmpruntBackendService,
     private router: Router,
@@ -53,16 +56,15 @@ export class EmpruntFormComponent implements OnInit {
       Commentaire : [''],
       Type : ['', Validators.required],
       Site: [''] ,
-      // Passager: [''] ,
+      Passager: [''] ,
     });
-    this.getSites();
-    this.getUtilisateurs();
+    this.getAvailablesSites();
     this.authService.getUser().subscribe(user => this.connectedUser = user);
     
     this.form.controls.Site.setValidators([Validators.required]);
   }
-  getSites() {
-    this._siteBackendService.getSites().subscribe(response => {
+  getAvailablesSites() {
+    this._siteBackendService.getAvailablesSites().subscribe(response => {
       this.sites = response.Data;
     })
   }
@@ -77,11 +79,11 @@ export class EmpruntFormComponent implements OnInit {
     let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined, 'IsActive': undefined}
     if (!this.emprunt.Id) {
       this.emprunt.Id = undefined;
-      this.emprunt.Passagers = [];
       this.emprunt.DateDebut = this.form.controls.DateDebut.value.format(this.format);
-      this.emprunt.DateFin = this.form.controls.DateFin.value ? this.form.controls.DateFin.value.format(this.format) : null;
+      this.emprunt.DateFin = this.form.controls.DateFin.value ? this.form.controls.DateFin.value.format(this.format) : undefined;
       this.emprunt.Site = site;
       this.emprunt.Statut="DEPOSEE";
+      this.emprunt.Passagers =this.getSelectedPassagers();
       this.emprunt.Conducteur = this.connectedUser;
       this._empruntBackendService.addEmprunt(this.emprunt).subscribe(res => {
         this.router.navigate(['Digifleet/liste-emprunt']);
@@ -95,7 +97,7 @@ export class EmpruntFormComponent implements OnInit {
         'Commentaire': this.emprunt.Commentaire,
         'Type': this.emprunt.Type,
         'Site' :  this.emprunt.Site,
-        // 'Passager' :  this.emprunt.Passagers,
+        'Passager' :  this.getSelectedPassagers(),
       }
 
       this._empruntBackendService.updateEmprunt(object).subscribe(res => {
@@ -120,7 +122,11 @@ export class EmpruntFormComponent implements OnInit {
     this.form.controls.Commentaire.setValue(emprunt.Commentaire);
     this.form.controls.Type.setValue(emprunt.Type);
     this.form.controls.Site.setValue(emprunt.Site.Id);
-    // this.form.controls.passager.setValue(emprunt.Passagers);
+    this.form.controls.passager.setValue(emprunt.Passagers);
+  }
+
+  getSelectedPassagers(): Utilisateur[] {
+    return this.passagerChips.getPassagers();
   }
 
   public noWhitespaceValidator(): ValidatorFn {
@@ -139,62 +145,3 @@ export class EmpruntFormComponent implements OnInit {
     };
   }
 }
-
-// export class ChipsPassager {
-//   selectable = true;
-//   removable = true;
-//   separatorKeysCodes: number[] = [ENTER, COMMA];
-//   passagerCtrl = new FormControl();
-//   filteredPassager: Observable<Utilisateur[]>;
-//   passagers: Utilisateur[];
-//   utilisateurs: Utilisateur[];
-
-//   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
-
-//   constructor(
-//     private _utilisateurBackendService:UtilisateurBackendService,
-//   ) {
-//     this.filteredPassager = this.passagerCtrl.valueChanges.pipe(
-//         startWith(null),
-//         map((utilisateur.Nom + utilisateur.Prenom: String | null) => utilisateur ? this._filter(utilisateur.Nom+utilisateur.Prenom) : this.utilisateurs.slice()));
-    
-//   }
-//   getUtilisateurs() {
-//     this._utilisateurBackendService.getUtilisateurs().subscribe(response => {
-//       this.utilisateurs = response.Data;
-//     })
-//   }
-//   add(event: MatChipInputEvent): void {
-//     const value = (event.value || '').trim();
-
-//     // Add our fruit
-//     if (value) {
-//       this.passagers.push(value);
-//     }
-
-//     // Clear the input value
-//     event.chipInput!.clear();
-
-//     this.passagerCtrl.setValue(null);
-//   }
-
-//   remove(user: Utilisateur): void {
-//     const index = this.passagers.indexOf(user);
-
-//     if (index >= 0) {
-//       this.passagers.splice(index, 1);
-//     }
-//   }
-
-//   selected(event: MatAutocompleteSelectedEvent): void {
-//     this.passagers.push(event.option.viewValue);
-//     this.fruitInput.nativeElement.value = '';
-//     this.passagerCtrl.setValue(null);
-//   }
-
-//   private _filter(value: string): Utilisateur[] {
-//     const filterValue = value.toLowerCase();
-
-//     return this.utilisateurs.filter(utilisateur => utilisateur.Nom.toLowerCase().includes(filterValue));
-//   }
-// }

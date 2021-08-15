@@ -54,7 +54,7 @@ import { UtilisateurPermissionComponent } from './components/utilisateur/utilisa
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
-// import {ChipsPassager} from './components/emprunt/emprunt-form.component';
+ import {PassagerChips} from './components/emprunt/passager-chips/passager-chips.component';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -106,7 +106,7 @@ export const DATE_FORMAT = {
     AlertComponent,
     DialogConfirmComponent,
     ToastHelperComponent,
-    // ChipsPassager,
+    PassagerChips,
   ],
   entryComponents: [],
   imports: [
