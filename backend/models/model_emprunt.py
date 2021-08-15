@@ -8,7 +8,7 @@ from backend.models.model_utilisateur import Utilisateur
 class Emprunt(models.Model):
     date_demande = models.DateTimeField(auto_now_add=True)
     date_debut = models.DateTimeField()
-    date_fin = models.DateTimeField()
+    date_fin = models.DateTimeField(null=True)
     statut = models.CharField(max_length=15)
     destination = models.CharField(max_length=500)
     commentaire = models.CharField(max_length=2000)
