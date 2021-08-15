@@ -191,6 +191,12 @@ mat-dialog-container {
     &.is-success {
         border-left: 15px solid $color-success;
     }
+    &.is-warning {
+        border-left: 15px solid $color-warning;
+    }
+    &.is-info {
+        border-left: 15px solid $color-info;
+    }
 }
 .mat-snack-bar-handset{
     display: contents !important;   
@@ -219,6 +225,12 @@ mat-dialog-container {
         }
         &.is-success {
             color: $color-success;
+        }
+        &.is-warning {
+            color: $color-warning;
+        }
+        &.is-info {
+            color: $color-info;
         }
     }
 }

@@ -14,6 +14,7 @@ export class Utilisateur{
     public IsActive: boolean;
     public IsSuperuser: boolean;
     public LastLogin: Date;
+    public IsPasswordToChange: boolean;
 
     public constructor(init?: Partial<Utilisateur>) {3
         Object.assign(this, init);

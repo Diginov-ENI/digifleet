@@ -1,4 +1,5 @@
 from django.core.exceptions import NON_FIELD_ERRORS
+from django.db.models.fields import EmailField
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, generics
 from rest_framework.decorators import permission_classes, action
@@ -42,7 +43,11 @@ class UtilisateurViewSet(viewsets.ViewSet):
         if Utilisateur.objects.filter(email__exact=serializer.validated_data['email']):
             return Response(data= { 'IsSuccess': False, 'LibErreur' : "Un compte existe déjà avec l'adresse E-Mail \"" + serializer.validated_data['email'] + "\"."}, status=status.HTTP_200_OK)
 
-        serializer.save()
+        #serializer.Password = serializer.Prenom[0]+serializer.
+        u = serializer.save()
+        u.set_password((u.prenom[0]+u.nom).lower())
+        #Utilisateur.objects.get(email = serializer.Email)
+        u.save()
         headers = self.get_success_headers(serializer.data)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 

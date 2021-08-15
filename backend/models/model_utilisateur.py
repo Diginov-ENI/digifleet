@@ -46,6 +46,7 @@ class Utilisateur(AbstractBaseUser,  PermissionsMixin):
     objects = GestionnaireUtilisateur()
     user_permissions = models.ManyToManyField(Permission)
     groups = models.ManyToManyField(Group)
+    is_password_to_change = models.BooleanField(default=True)
 
     # Required implementation fields for AbstracBaseUser
     USERNAME_FIELD = 'email'

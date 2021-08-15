@@ -21,6 +21,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     UserPermissions = PermissionSerializer(source='get_user_permissions', read_only=True, many=True)
     DirectUserPermissions = PermissionSerializer(source='user_permissions', many=True, required=False)
     Groups = GroupSerializer(source='groups',required=False, many=True)
+    IsPasswordToChange = serializers.BooleanField(source='is_password_to_change', required = False)
 
     class Meta:
         model = Utilisateur
@@ -36,6 +37,7 @@ class UtilisateurSerializer(serializers.ModelSerializer):
             'Groups', 
             'UserPermissions',
             'DirectUserPermissions',
+            'IsPasswordToChange',
         )
         extra_kwargs = {
             'Id' : {
@@ -57,6 +59,9 @@ class UtilisateurSerializer(serializers.ModelSerializer):
                 'required' : False,
             },
             'Groups' : {
+                'required' : False,
+            },
+            'IsPasswordToChange' : {
                 'required' : False,
             }
         }
@@ -128,6 +133,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         instance.set_password(validated_data['Password'])
+        instance.is_password_to_change = False
         instance.save()
 
         return instance
