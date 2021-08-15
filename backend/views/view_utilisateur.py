@@ -43,7 +43,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
         if Utilisateur.objects.filter(email__exact=serializer.validated_data['email']):
             return Response(data= { 'IsSuccess': False, 'LibErreur' : "Un compte existe déjà avec l'adresse E-Mail \"" + serializer.validated_data['email'] + "\"."}, status=status.HTTP_200_OK)
 
-        u = serializer.save()
+        serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
