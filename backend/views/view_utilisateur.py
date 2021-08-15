@@ -25,7 +25,7 @@ class UtilisateurViewSet(viewsets.ViewSet):
     permission_classes = (UtilisateurPermission,)
     
     def list(self, request):
-        queryset = Utilisateur.objects.all().order_by('id')
+        queryset = Utilisateur.objects.exclude(is_superuser=True).order_by('id')
         serializer = UtilisateurSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
