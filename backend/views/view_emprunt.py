@@ -29,9 +29,9 @@ class EmpruntViewSet(viewsets.ViewSet):
         if 'siteId' in params:
             queryset = queryset.filter(site_id=params['siteId'])
         if 'isCloturee' in params and params['isCloturee'] == 'true':
-            queryset = queryset.filter(statut='CLOTUREE')
+            queryset = queryset.filter(statut__in=['CLOTUREE','REFUSEE', 'ANNULEE'])
         else:
-            queryset = queryset.exclude(statut='CLOTUREE')
+            queryset = queryset.exclude(statut__in=['CLOTUREE','REFUSEE', 'ANNULEE'])
         
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
@@ -47,9 +47,9 @@ class EmpruntViewSet(viewsets.ViewSet):
         if 'siteId' in params:
             queryset = queryset.filter(site_id=params['siteId'])
         if 'isCloturee' in params and params['isCloturee'] == 'true':
-            queryset = queryset.filter(statut='CLOTUREE')
+            queryset = queryset.filter(statut__in=['CLOTUREE','REFUSEE', 'ANNULEE'])
         else:
-            queryset = queryset.exclude(statut='CLOTUREE')
+            queryset = queryset.exclude(statut__in=['CLOTUREE','REFUSEE', 'ANNULEE'])
         
         serializer = EmpruntSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
