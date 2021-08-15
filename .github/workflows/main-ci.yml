@@ -70,5 +70,5 @@ jobs:
         docker exec docker_web_1 coverage run --source=backend/ --omit=backend/tests/*,backend/migrations/* -m pytest
     - name: Check coverage
       run: |
-        docker exec docker_web_1 coverage report --fail-under=60
+        docker exec docker_web_1 coverage report --fail-under=80
     
