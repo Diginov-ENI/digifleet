@@ -20,21 +20,20 @@
                         <mat-option value="S">Service</mat-option>
                     </mat-select>
                 </mat-form-field>
-
                 
-                    <mat-form-field>
-                        <mat-label>Date de début *</mat-label>
-                        <input matInput [matDatepicker]="pickerStart" formControlName="DateDebut">
-                        <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
-                        <mat-datepicker #pickerStart></mat-datepicker>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Date de fin</mat-label>
-                        <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin" [required]="this.form.controls.Type.value != 'F'">
-                        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-                        <mat-datepicker #pickerEnd></mat-datepicker>
-                    </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Date de début *</mat-label>
+                    <input matInput [matDatepicker]="pickerStart" formControlName="DateDebut">
+                    <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
 
+                <mat-form-field>
+                    <mat-label>Date de fin *</mat-label>
+                    <input matInput [matDatepicker]="pickerEnd" formControlName="DateFin">
+                    <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
 
                 <mat-form-field>
                     <input matInput type="text" minlength="3" maxLength="500" placeholder="Destination *"
@@ -45,6 +44,7 @@
                     <input matInput type="text" minlength="3" maxLength="2000" placeholder="Commentaire"
                         formControlName="Commentaire" id="textCommentaire">
                 </mat-form-field>
+
                 <mat-form-field >
                     <mat-label>Site *</mat-label>
                     <mat-select id="inputSite" formControlName="Site">
@@ -53,9 +53,8 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <passager-chips #passagerChips [matTooltip]="this.passagerTooltip"></passager-chips>
-               
 
+                <passager-chips #passagerChips [matTooltip]="this.passagerTooltip" [typeEmprunt]="this.form.controls.Type.value"></passager-chips>
 
                 <div class="group-button-stick-right">
                     <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-emprunt" id="btnAnnuler">

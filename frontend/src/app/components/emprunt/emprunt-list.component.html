@@ -28,7 +28,12 @@
         <mat-card-subtitle>
           <mat-chip-list aria-label="dates">
             <mat-icon aria-hidden="false" aria-label="dates" class="icon">event</mat-icon>
-            Du <mat-chip disableRipple >{{ emprunt.DateDebut | date:format }}</mat-chip> au <mat-chip disableRipple>{{ emprunt.DateFin | date:format }}</mat-chip>
+              <div *ngIf="!emprunt.DateFin">
+                À partir du  <mat-chip disableRipple >{{ emprunt.DateDebut | date:format }}</mat-chip>
+              </div>
+              <div *ngIf="emprunt.DateFin">
+                Du <mat-chip disableRipple >{{ emprunt.DateDebut | date:format }}</mat-chip> au <mat-chip disableRipple>{{ emprunt.DateFin | date:format }}</mat-chip>
+              </div>
           </mat-chip-list>
         </mat-card-subtitle>
           <mat-divider></mat-divider>

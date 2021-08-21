@@ -1,9 +1,11 @@
 <!-- Modifier une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin)-->
+<!-- TODO : à finir
 <button mat-raised-button color="primary" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id || connectedUser.IsSuperuser) && emprunt.Statut == 'DEPOSEE'"
     [routerLink]="['../liste-emprunt/emprunt/', emprunt.Id]">
     <mat-icon class="icon-light-color">edit</mat-icon>
     Modifier
 </button>
+--> 
 
 <!-- Supprimer une demande : si la demande n'est pas encore acceptée ET l'utilisateur courant est conducteur (ou admin)-->
 <button mat-raised-button color="primary" (click)="openConfirmDeleteDialog(emprunt)" *ngIf="(connectedUser.Id == emprunt.Conducteur.Id) && emprunt.Statut == 'DEPOSEE'">

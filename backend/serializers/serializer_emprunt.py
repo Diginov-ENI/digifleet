@@ -123,26 +123,25 @@ class EmpruntSerializer(serializers.ModelSerializer):
         
         # ---------- DEBUT VALIDATION ---------- 
         # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
-        if validated_data.get('date_fin') is not None and  validated_data.get('date_fin') < validated_data.get('date_debut'):
+        if validated_data.get('date_fin') < validated_data.get('date_debut'):
             raise Exception("La date de début ne peut pas être après la date de fin.")
         
-        # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date actuelle
-        if validated_data.get('date_fin') is not None and validated_data.get('date_fin').date() < date.today():
+        # --- VALIDATION --- On verifie que la date de fin de l'emprunt n'est pas avant aujourd'hui
+        if validated_data.get('date_fin').date() < date.today():
             raise Exception("Il n'est pas possible de créer un emprunt terminé.")
             
-        # --- VALIDATION --- On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt sur le même interval temporaire en tant que conducteur
-        if validated_data.get('date_fin') is not None:
-            if Emprunt.objects.filter(
-                Q(date_debut__lte=validated_data.get('date_fin')),
-                Q(date_fin__gte=validated_data.get('date_debut')),
-                Q(conducteur_id=conducteur_data['id']),
-                ).distinct().exists():
-                raise Exception("Ce conducteur est déjà conducteur d'une autre demande sur cet interval de temps.")
+        # --- VALIDATION --- On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt actif sur le même interval temporaire en tant que conducteur
+        if Emprunt.objects.filter(
+            Q(date_debut__lte=validated_data.get('date_fin')),
+            Q(date_fin__gte=validated_data.get('date_debut')),
+            Q(conducteur_id=conducteur_data['id']),
+            Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
+            ).distinct().exists():
+            raise Exception("Ce conducteur est déjà conducteur d'une autre demande sur cet interval de temps.")
 
         # On récupère tous les passagers sur le meme interval de temps
         passagers_by_interval = []
-        if validated_data.get('date_fin') is not None:
-            passagers_by_interval = self.list_passagers_by_interval(validated_data.get('date_fin'), validated_data.get('date_debut'))
+        passagers_by_interval = self.list_passagers_by_interval(validated_data.get('date_fin'), validated_data.get('date_debut'))
        
         # --- VALIDATION ---  On vérifie que le conducteur courant n'est pas déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
         for passager_by_interval in passagers_by_interval:
@@ -156,13 +155,13 @@ class EmpruntSerializer(serializers.ModelSerializer):
                     raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
 
             # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
-            if validated_data.get('date_fin') is not None:
-                if Emprunt.objects.filter(
-                    Q(date_debut__lte=validated_data.get('date_fin')),
-                    Q(date_fin__gte=validated_data.get('date_debut')),
-                    Q(conducteur_id=passager_data['id']),
-                    ).distinct().exists():
-                    raise Exception("Ce conducteur est déjà conduteur d'une autre demande sur cet interval de temps.")
+            if Emprunt.objects.filter(
+                Q(date_debut__lte=validated_data.get('date_fin')),
+                Q(date_fin__gte=validated_data.get('date_debut')),
+                Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
+                Q(conducteur_id=passager_data['id']),
+                ).distinct().exists():
+                raise Exception("Ce conducteur est déjà conduteur d'une autre demande sur cet interval de temps.")
 
             #  --- VALIDATION --- On vérifie que le conducteur courant ne soit pas passagers courants
             if passager_data['id'] == conducteur_data['id']:
@@ -195,63 +194,66 @@ class EmpruntSerializer(serializers.ModelSerializer):
             conducteur_data = validated_data.pop('conducteur')
             conducteur = get_object_or_404(Utilisateur.objects.all(), pk=conducteur_data['id'])
             instance.conducteur = conducteur
+        passagers = []
+        passagers_data = []
         if validated_data.get('passagers') is not None:
             passagers_data = validated_data.get('passagers')
-            passagers = []
-            for passager in passagers_data:
-                passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
 
-            # ---------- DEBUT VALIDATION ---------- 
-            # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
-            if validated_data.get('date_fin') is not None and validated_data.get('date_fin') < validated_data.get('date_debut'):
-                raise Exception("La date de début ne peut pas être après la date de fin.")
+        for passager in passagers_data:
+            passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
+
+        # ---------- DEBUT VALIDATION ---------- 
+        # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
+        if instance.date_fin < instance.date_debut:
+            raise Exception("La date de début ne peut pas être après la date de fin.")
         
-            # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date actuelle
-            if validated_data.get('date_fin') is not None and validated_data.get('date_fin').date() < date.today():
-                raise Exception("Il n'est pas possible de créer un emprunt terminé.")
+        # On récupère tous les passagers sur le meme interval de temps
+        passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
+
+        # --- VALIDATION ---  On vérifie qu'aucun des passagers courants ne soit déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
+        for passager in passagers:
+            for passager_by_interval in passagers_by_interval:
+                if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
+                    raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
+            # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
+            if Emprunt.objects.filter(
+                Q(date_debut__lte=instance.date_fin),
+                Q(date_fin__gte=instance.date_debut),
+                Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
+                Q(conducteur_id=passager.id),
+                ).distinct().exists():
+                raise Exception("L'un des passager déjà conducteur d'une autre demande sur cet interval de temps.")
+
+            #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
+            if passager.id == instance.conducteur.id:
+                raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
             
-            # On récupère tous les passagers sur le meme interval de temps
-            passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
-
-            # --- VALIDATION ---  On vérifie qu'aucun un des passagers courants ne soit déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
-            for passager in passagers:
-                for passager_by_interval in passagers_by_interval:
-                    if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
-                        raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
-                # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
-                if Emprunt.objects.filter(
-                    Q(date_debut__lte=instance.date_fin),
-                    Q(date_fin__gte=instance.date_debut),
-                    Q(conducteur_id=passager.id),
-                    ).distinct().exists():
-                    raise Exception("L'un des passager déjà conducteur d'une autre demande sur cet interval de temps.")
-
-                #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
-                if passager.id == instance.conducteur.id:
-                    raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
-
-            # ---------- FIN VALIDATION ---------- 
-            
-            instance.passagers.set(passagers)
+        instance.passagers.set(passagers)
 
         # TODO : Vérification droit de modification du véhicule
         if validated_data.get('vehicule') is not None:
             vehicule_data = validated_data.pop('vehicule')
             vehicule = get_object_or_404(Vehicule.objects.all(), pk=vehicule_data['id'])
+
             #  --- VALIDATION --- On vérifie qu'il n'y a pas plus de passagers que de places dans le véhicule
-            # nbPasagers = Emprunt.objects.filter(pk=instance.id).annotate(Count('passagers'))
             nbPasagers = Utilisateur.objects.filter(covoits__id=instance.id).count()
             if nbPasagers > vehicule.nb_place:
                 raise Exception("Il y a plus de passagers que le véhicule ne peut en accueillir.")
+
             # --- VALIDATION --- On vérifie que le véhicule n'est pas déjà associé à un autre emprunt sur le même interval temporaire
-            if Emprunt.objects.filter(
-                Q(date_debut__lte=instance.date_fin),
-                Q(date_fin__gte=instance.date_debut),
-                vehicule_id=vehicule_data['id'],).distinct().exists():
-                raise Exception("Ce véhicule est déjà associé à un autre emprunt sur le même interval de temps.")
+            if validated_data.get('conducteur') is not None:
+                if Emprunt.objects.filter(
+                    Q(date_debut__lte=instance.date_fin),
+                    Q(date_fin__gte=instance.date_debut),
+                    Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
+                    vehicule_id=vehicule_data['id'],
+                    ).distinct().exists():
+                    raise Exception("Ce véhicule est déjà associé à un autre emprunt sur le même interval de temps.")         
 
             instance.vehicule = vehicule
-
+            
+        # ---------- FIN VALIDATION ---------- 
+    
         instance.save()
 
         return instance
@@ -260,10 +262,11 @@ class EmpruntSerializer(serializers.ModelSerializer):
         """
         Permet de récupérer tous les passagers d'après l'interval de temps de leurs emprunts
         """
-         # On récupère tous les emprunts sur le meme interval de temps
+         # On récupère tous les emprunts en cours sur le meme interval de temps
         emprunts = Emprunt.objects.filter(
             Q(date_debut__lte=date_fin),
             Q(date_fin__gte=date_debut),
+            Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
             ).distinct().prefetch_related('passagers')
         
         # On retourne tous les passagers de ces emprunts

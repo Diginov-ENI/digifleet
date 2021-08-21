@@ -6,9 +6,9 @@ Permissions custom pour un groupe
 class PermissionTypePermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if view.action == "retrieve":
-            return True
+            return bool(request.user.is_authenticated)
         elif view.action == "list":
-            return True
+            return bool(request.user.is_authenticated)
         else:
             return False
 

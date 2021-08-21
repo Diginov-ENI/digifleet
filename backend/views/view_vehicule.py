@@ -8,7 +8,7 @@ from backend.models.model_emprunt import Emprunt
 from backend.models.model_vehicule import Vehicule
 from backend.serializers import VehiculeSerializer
 from backend.permissions.permission_vehicule import VehiculePermission
-from django.db.models import Q 
+from django.db.models import Q, query 
 
 class VehiculeViewSet(viewsets.ViewSet):
 
@@ -47,8 +47,9 @@ class VehiculeViewSet(viewsets.ViewSet):
             Q(site_id=params['siteId']),
         ).exclude(
             Q(emprunts__date_debut__lte=params['dateFin']),
-            Q(emprunts__date_fin__gte=params['dateDebut'])
-        ).order_by('id')
+            Q(emprunts__date_fin__gte=params['dateDebut']),
+            Q(emprunts__statut__in=['EN_COURS', 'ATTENTE_CLEF'])
+        ).order_by('id')        
 
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
