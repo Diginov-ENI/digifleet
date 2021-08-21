@@ -1,0 +1,22 @@
+:host::ng-deep .permissions-type{
+    margin-top:10px;
+    margin-bottom   :10px;
+}
+
+:host::ng-deep .permissions-type h3{
+    margin-bottom: 10px;
+    display: flex;
+}
+
+:host::ng-deep .permissions-type .permissions-list{
+    margin-top:20px;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+  
+:host::ng-deep mat-checkbox{
+    font-size: 14px;
+    margin:5px 0;
+}

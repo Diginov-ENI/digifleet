@@ -1,0 +1,40 @@
+<div class="wrapper-component">
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="7">
+            <ion-row class="ion-justify-content-between">
+                <ion-col class="ion-no-padding">
+                    <h1 *ngIf="!this.form.controls.Id.value" class="titre-page">Ajout d'un groupe</h1>
+                    <h1 *ngIf="this.form.controls.Id.value" class="titre-page">Modification d'un groupe</h1>
+                </ion-col>
+            </ion-row>
+        </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+        <ion-col size-xl="5">
+            <form [formGroup]="form">
+                <input type="hidden" formControlName="Id">
+
+                <mat-form-field>
+                    <input matInput type="text" minlength="3" maxLength="200" placeholder="Nom *" formControlName="Name"
+                        id="textName">
+                    <mat-error
+                        *ngIf="form.controls.Name.errors && (form.controls.Name.dirty || form.controls.Name.touched)">
+                        <span *ngIf="form.controls.Name.errors.required">Le nom doit être renseigné.</span>
+                    </mat-error>
+                </mat-form-field>
+                <h2>Utilisateurs</h2>
+                <utilisateur-chips #utilisateursChips></utilisateur-chips>
+                <permission-form #permissionFrom [parent]="groupe"></permission-form>
+                <div class="group-button-stick-right">
+                    <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-groupe"
+                        id="btnAnnuler">
+                        <span>Annuler</span>
+                    </button>
+                    <button mat-raised-button color="primary" type="button" (click)="sauver()" id="btnSauver">
+                        <span>Valider</span>
+                    </button>
+                </div>
+            </form>
+        </ion-col>
+    </ion-row>
+</div>

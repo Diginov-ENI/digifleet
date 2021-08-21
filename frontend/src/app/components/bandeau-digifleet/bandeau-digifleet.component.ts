@@ -9,7 +9,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
     styleUrls: ['bandeau-digifleet.component.scss'],
 })
 export class BandeauDigifleetComponent {
-    private user:Utilisateur = null;
+    public user: Utilisateur = null;
     constructor(private authService: AuthService,
         private router: Router){
             this.authService.getUser().subscribe(user=>this.user = user);

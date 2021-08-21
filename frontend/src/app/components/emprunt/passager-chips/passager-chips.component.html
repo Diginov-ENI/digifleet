@@ -1,0 +1,27 @@
+<mat-form-field class="example-chip-list">
+    <mat-label>Passagers</mat-label>
+    <mat-chip-list [disabled]="isDisabled" selectable multiple #chipList aria-label="Passagers">
+      <mat-chip
+        *ngFor="let passager of passagers"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(passager)">
+        {{passager.Nom}} {{passager.Prenom}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="Ajouter un passager..."
+        #passagerInput
+        [formControl]="passagerCtrl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let utilisateur of filteredUtilisateurs | async" [value]="utilisateur">
+        {{utilisateur.Nom}} {{utilisateur.Prenom}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  

@@ -1,0 +1,79 @@
+<div class="wrapper-component">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size-xl="7">
+      <ion-row class="ion-justify-content-between">
+        <ion-col class="ion-no-padding">
+          <h1 class="titre-page">Sites</h1>
+        </ion-col>
+        <ion-col class="ion-no-padding">
+
+          <div class="button-list-top-container">
+            <button class="button-list color-accent" mat-stroked-button routerLink="site" matTooltip="Ajouter un site"
+              id="btnAjoutSite">
+              <span class="mat-button-wrapper">
+                <span class="material-icons">add</span>
+              </span>
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <table *ngIf="dataSource?.filteredData?.length > 0" mat-table [dataSource]="dataSource">
+        <!-- colonne Libellé -->
+        <ng-container matColumnDef="libelle">
+          <th [style.display]="'table-cell'" mat-header-cell *matHeaderCellDef > Libellé
+          </th>
+          <td [style.display]="'table-cell'" mat-cell *matCellDef="let site">
+            {{site.Libelle}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="etat">
+          <th mat-header-cell *matHeaderCellDef id="headerEtat">État</th>
+          <td mat-cell *matCellDef="let site" id="cellEtat">
+            <span class="material-icons green" *ngIf="site.IsActive"  matTooltip="Actif">circle </span>
+            <span class="material-icons red"   *ngIf="!site.IsActive" matTooltip="Inactif">hide_source</span>
+          </td>
+        </ng-container>
+
+        <!-- colonne Actions -->
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let site">
+         
+            <div class="mat-button-list-container">
+              <button class="button-list" mat-stroked-button (click)="openConfirmArchiveDialog(site)"
+                matTooltip="Changer l'état du site" id="btnActifObsoleteSite">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">hourglass_empty</span>
+                </span>
+              </button>
+              <button class="button-list" mat-stroked-button [routerLink]="['../liste-site/site/', site.Id]"
+                matTooltip="Modifier un site">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">edit</span>
+                </span>
+              </button>
+              <button class="button-list" mat-stroked-button (click)="openConfirmDeleteDialog(site)"
+                matTooltip="Supprimer un site" id="btnDeleteSite">
+                <span class="mat-button-wrapper">
+                  <span class="material-icons">delete</span>
+                </span>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let dataSource; columns: tableColumns"></tr>
+      </table>
+
+      <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+      <div *ngIf="dataSource == null || dataSource?.filteredData == null || dataSource?.filteredData?.length == 0"
+        class="bloc-aucune-donnee">
+        <p>Aucun site à afficher.</p>
+      </div>
+    </ion-col>
+  </ion-row>
+</div>

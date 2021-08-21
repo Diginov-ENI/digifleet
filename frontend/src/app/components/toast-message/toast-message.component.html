@@ -1,0 +1,52 @@
+<div class="toast-wrapper">
+    <div class="toast-body">
+        <div class="toast-icon">
+            <span *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="material-icons is-error">
+                error
+            </span>
+
+            <span *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="material-icons is-success">
+                check_circle
+            </span>
+
+            <span *ngIf="data?.type === DigiUtils.ETypeToast.Warning.Code" class="material-icons is-Warning">
+                warning
+            </span>
+
+            <span *ngIf="data?.type === DigiUtils.ETypeToast.Info.Code" class="material-icons is-info">
+                info
+            </span>
+        </div>
+        <div class="toast-message">
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="toast-title">
+                {{ DigiUtils.ETypeToast.Erreur.Libelle }}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="toast-title">
+                {{ DigiUtils.ETypeToast.Success.Libelle }}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Warning.Code" class="toast-title">
+                {{ DigiUtils.ETypeToast.Warning.Libelle }}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Info.Code" class="toast-title">
+                {{ DigiUtils.ETypeToast.Info.Libelle }}
+            </div>
+            
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Success.Code" class="toast-content">
+                {{ !data?.libMessageToast ? "L'action s'est déroulée avec succès." : data?.libMessageToast}}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Erreur.Code" class="toast-content">
+                {{ !data?.libMessageToast ? "Une erreur est survenue." : data?.libMessageToast}}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Warning.Code" class="toast-content">
+                {{ !data?.libMessageToast ? "" : data?.libMessageToast}}
+            </div>
+            <div *ngIf="data?.type === DigiUtils.ETypeToast.Info.Code" class="toast-content">
+                {{ !data?.libMessageToast ? "" : data?.libMessageToast}}
+            </div>
+        </div>
+    </div>
+    <div class="toast-dismiss" (click)="snackBarRef.dismiss()">
+        <span class="material-icons">clear
+        </span>
+    </div>
+</div>

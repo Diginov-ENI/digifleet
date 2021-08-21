@@ -1,0 +1,27 @@
+<mat-form-field class="example-chip-list">
+    <mat-label>Liste d'utilisateur</mat-label>
+    <mat-chip-list selectable multiple #chipList aria-label="Liste d'utilisateur">
+      <mat-chip
+        *ngFor="let user of selectedUsers"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(user)">
+        {{user.Nom}} {{user.Prenom}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="Ajouter un utilisateur..."
+        #userInput
+        [formControl]="userCtrl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+        {{user.Nom}} {{user.Prenom}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  
