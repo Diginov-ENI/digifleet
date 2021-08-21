@@ -42,26 +42,14 @@ class VehiculeViewSet(viewsets.ViewSet):
         On récupère la liste de tous les véhicules disponibles avec le même site
         """
         params = request.query_params
-        queryset = Vehicule.objects.exclude(
-            is_active=False
+        queryset = Vehicule.objects.exclude(is_active=False
         ).filter(
             Q(site_id=params['siteId']),
-        )
-        if params.get('dateFin'):
-            queryset = queryset.exclude(
-                (Q(emprunts__date_debut__lte=params['dateFin']) & (Q(emprunts__date_fin__gte=params['dateDebut']))) |
-                (Q(emprunts__date_fin=None) & Q(emprunts__date_debut__lte=params['dateFin'])),
-                Q(emprunts__statut__in=['EN_COURS', 'ATTENTE_CLEF'])
-            ).order_by('id')
-        else:
-            queryset = queryset.exclude(
-                (Q(emprunts__date_fin__gte=params['dateDebut'])) |
-                (Q(emprunts__date_fin=None) & Q(emprunts__type='F')),
-                Q(emprunts__statut__in=['EN_COURS', 'ATTENTE_CLEF'])
-            ).order_by('id')
-
-        
-        
+        ).exclude(
+            Q(emprunts__date_debut__lte=params['dateFin']),
+            Q(emprunts__date_fin__gte=params['dateDebut']),
+            Q(emprunts__statut__in=['EN_COURS', 'ATTENTE_CLEF'])
+        ).order_by('id')        
 
         serializer = VehiculeSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
