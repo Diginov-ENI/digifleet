@@ -1,6 +1,6 @@
 <mat-form-field class="example-chip-list">
     <mat-label>Passagers</mat-label>
-    <mat-chip-list [disabled]="disabled" selectable multiple #chipList aria-label="Passagers">
+    <mat-chip-list [disabled]="isDisabled" selectable multiple #chipList aria-label="Passagers">
       <mat-chip
         *ngFor="let passager of passagers"
         [selectable]="selectable"

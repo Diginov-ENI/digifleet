@@ -21,12 +21,13 @@ import { ToastHelperComponent } from '../../toast-message/toast-message.componen
   styleUrls: ['passager-chips.component.scss'],
 })
 export class PassagerChips implements OnInit {
+  @Input() typeEmprunt = '';
+  isDisabled = false;
   visible = true;
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   passagerCtrl = new FormControl();
-
 
   filteredUtilisateurs: Observable<Utilisateur[]>;
   utilisateurs: Utilisateur[] = [];
@@ -42,7 +43,6 @@ export class PassagerChips implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this._utilisateurBackendService.getUtilisateurs().subscribe((response => {
       if (response.IsSuccess) {
         response.Data.map(utilisateur => this.utilisateurs.push(new Utilisateur(utilisateur)))
@@ -53,16 +53,31 @@ export class PassagerChips implements OnInit {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     }));
-
   }
+
+  ngOnChanges(): void {
+    if(this.typeEmprunt == 'F'){
+      this.isDisabled = true;
+      this.resetPassagers();
+    }else{
+      this.isDisabled = false;
+    }
+  }
+
   public setPassagers(passagers) {
     this.passagers = passagers;
     this.passagerCtrl.setValue("");
   }
+
+  public resetPassagers() {
+    this.passagers = [];
+    this.passagerCtrl.setValue("");
+  }
+
   public getPassagers() {
-    console.log(this.passagers);
     return this.passagers;
   }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -75,15 +90,11 @@ export class PassagerChips implements OnInit {
         input.value = '';
       }
     }
-
-
-
     this.passagerCtrl.setValue(null);
   }
 
   remove(utilisateur: Utilisateur): void {
     const index = this.passagers.indexOf(utilisateur);
-
     if (index >= 0) {
       this.passagers.splice(index, 1);
     }
@@ -109,7 +120,6 @@ export class PassagerChips implements OnInit {
     return this.utilisateurs.includes(option) && !this.passagers.includes(option)
   }
   private _filter(value: string | Utilisateur): Utilisateur[] {
-
     const filterValue = value != null ? (typeof value == "string" ? value.toLowerCase() : value.Nom) : "";
 
     var utilisateurs = this.utilisateurs.filter(utilisateur => {
