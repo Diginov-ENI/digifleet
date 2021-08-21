@@ -8,7 +8,7 @@ class UtilisateurPermission(permissions.BasePermission):
         if view.action == "create":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_create")))
         elif view.action in ['retrieve', 'list']:
-            return True
+            return bool(request.user.is_authenticated)
         elif view.action == "destroy":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("utilisateur_destroy")))
         elif view.action == "archive":

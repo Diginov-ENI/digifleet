@@ -14,15 +14,21 @@ class SiteTestCase(APITestCase):
     # Setups 
     def setUp(self):
         self.client = APIClient()
-        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True)
+        self.admin = Utilisateur.objects.create(email='admin@email', username='admin', nom='nom', prenom='prenom', is_active=True, is_superuser=True, password='mdp')
+        self.user1 = Utilisateur.objects.create(email='user1@email', username='user1', nom='nom', prenom='prenom', is_active=True, is_superuser=False, password='mdp')
+
         self.admin.set_password("mdp")
         self.admin.save()
+
+        self.user1.set_password("mdp")
+        self.user1.save()
 
         self.site_nantes = Site.objects.create(libelle='ENI Nantes')
         self.site_rennes = Site.objects.create(libelle='ENI Rennes')
 
     # List tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_list(self):
+        self.client.force_login(self.user1)
         url = reverse('site-list')
 
         response = self.client.get(url)

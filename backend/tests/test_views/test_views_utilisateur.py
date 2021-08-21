@@ -79,7 +79,7 @@ class UtilisateurTestCase(APITestCase):
 
         response = self.client.get(url)
         self.assertContains(response, self.user1, status_code=status.HTTP_200_OK)
-        self.assertEqual(len(response.data["Data"]), 4)
+        self.assertEqual(len(response.data["Data"]), 3)
 
     def test_list_should_throw_401(self):
         url = reverse('utilisateur-list')
@@ -87,14 +87,6 @@ class UtilisateurTestCase(APITestCase):
 
         self.assertTemplateNotUsed(response, self.CONST_UTILISATEUR_BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_list_should_throw_403(self):
-        self.client.force_login(self.user1)
-
-        url = reverse('utilisateur-list')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
 
     # Retrieve tests ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def test_retrieve(self):

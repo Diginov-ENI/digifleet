@@ -8,15 +8,15 @@ class EmpruntPermission(permissions.BasePermission):
         if view.action == "create":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("emprunt_create")))
         elif view.action == "retrieve":
-            return True
+            return bool(request.user.is_authenticated)
         elif view.action == "list":
             return bool(request.user.is_authenticated and (request.user.is_superuser or request.user.has_perm("emprunt_list")))
         elif view.action == "list_by_owner":
-            return True
+            return bool(request.user.is_authenticated)
         elif view.action == "destroy":
-            return True
+            return bool(request.user.is_authenticated)
         if view.action in ['update', 'partial_update']:
-            return True
+            return bool(request.user.is_authenticated)
         else:
             return False
     
