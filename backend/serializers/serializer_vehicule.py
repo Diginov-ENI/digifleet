@@ -21,7 +21,7 @@ class VehiculeSerializer(serializers.ModelSerializer):
     Marque = serializers.CharField(source='marque')
     Couleur = serializers.CharField(source='couleur')
     NbPlace = serializers.CharField(source='nb_place')
-    IsActive = serializers.BooleanField(source='is_active', required=False, default=False)
+    IsActive = serializers.BooleanField(source='is_active', required=False, default=True)
     Site = SiteSerializer(source='site', required=True)
     class Meta:
         model = Vehicule
