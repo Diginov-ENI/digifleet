@@ -8,3 +8,4 @@ from .serializer_permission_type import PermissionTypeSerializer
 from .serializer_group import GroupSerializer
 from .serializer_emprunt import EmpruntSerializer
 from .serializer_vehicule import VehiculeSerializer
+from .serializer_notification import NotificationSerializer

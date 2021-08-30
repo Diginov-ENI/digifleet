@@ -33,6 +33,7 @@ router.register(r'groupes', views.GroupeViewSet)
 router.register(r'permissions', views.PermissionViewSet)
 router.register(r'permission-types', views.PermissionTypeViewSet)
 router.register(r'emprunts', views.EmpruntViewSet)
+router.register(r'notifications', views.NotificationViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
