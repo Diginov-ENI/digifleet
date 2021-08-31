@@ -1,3 +1,5 @@
+from backend.models.model_utilisateur import Utilisateur
+from backend.models.model_notification import Notification
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
@@ -65,10 +67,17 @@ class EmpruntViewSet(viewsets.ViewSet):
         serializer = EmpruntSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            serializer.save()
+            empruntInstance = serializer.save()
         except Exception as e:
             return Response(data= { 'IsSuccess': False, 'LibErreur' : str(e)}, status=status.HTTP_200_OK)
         headers = self.get_success_headers(serializer.data)
+
+
+        utilisateurs = Utilisateur.objects.all()
+        utilisateurs = list(filter(lambda u:(u.has_perm("emprunt_update_status")),utilisateurs))
+        for u in utilisateurs:
+            Notification.objects.create(message="Une nouvelle demande d'emprunt à été effectué.",utilisateur=u,emprunt=empruntInstance)
+
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
