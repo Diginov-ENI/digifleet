@@ -1,17 +1,15 @@
-import { Component, OnInit , ElementRef, ViewChild} from '@angular/core';
-import { AbstractControl, FormGroup, FormControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { Component, OnInit , ViewChild} from '@angular/core';
+import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
 import { SiteBackendService } from 'src/app/backendservices/site.backendservice';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { Site } from 'src/app/models/site';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { PassagerChips } from './passager-chips/passager-chips.component';
@@ -38,6 +36,7 @@ export class EmpruntFormComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
     private _siteBackendService: SiteBackendService,
     private _utilisateurBackendService:UtilisateurBackendService,
     private authService: AuthService,
@@ -86,7 +85,12 @@ export class EmpruntFormComponent implements OnInit {
       this.emprunt.Passagers =this.getSelectedPassagers();
       this.emprunt.Conducteur = this.connectedUser;
       this._empruntBackendService.addEmprunt(this.emprunt).subscribe(res => {
-        this.router.navigate(['Digifleet/liste-emprunt']);
+        if (res.IsSuccess) {
+          this.router.navigate(['Digifleet/liste-emprunt']);
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Emprunt créé avec succès.'));
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
       });
     } else {
       let object:object = {
