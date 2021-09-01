@@ -1,0 +1,38 @@
+<span #notificationsBlock>
+    <button mat-button (click)="toggleNotifications()">
+    
+        <div *ngIf="notifications.length>0; then thenBlock else elseBlock"></div>
+        <ng-template #thenBlock>
+            <mat-icon matBadge="{{notifications.length}}" matBadgeColor="warn">notifications</mat-icon>
+        </ng-template>
+        <ng-template #elseBlock>
+            <mat-icon>notifications</mat-icon>
+        </ng-template>
+    </button>
+    <mat-card id="notifications-container" *ngIf="opened">
+        <div id="notifications-header">
+            Notifications
+
+            <span class="navbar-spacer"></span>
+
+            <mat-icon id="notifications-close-icon" (click)="closeNotifications()">close</mat-icon>
+        </div>     
+        <mat-divider></mat-divider>
+        <div  id="notifications-list">
+            <div *ngIf="notifications.length>0; then thenlistBlock else elselistBlock"></div>
+            <ng-template #thenlistBlock>
+            
+            <ul>
+                <li *ngFor="let notification of notifications; index as i; trackBy: trackByFn">{{notification.Message}}</li>
+            </ul>
+    
+            </ng-template>
+            <ng-template #elselistBlock>
+                Vous avez aucune notification.
+            </ng-template>
+        </div>
+        
+
+    </mat-card>
+
+</span>

@@ -104,6 +104,9 @@ class EmpruntViewSet(viewsets.ViewSet):
         queryset = Emprunt.objects.all()
         emprunt = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, emprunt)
+        notificiations = Notification.objects.filter(emprunt_id=pk)
+        for notification in notificiations:
+            notification.delete()
         emprunt.delete()
         return Response(data= { 'IsSuccess': True, 'Data': True }, status=status.HTTP_200_OK)
 

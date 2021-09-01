@@ -18,7 +18,7 @@ class NotificationViewSet(viewsets.ViewSet):
     queryset = ContentType.objects.all()
     
     def list(self, request):
-        queryset = Notification.objects.all()
+        queryset = Notification.objects.filter(utilisateur_id=request.user.id)
         serializer = NotificationSerializer(queryset, many=True)
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 

@@ -1,0 +1,38 @@
+#notifications-container{
+    position: absolute;
+    top:calc(100%+10px);
+    right: 0;
+    width: 450px;
+    z-index: 100;
+}
+#notifications-header{
+    display:flex;
+}
+:host{
+    position: relative;
+    height: 100%;
+}
+.navbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  #notifications-list{
+      font-size:14px;
+  }
+  #notifications-list ul{
+    list-style-type: none;
+    margin:0;
+    padding: 0;
+    width: 100%;
+    margin-top: 5px;
+    max-height: 800px;
+}
+  #notifications-list li{
+      width: 100%;
+  }
+  #notifications-close-icon{
+    cursor: pointer;
+  }
+  #notifications-close-icon:hover{
+      color:gray;
+  }
