@@ -10,7 +10,6 @@ import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { Site } from 'src/app/models/site';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
-
 import { AuthService } from 'src/app/services/auth.service';
 import { PassagerChips } from './passager-chips/passager-chips.component';
 
