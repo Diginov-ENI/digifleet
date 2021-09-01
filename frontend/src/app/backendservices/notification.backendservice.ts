@@ -21,17 +21,17 @@ export class NotificationBackendService {
    
 
     /**
-     * Modifier un groupe
-     * @param groupe 
+     * Modifier une Notification
+     * @param id 
      */
-    updateNotification(notification: object): Observable<DigiResult<Notification>> {
-        let stringifyItem = JSON.stringify(notification);
-        return this._httpClient.put<DigiResult<Notification>>(this._apiname + notification['Id'] + '/', stringifyItem, this._httpOptions);
+    setReadNotification(id: number): Observable<DigiResult<Notification>> {
+        let stringifyItem = JSON.stringify({Id:id,IsRead:true});
+        return this._httpClient.put<DigiResult<Notification>>(this._apiname + id + '/', stringifyItem, this._httpOptions);
     }
 
     /**
-    * Obtenir les groupes
-    * @returns : Observable<Groupe[]>
+    * Obtenir les Notifications
+    * @returns : Observable<Notification[]>
     */
     getNotifications(): Observable<DigiResult<Notification[]>> {
         return this._httpClient.get<DigiResult<Notification[]>>(this._apiname);

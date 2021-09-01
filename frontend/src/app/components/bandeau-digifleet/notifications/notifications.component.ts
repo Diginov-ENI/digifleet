@@ -7,6 +7,7 @@ import { ToastHelperComponent } from '../../toast-message/toast-message.componen
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Notification } from 'src/app/models/notification';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
     selector: 'notifications',
@@ -17,27 +18,41 @@ export class NotificationComponent implements OnInit, OnDestroy{
     public user: Utilisateur = null;
     public notifications:Notification[]= [];
     private _snackBar: MatSnackBar;
-    public opened = true;
+    public opened = false;
+    subscription: Subscription;
     @ViewChild('notificationsBlock', { static: false }) insideElement;
     constructor(
         private authService: AuthService,
         private _notificationsBackendservice:NotificationBackendService,
-        private router: Router){
+        private router: Router
+        ){
+
             this.authService.getUser().subscribe(user=>this.user = user);
             this.loadNotifications()
+
+            const source = interval(30000);
+            this.subscription = source.subscribe(val => this.loadNotifications());
         }
 
     loadNotifications(){
+        this.notifications=[]
         this._notificationsBackendservice.getNotifications().subscribe(res => {
             if (res.IsSuccess) {
              res.Data.forEach(notification => {
                  let notif = new Notification(notification);
                 this.notifications.push(notif)
              });
+             console.log(this.notifications)
             } else {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
             }
           });
+    }
+
+    readNotification(id){
+      this._notificationsBackendservice.setReadNotification(id).subscribe(res => {
+      this.loadNotifications();
+      });
     }
     toggleNotifications(){
         if(this.opened){

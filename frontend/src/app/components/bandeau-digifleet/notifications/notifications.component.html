@@ -15,7 +15,7 @@
 
             <span class="navbar-spacer"></span>
 
-            <mat-icon id="notifications-close-icon" (click)="closeNotifications()">close</mat-icon>
+            <mat-icon class="notifications-close-button" (click)="closeNotifications()">close</mat-icon>
         </div>     
         <mat-divider></mat-divider>
         <div  id="notifications-list">
@@ -23,7 +23,18 @@
             <ng-template #thenlistBlock>
             
             <ul>
-                <li *ngFor="let notification of notifications; index as i; trackBy: trackByFn">{{notification.Message}}</li>
+                <li *ngFor="let notification of notifications; index as i; trackBy: trackByFn">
+                    {{notification.Message}} 
+                    <span class="navbar-spacer"></span>
+                    <mat-icon 
+                    (click)="readNotification(notification.Id)"
+                    matTooltip="Marquer comme lu."
+                    class="notifications-close-button notifications-icon-read">done</mat-icon>
+                    <mat-icon 
+                    matTooltip="Voir l'emprunt."
+                    class="notifications-close-button notifications-icon-read">search</mat-icon>
+
+                </li>
             </ul>
     
             </ng-template>

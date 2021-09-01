@@ -29,10 +29,29 @@
 }
   #notifications-list li{
       width: 100%;
+      display: flex;
+      align-items: center;
   }
-  #notifications-close-icon{
+ .notifications-close-button{
     cursor: pointer;
   }
-  #notifications-close-icon:hover{
+  .notifications-close-button:hover{
       color:gray;
   }
+
+  .notifications-icon-read{
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media only screen and (max-width: 550px) {
+    :host{
+        position: initial;
+    }
+    #notifications-container{
+        width: 100%;
+        top:60px
+    }
+}

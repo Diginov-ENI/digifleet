@@ -10,11 +10,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    Id = serializers.IntegerField(source='id', required=False)
-    Message = serializers.CharField(source='message')
-    Emprunt = EmpruntSerializer(source='emprunt', many=False, required=False)
+    Id = serializers.IntegerField(source='id', required=False,read_only=True)
+    Message = serializers.CharField(source='message',required=False,read_only=True)
+    IsRead = serializers.BooleanField(source='is_read')
+    Emprunt = EmpruntSerializer(source='emprunt', many=False, required=False,read_only=True)
+    Date = serializers.DateTimeField(source='date', read_only=True, required=False)
     class Meta:
         model = Group
-        fields = ('Id','Message','Emprunt')
+        fields = ('Id','Message','Emprunt','Date','IsRead',)
 
 
