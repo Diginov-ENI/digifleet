@@ -67,14 +67,13 @@ except Exception:
     pass
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = '*'
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'django_extensions',
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -142,6 +141,8 @@ DATABASES = {
     'default': env.db()
 }
 
+# Django administration API interface
+ADMIN_ENABLED = env('DJANGO_DEBUG', default=False)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
