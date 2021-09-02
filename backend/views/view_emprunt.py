@@ -76,7 +76,7 @@ class EmpruntViewSet(viewsets.ViewSet):
         utilisateurs = Utilisateur.objects.all()
         utilisateurs = list(filter(lambda u:(u.has_perm("emprunt_update_status")),utilisateurs))
         for u in utilisateurs:
-            Notification.objects.create(message="Une nouvelle demande d'emprunt à été effectué.",utilisateur=u,emprunt=empruntInstance)
+            Notification.objects.create(message=empruntInstance.conducteur.prenom+" "+empruntInstance.conducteur.nom+" à fait une demande d'emprunt.",utilisateur=u,emprunt=empruntInstance)
 
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_201_CREATED, headers=headers)
 

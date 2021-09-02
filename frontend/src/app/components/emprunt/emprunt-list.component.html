@@ -23,7 +23,7 @@
       >
       </emprunt-filters>
 
-      <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;">
+      <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;" id="emprunt{{emprunt.Id}}">
         <mat-card-title>{{emprunt.Conducteur.Nom}} {{emprunt.Conducteur.Prenom}} </mat-card-title>
         <mat-card-subtitle>
           <mat-chip-list aria-label="dates">

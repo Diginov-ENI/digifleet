@@ -15,6 +15,8 @@ import { interval, Subscription } from 'rxjs';
     styleUrls: ['notifications.component.scss'],
 })
 export class NotificationComponent implements OnInit, OnDestroy{
+  
+    EMPRUNT_ROUTE = '/Digifleet/liste-emprunt';
     public user: Utilisateur = null;
     public notifications:Notification[]= [];
     private _snackBar: MatSnackBar;
@@ -35,14 +37,14 @@ export class NotificationComponent implements OnInit, OnDestroy{
         }
 
     loadNotifications(){
-        this.notifications=[]
+        let tmpnotifications=[]
         this._notificationsBackendservice.getNotifications().subscribe(res => {
             if (res.IsSuccess) {
              res.Data.forEach(notification => {
                  let notif = new Notification(notification);
-                this.notifications.push(notif)
+                 tmpnotifications.push(notif)
              });
-             console.log(this.notifications)
+             this.notifications = tmpnotifications;
             } else {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
             }
@@ -63,6 +65,22 @@ export class NotificationComponent implements OnInit, OnDestroy{
     }
     closeNotifications(){
         this.opened = false;
+    }
+    openNotification(idEmprunt){
+
+      this.router.navigate([this.EMPRUNT_ROUTE]).then(() =>
+      {
+        
+        let self = this;
+        setTimeout(function(){
+          let emprunt =  document.querySelector("#emprunt"+idEmprunt);
+          self.scrollToElement(emprunt)
+        },1000);
+      })
+    }
+    scrollToElement($element): void {
+      console.log($element)
+      $element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
     }
 
     public ngOnInit() {

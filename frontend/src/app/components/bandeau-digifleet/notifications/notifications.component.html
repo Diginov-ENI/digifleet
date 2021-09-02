@@ -31,6 +31,7 @@
                     matTooltip="Marquer comme lu."
                     class="notifications-close-button notifications-icon-read">done</mat-icon>
                     <mat-icon 
+                    (click)="openNotification(notification.Emprunt.Id)"
                     matTooltip="Voir l'emprunt."
                     class="notifications-close-button notifications-icon-read">search</mat-icon>
 
