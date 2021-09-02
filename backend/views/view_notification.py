@@ -16,7 +16,7 @@ from backend.permissions.permission_notification import NotificationPermission
 # Create your views here.
 class NotificationViewSet(viewsets.ViewSet):
     
-    queryset = ContentType.objects.all()
+    queryset = Notification.objects.all()
     permission_classes = (NotificationPermission,)
     
     def list(self, request):
