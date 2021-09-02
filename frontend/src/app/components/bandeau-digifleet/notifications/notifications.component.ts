@@ -67,19 +67,38 @@ export class NotificationComponent implements OnInit, OnDestroy{
         this.opened = false;
     }
     openNotification(idEmprunt){
-
+      this.opened = false;
       this.router.navigate([this.EMPRUNT_ROUTE]).then(() =>
       {
         
-        let self = this;
-        setTimeout(function(){
-          let emprunt =  document.querySelector("#emprunt"+idEmprunt);
-          self.scrollToElement(emprunt)
-        },1000);
+        this.tryToscrollToId(idEmprunt);
+  
       })
     }
+    isOpened(element){
+      return (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf("mat-expanded") > -1
+
+    }
+    tryToscrollToId(id){
+      let elem =  document.querySelector("#emprunt"+id);
+      if(elem == null){
+        let self = this;
+        setTimeout(function(){
+          self.tryToscrollToId(id);
+        },200);
+      }else{
+        this.scrollToElement(elem);
+       
+        let openheader = document.getElementsByClassName("emprunt"+id+"-open-header");
+        if(!this.isOpened(openheader[0])){
+          let open = document.getElementById("emprunt"+id+"-open");
+          open.click()
+        }
+       
+      }
+      
+    }
     scrollToElement($element): void {
-      console.log($element)
       $element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
     }
 

@@ -39,9 +39,9 @@
           <mat-divider></mat-divider>
         <mat-card-content> 
           <mat-expansion-panel style="margin-top:30px;">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header class="emprunt{{emprunt.Id}}-open-header">
               <mat-panel-title>
-                <span>
+                <span id="emprunt{{emprunt.Id}}-open">
                   <mat-icon aria-hidden="false" aria-label="destination">place</mat-icon>
                   Vers {{ emprunt.Destination }} ({{ listeStatut[emprunt.Statut]}})
                 </span>
