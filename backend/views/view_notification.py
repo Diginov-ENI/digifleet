@@ -11,11 +11,13 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
+from backend.permissions.permission_notification import NotificationPermission
 
 # Create your views here.
 class NotificationViewSet(viewsets.ViewSet):
     
     queryset = ContentType.objects.all()
+    permission_classes = (NotificationPermission,)
     
     def list(self, request):
         queryset = Notification.objects.filter(utilisateur_id=request.user.id).filter(is_read=False)
