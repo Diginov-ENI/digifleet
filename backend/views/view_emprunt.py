@@ -93,6 +93,10 @@ class EmpruntViewSet(viewsets.ViewSet):
         except Exception as e:
             return Response(data= { 'IsSuccess': False, 'LibErreur' : str(e)}, status=status.HTTP_200_OK)
             
+
+        if (emprunt.conducteur.id != request.user.id):
+            Notification.objects.create(message="Votre demande d'emprunt a été modifiée.",utilisateur=emprunt.conducteur,emprunt=emprunt)
+
         return Response(data= { 'IsSuccess': True, 'Data': serializer.data }, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
