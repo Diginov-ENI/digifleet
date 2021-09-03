@@ -15,11 +15,11 @@
                 <input type="hidden" formControlName="Id">
 
                 <mat-form-field>
-                    <input matInput type="text" minlength="4" maxLength="20" placeholder="Login *"
+                    <input matInput type="text" minlength="4" maxLength="20" placeholder="Nom d'utilisateur *"
                         formControlName="Username" id="textUsername">
                     <mat-error
                         *ngIf="form.controls.Username.errors && (form.controls.Username.dirty || form.controls.Username.touched)">
-                        <span *ngIf="form.controls.Username.errors.required">Le login doit être renseigné.</span>
+                        <span *ngIf="form.controls.Username.errors.required">Le nom d'utilisateur doit être renseigné.</span>
                         <span *ngIf="form.controls.Username.errors.onlyWhitespace">Ne doit pas contenir d'espace.</span>
                     </mat-error>
                 </mat-form-field>

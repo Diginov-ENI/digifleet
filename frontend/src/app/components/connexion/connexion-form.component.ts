@@ -10,9 +10,9 @@ import { Subject } from 'rxjs';
   templateUrl: 'connexion-form.component.html',
   styleUrls: ['connexion-form.component.scss'],
 })
-export class ConnexionFormComponent implements OnInit, OnDestroy {
-  HOME_ROUTE = '/Digifleet';
-  SECU_ROUTE = this.HOME_ROUTE + '/mon-compte/securite';
+export class ConnexionFormComponent {
+  HOME_ROUTE = '/Digifleet/liste-emprunt';
+  SECU_ROUTE = '/Digifleet/mon-compte/securite';
   private _connectedUser: Utilisateur = null;
 
   password = '';

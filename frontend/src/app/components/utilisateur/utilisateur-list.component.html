@@ -54,7 +54,7 @@
 
         <!-- colonne Username -->
         <ng-container matColumnDef="username">
-          <th [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Username
+          <th [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Nom d'utilisateur
           </th>
           <td [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
             {{utilisateur.Username}} </td>
