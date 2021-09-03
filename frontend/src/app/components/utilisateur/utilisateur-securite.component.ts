@@ -95,16 +95,13 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
   }
 
   clearPasswordForm() {
-    
     this.passwordForm.setValue({ oldPassword: '', password: '', passwordAgain: '' });
-    
-    if(this._connectedUser.IsPasswordToChange) 
-    {
-      this._authService.refreshUserData;
+
+    if (this._connectedUser.IsPasswordToChange) {
+      this._authService.refreshUserData();
       this._router.navigate([this.HOME_ROUTE])
       this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Votre mot de passe a bien été modifié.'));
     }
-    
   }
 
   passwordMatchValidator(control: AbstractControl) {
