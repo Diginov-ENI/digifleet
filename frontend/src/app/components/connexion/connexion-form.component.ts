@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Utilisateur } from 'src/app/models/utilisateur';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'connexion-form',
@@ -11,24 +13,41 @@ import { Utilisateur } from 'src/app/models/utilisateur';
 export class ConnexionFormComponent {
   HOME_ROUTE = '/Digifleet/liste-emprunt';
   SECU_ROUTE = '/Digifleet/mon-compte/securite';
-  private connectedUser: Utilisateur = null;
+  private _connectedUser: Utilisateur = null;
 
   password = '';
   username = '';
   hidePassword = true;
   errors: any;
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate([this.HOME_ROUTE])
-    }
 
+  private _destroy$ = new Subject<void>();
+
+  constructor(
+    private _authService: AuthService,
+    private _router: Router,
+  ) {
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate([this.HOME_ROUTE])
+    }
   }
+
+  ngOnInit() {
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => {
+        this._connectedUser = utilisateur;
+        if (this._connectedUser != null) {
+          this.handleSuccess();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this._destroy$.next();
+  }
+
   login(username: string, password: string) {
-    this.authService.login(username, password).subscribe(
-      success => this.handleSuccess(),
+    this._authService.login(username, password).subscribe(
       error => this.handleError(error)
     );
   }
@@ -37,22 +56,19 @@ export class ConnexionFormComponent {
     e.preventDefault();
     this.login(this.username, this.password);
   }
+
   handleSuccess() {
     this.username = '';
     this.password = '';
 
-    this.authService.getUser().subscribe(user=>{
-      this.connectedUser = user
-      if(this.connectedUser != null && this.connectedUser.IsPasswordToChange) {
-        this.router.navigate([this.SECU_ROUTE])
-      }
-      else {
-        this.router.navigate([this.HOME_ROUTE]);
-      }
-    });
-
-    
+    if (this._connectedUser != null && this._connectedUser.IsPasswordToChange) {
+      this._router.navigate([this.SECU_ROUTE])
+    }
+    else {
+      this._router.navigate([this.HOME_ROUTE]);
+    }
   }
+
   handleError(error) {
     this.errors = []
     if ((error.status >= 500 && error.status <= 599) || error.status == 0) {
@@ -67,12 +83,12 @@ export class ConnexionFormComponent {
             message: errorsObj[key]
           })
         } else {
-            for (let message of errorsObj[key]) {
-              errorsSorted.push({
-                type: key,
-                message: message
-              })
-            }
+          for (let message of errorsObj[key]) {
+            errorsSorted.push({
+              type: key,
+              message: message
+            })
+          }
         }
       }
       for (let error of errorsSorted) {
@@ -93,7 +109,7 @@ export class ConnexionFormComponent {
                 this.errors.push("Le mot de passe ne doit pas etre vide")
                 break;
               default:
-                this.errors.push( error.message);
+                this.errors.push(error.message);
                 break;
             }
             break;

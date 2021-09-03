@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, OnDestroy } from '@angular/core';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { Vehicule } from 'src/app/models/vehicule';
 import { Utilisateur } from 'src/app/models/utilisateur';
@@ -10,16 +10,20 @@ import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.compone
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'vehicule-list',
   templateUrl: 'vehicule-list.component.html',
-  styleUrls : ['vehicule-list.scss'],
+  styleUrls: ['vehicule-list.scss'],
 })
 
-export class VehiculeListComponent implements OnInit {
+export class VehiculeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private _destroy$ = new Subject<void>();
 
   public connectedUser: Utilisateur;
   vehicules: Vehicule[];
@@ -30,21 +34,28 @@ export class VehiculeListComponent implements OnInit {
   nbColumnsAffiche = 7;
 
   constructor(
-    private _vehiculeBackendService: VehiculeBackendService, 
-    public matDialog: MatDialog, 
-    private authService: AuthService,
+    private _vehiculeBackendService: VehiculeBackendService,
+    public matDialog: MatDialog,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
-  ngOnInit(){
-    this.authService.getUser().subscribe(user => this.connectedUser = user);
+  ngOnInit() {
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => this.connectedUser = utilisateur);
+
     this.getVehicules();
     this.onResize();
   }
 
+  ngOnDestroy() {
+    this._destroy$.next();
+  }
+
   getVehicules() {
     this._vehiculeBackendService.getVehicules().subscribe((response => {
-      if(response.IsSuccess){
+      if (response.IsSuccess) {
         this.vehicules = response.Data;
         this.dataSource = new MatTableDataSource(response.Data);
         this.dataSource.paginator = this.paginator;
@@ -56,7 +67,7 @@ export class VehiculeListComponent implements OnInit {
 
   deleteVehicule(id) {
     this._vehiculeBackendService.deleteVehicule(id).subscribe(res => {
-      if(res.IsSuccess) {
+      if (res.IsSuccess) {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Véhicule supprimé avec succès.'));
         this.getVehicules();
       } else {
@@ -65,11 +76,11 @@ export class VehiculeListComponent implements OnInit {
     });
   }
 
-  archiverDesarchiverVehicule(vehicule: Vehicule){
-      let object:object = {
-        'Id' : vehicule.Id,
-        'IsActive' : !vehicule.IsActive
-      };
+  archiverDesarchiverVehicule(vehicule: Vehicule) {
+    let object: object = {
+      'Id': vehicule.Id,
+      'IsActive': !vehicule.IsActive
+    };
 
     this._vehiculeBackendService.updateVehicule(object).subscribe(res => {
       if (res.IsSuccess) {
@@ -90,7 +101,7 @@ export class VehiculeListComponent implements OnInit {
         libBouton: 'Supprimer'
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteVehicule(vehicule.Id);
@@ -98,7 +109,7 @@ export class VehiculeListComponent implements OnInit {
     });
   }
 
-    openConfirmArchiveDialog(vehicule: Vehicule) {
+  openConfirmArchiveDialog(vehicule: Vehicule) {
     const dialogRef = this.matDialog.open(DialogConfirmComponent, {
       data: {
         titre: vehicule.IsActive ? 'Archiver un véhicule' : 'Activer un véhicule',

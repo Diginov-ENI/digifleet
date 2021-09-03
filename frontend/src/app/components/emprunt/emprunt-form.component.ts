@@ -1,4 +1,4 @@
-import { Component, OnInit , ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
@@ -12,13 +12,15 @@ import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.b
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { AuthService } from 'src/app/services/auth.service';
 import { PassagerChips } from './passager-chips/passager-chips.component';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'emprunt-form',
   templateUrl: 'emprunt-form.component.html',
 })
 
-export class EmpruntFormComponent implements OnInit {
+export class EmpruntFormComponent implements OnInit, OnDestroy {
   emprunt: Emprunt;
   utilisateurs: Utilisateur[];
   passager: Utilisateur[];
@@ -27,7 +29,8 @@ export class EmpruntFormComponent implements OnInit {
   format: string = 'YYYY-MM-DD[T]HH:mm:ss[Z]';
   form;
   groupeTooltip = null;
-  private connectedUser: Utilisateur = null;
+  private _connectedUser: Utilisateur = null;
+  private _destroy$ = new Subject<void>();
 
   @ViewChild('passagerChips') passagerChips: PassagerChips;
   constructor(
@@ -37,8 +40,8 @@ export class EmpruntFormComponent implements OnInit {
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar,
     private _siteBackendService: SiteBackendService,
-    private _utilisateurBackendService:UtilisateurBackendService,
-    private authService: AuthService,
+    private _utilisateurBackendService: UtilisateurBackendService,
+    private _authService: AuthService,
   ) {
     const empruntId = this.route.snapshot.paramMap.get('id');
     if (empruntId)
@@ -50,22 +53,32 @@ export class EmpruntFormComponent implements OnInit {
       Id: [''],
       DateDebut: ['', Validators.required],
       DateFin: [''],
-      Destination : ['', Validators.required],
-      Commentaire : [''],
-      Type : ['', Validators.required],
-      Site: [''] ,
-      Passager: [''] ,
+      Destination: ['', Validators.required],
+      Commentaire: [''],
+      Type: ['', Validators.required],
+      Site: [''],
+      Passager: [''],
     });
+
     this.getAvailablesSites();
-    this.authService.getUser().subscribe(user => this.connectedUser = user);
-    
+
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => this._connectedUser = utilisateur);
+
     this.form.controls.Site.setValidators([Validators.required]);
   }
+
+  ngOnDestroy() {
+    this._destroy$.next();
+  }
+
   getAvailablesSites() {
     this._siteBackendService.getAvailablesSites().subscribe(response => {
       this.sites = response.Data;
     })
   }
+
   getUtilisateurs() {
     this._utilisateurBackendService.getUtilisateurs().subscribe(response => {
       this.utilisateurs = response.Data;
@@ -74,15 +87,15 @@ export class EmpruntFormComponent implements OnInit {
 
   sauver() {
     this.emprunt = new Emprunt(this.form.value);
-    let site: Site = {'Id': this.form.controls.Site.value, 'Libelle': undefined, 'IsActive': undefined}
+    let site: Site = { 'Id': this.form.controls.Site.value, 'Libelle': undefined, 'IsActive': undefined }
     if (!this.emprunt.Id) {
       this.emprunt.Id = undefined;
       this.emprunt.DateDebut = this.form.controls.DateDebut.value.format(this.format);
       this.emprunt.DateFin = this.form.controls.DateFin.value ? this.form.controls.DateFin.value.format(this.format) : undefined;
       this.emprunt.Site = site;
-      this.emprunt.Statut="DEPOSEE";
-      this.emprunt.Passagers =this.getSelectedPassagers();
-      this.emprunt.Conducteur = this.connectedUser;
+      this.emprunt.Statut = "DEPOSEE";
+      this.emprunt.Passagers = this.getSelectedPassagers();
+      this.emprunt.Conducteur = this._connectedUser;
       this._empruntBackendService.addEmprunt(this.emprunt).subscribe(res => {
         if (res.IsSuccess) {
           this.router.navigate(['Digifleet/liste-emprunt']);
@@ -92,15 +105,15 @@ export class EmpruntFormComponent implements OnInit {
         }
       });
     } else {
-      let object:object = {
-        'Id' : this.emprunt.Id,
+      let object: object = {
+        'Id': this.emprunt.Id,
         'DateDebut': this.emprunt.DateDebut,
         'DateFin': this.emprunt.DateFin,
         'Destination': this.emprunt.Destination,
         'Commentaire': this.emprunt.Commentaire,
         'Type': this.emprunt.Type,
-        'Site' :  this.emprunt.Site,
-        'Passager' :  this.getSelectedPassagers(),
+        'Site': this.emprunt.Site,
+        'Passager': this.getSelectedPassagers(),
       }
 
       this._empruntBackendService.updateEmprunt(object).subscribe(res => {
@@ -117,7 +130,7 @@ export class EmpruntFormComponent implements OnInit {
     });
   }
 
-  itemToForm(emprunt: Emprunt){
+  itemToForm(emprunt: Emprunt) {
     this.form.controls.Id.setValue(emprunt.Id);
     this.form.controls.DateDebut.setValue(emprunt.DateDebut);
     this.form.controls.DateFin.setValue(emprunt.DateFin);

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, OnDestroy } from '@angular/core';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,8 @@ import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.compone
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'utilisateur-list',
@@ -16,8 +18,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['utilisateur-list.scss'],
 })
 
-export class UtilisateurListComponent implements OnInit {
+export class UtilisateurListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private _destroy$ = new Subject<void>();
 
   public connectedUser: Utilisateur = null;
   utilisateurs: Utilisateur[];
@@ -30,15 +34,20 @@ export class UtilisateurListComponent implements OnInit {
   constructor(
     private _utilisateurBackendService: UtilisateurBackendService,
     public matDialog: MatDialog,
-    private authService: AuthService,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user => this.connectedUser = user);
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => this.connectedUser = utilisateur);
     this.getUtilisateurs();
     this.onResize();
+  }
+
+  ngOnDestroy() {
+    this._destroy$.next();
   }
 
   getUtilisateurs() {
@@ -81,7 +90,6 @@ export class UtilisateurListComponent implements OnInit {
   }
 
   ActiverDesactiverCompte(utilisateur: Utilisateur) {
-
     let object: object = {
       'Id': utilisateur.Id,
       'IsActive': !utilisateur.IsActive

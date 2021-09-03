@@ -19,7 +19,8 @@
                         formControlName="Username" id="textUsername">
                     <mat-error
                         *ngIf="form.controls.Username.errors && (form.controls.Username.dirty || form.controls.Username.touched)">
-                        <span *ngIf="form.controls.Username.errors.required">Le nom d'utilisateur doit être renseigné.</span>
+                        <span *ngIf="form.controls.Username.errors.required">Le nom d'utilisateur doit être
+                            renseigné.</span>
                         <span *ngIf="form.controls.Username.errors.onlyWhitespace">Ne doit pas contenir d'espace.</span>
                     </mat-error>
                 </mat-form-field>
@@ -57,10 +58,12 @@
                     <mat-error *ngIf="form.controls.Email.errors && form.controls.Email.errors.email">
                         L'email doit être valide</mat-error>
                 </mat-form-field>
-                
-                <groupe-chips #groupesChips [disabled]="groupeDisabled" [matTooltip]="this.groupeTooltip"></groupe-chips>
+
+                <groupe-chips #groupesChips [disabled]="groupeDisabled" [matTooltip]="this.groupeTooltip">
+                </groupe-chips>
                 <div class="group-button-stick-right">
-                    <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-utilisateur" id="btnAnnuler">
+                    <button mat-raised-button color="accent" type="button" routerLink="/Digifleet/liste-utilisateur"
+                        id="btnAnnuler">
                         <span>Annuler</span>
                     </button>
                     <button mat-raised-button color="primary" type="button" (click)="sauver()" id="btnSauver">
