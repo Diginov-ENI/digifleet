@@ -32,3 +32,11 @@
 5. Modifier le fichier `docker\.env` et dans le champ `FRONT_API_URL` remplacer "localhost" par l'ip du serveur hôte (pour rendre l'appli fonctionelle sur un réseau local)
 8. Configurer Sentry pour les logs (voir ci-dessous)
 9. Se rendre sur `<ip-hôte>:8000` pour vérifier que l'application se lance avec succès
+
+### Scripts shell
+Les scripts shells permettant la gestion du serveur (sous Linux **uniquement**)
+- `init_docker.sh` - (à usage unique) - permet l'installation des images docker et des contanineurs ainsi que la configuration de la BDD
+- `init_db.sh` - Insert des jeux de données dans l'aplication
+- `sstatus.sh` - Affiche l'état des conteneurs principaux
+- `restart.sh` - Redémmare tous les conteneurs
+- `stop.sh` - Arrête tous les conteneurs
