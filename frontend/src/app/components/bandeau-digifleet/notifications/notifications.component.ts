@@ -87,13 +87,16 @@ export class NotificationComponent implements OnInit, OnDestroy{
           self.tryToscrollToId(id);
         },200);
       }else{
-        this.scrollToElement(elem);
-       
+
         let openheader = document.getElementsByClassName("emprunt"+id+"-open-header");
         if(!this.isOpened(openheader[0])){
           let open = document.getElementById("emprunt"+id+"-open");
           open.click()
         }
+
+        this.scrollToElement(elem);
+       
+        
        
       }
       
@@ -103,18 +106,18 @@ export class NotificationComponent implements OnInit, OnDestroy{
     }
 
     public ngOnInit() {
-        this.onDocumentClick = this.onDocumentClick.bind(this);
-        document.addEventListener('click', this.onDocumentClick);
-      }
+      this.onDocumentClick = this.onDocumentClick.bind(this);
+      document.addEventListener('click', this.onDocumentClick);
+    }
     
-      public ngOnDestroy() {
-        document.removeEventListener('click', this.onDocumentClick);
+    public ngOnDestroy() {
+      document.removeEventListener('click', this.onDocumentClick);
+    }
+  
+    protected onDocumentClick(event: MouseEvent) {
+      if (this.insideElement.nativeElement.contains(event.target)) {
+        return;
       }
-    
-      protected onDocumentClick(event: MouseEvent) {
-        if (this.insideElement.nativeElement.contains(event.target)) {
-          return;
-        }
-        this.closeNotifications()
-      }
+      this.closeNotifications()
+    }
 }
