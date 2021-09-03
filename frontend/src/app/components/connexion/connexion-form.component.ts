@@ -41,14 +41,17 @@ export class ConnexionFormComponent {
     this.username = '';
     this.password = '';
 
-    this.authService.getUser().subscribe(user=>this.connectedUser = user);
+    this.authService.getUser().subscribe(user=>{
+      this.connectedUser = user
+      if(this.connectedUser != null && this.connectedUser.IsPasswordToChange) {
+        this.router.navigate([this.SECU_ROUTE])
+      }
+      else {
+        this.router.navigate([this.HOME_ROUTE]);
+      }
+    });
 
-    if(this.connectedUser != null && this.connectedUser.IsPasswordToChange) {
-      this.router.navigate([this.SECU_ROUTE])
-    }
-    else {
-      this.router.navigate([this.HOME_ROUTE]);
-    }
+    
   }
   handleError(error) {
     this.errors = []
