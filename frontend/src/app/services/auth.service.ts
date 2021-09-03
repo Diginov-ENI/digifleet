@@ -1,10 +1,10 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, shareReplay, first, filter } from 'rxjs/operators';
+import { tap, shareReplay } from 'rxjs/operators';
 import jwtDecode from 'jwt-decode';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Utilisateur } from '../models/utilisateur';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import * as Sentry from '@sentry/angular';
@@ -12,17 +12,17 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
-  private apiRoot = environment.API_URL+'auth/';
-  private currentUserSubject = new BehaviorSubject<any>(null);
-  constructor(private http: HttpClient,private _utilisateurBackendService: UtilisateurBackendService) {
+  private apiRoot = environment.API_URL + 'auth/';
+  public utilisateurConnecte$: BehaviorSubject<Utilisateur> = new BehaviorSubject<Utilisateur>(new Utilisateur());
+  constructor(private http: HttpClient, private _utilisateurBackendService: UtilisateurBackendService) {
     this.loadUserFromLocalStorage();
   }
 
   private setSession(authResult) {
-    const token = authResult.access; 
+    const token = authResult.access;
     const payload = <JWTPayload>jwtDecode(token);
     const expiresAt = moment.unix(payload.exp);
-    
+
     localStorage.setItem('token', authResult.access);
     localStorage.setItem('refresh', authResult.refresh);
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
@@ -31,7 +31,7 @@ export class AuthService {
       category: "auth",
       message: "Sauvegarde du token JWT",
       data: {
-        token:token
+        token: token
       },
       level: Sentry.Severity.Info,
     });
@@ -54,46 +54,38 @@ export class AuthService {
           },
           level: Sentry.Severity.Info,
         });
-        self.currentUserSubject.next(utilisateur);
+        self.utilisateurConnecte$.next(utilisateur);
       }
     });
   }
 
-  private loadUserFromLocalStorage(){
+  private loadUserFromLocalStorage() {
     var user = JSON.parse(localStorage.getItem('user'));
     var utilisateur = new Utilisateur(user);
     Sentry.addBreadcrumb({
       category: "info",
       message: "Chargement des informations de l'utilisateur depuis le localstorage",
       data: {
-        user:user
+        user: user
       },
       level: Sentry.Severity.Info,
     });
 
-    if(user === null){
+    if (user === null) {
       this.logout();
-    }else{
-      this.currentUserSubject.next(utilisateur);
+    } else {
+      this.utilisateurConnecte$.next(utilisateur);
     }
   }
 
-  public refreshUserData(){
-    var self = this;
+  public refreshUserData() {
     Sentry.addBreadcrumb({
       category: "info",
-      message: "Déclanchement du rafraichissement des données utilisateurs",
+      message: "Déclenchement du rafraichissement des données utilisateurs",
       level: Sentry.Severity.Info,
     });
 
-    this.getUser().pipe(first()).subscribe(user=>{
-      self.setCurrentUser(user.Id);
-    });
-
-  }
-
-  public getUser(): Observable<any> {
-    return this.currentUserSubject.asObservable().pipe(filter(x => !!x));
+    this.setCurrentUser(this.utilisateurConnecte$.value?.Id)
   }
 
   get token(): string {
@@ -103,8 +95,9 @@ export class AuthService {
   get refresh(): string {
     return localStorage.getItem('refresh');
   }
+  
   login(email: string, password: string) {
-    
+
     return this.http.post(
       this.apiRoot.concat('login/'),
       { email, password }
@@ -124,6 +117,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('expires_at');
     localStorage.removeItem('user');
+    this.utilisateurConnecte$.next(new Utilisateur());
   }
 
   refreshToken() {
@@ -142,6 +136,7 @@ export class AuthService {
       ).subscribe();
     }
   }
+
   getExpiration() {
     const expiration = localStorage.getItem('expires_at');
     const expiresAt = JSON.parse(expiration);

@@ -1,16 +1,14 @@
-import { NodeWithI18n } from '@angular/compiler';
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { Utilisateur } from 'src/app/models/utilisateur';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'utilisateur-securite',
@@ -34,14 +32,17 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
       matchOtherValidator("password")
     ])
   });
+
   public errors: any;
   public success: any;
   private _connectedUser: Utilisateur = null;
+  HOME_ROUTE = '/Digifleet';
 
   constructor(
     private _authService: AuthService,
     private _utilisateurBackendService: UtilisateurBackendService,
     private _snackBar: MatSnackBar,
+    private _router: Router,
   ) {
     this._authService.utilisateurConnecte$
       .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
@@ -92,10 +93,18 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
   formIsValid() {
     return this.passwordForm.controls.password.errors == null && this.passwordForm.controls.passwordAgain.errors == null
   }
+
   clearPasswordForm() {
-
+    
     this.passwordForm.setValue({ oldPassword: '', password: '', passwordAgain: '' });
-
+    
+    if(this._connectedUser.IsPasswordToChange) 
+    {
+      this._authService.refreshUserData;
+      this._router.navigate([this.HOME_ROUTE])
+      this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Votre mot de passe a bien été modifié.'));
+    }
+    
   }
 
   passwordMatchValidator(control: AbstractControl) {
@@ -117,8 +126,6 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-
 
 function matchOtherValidator(otherControlName: string) {
 
