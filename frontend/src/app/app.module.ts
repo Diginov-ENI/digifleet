@@ -55,6 +55,8 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
  import {PassagerChips} from './components/emprunt/passager-chips/passager-chips.component';
+import { NotificationComponent } from './components/bandeau-digifleet/notifications/notifications.component';
+import { NotificationBackendService } from './backendservices/notification.backendservice';
 
 Sentry.init({ dsn: environment.SENTRY_DSN });
 
@@ -107,6 +109,7 @@ export const DATE_FORMAT = {
     DialogConfirmComponent,
     ToastHelperComponent,
     PassagerChips,
+    NotificationComponent
   ],
   entryComponents: [],
   imports: [
@@ -139,6 +142,7 @@ export const DATE_FORMAT = {
     AuthService,
     AuthGuard,
     VehiculeBackendService,
+    NotificationBackendService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

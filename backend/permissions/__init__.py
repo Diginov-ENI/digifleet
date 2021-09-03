@@ -7,3 +7,4 @@ from .permission_emprunt import EmpruntPermission
 from .permission_permission import PermissionPermission
 from .permission_permission_type import PermissionTypePermission
 from .permission_emprunt import EmpruntPermission
+from .permission_notification import NotificationPermission

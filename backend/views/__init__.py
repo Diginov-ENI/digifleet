@@ -8,3 +8,4 @@ from .view_permission import PermissionViewSet
 from .view_permission_type import PermissionTypeViewSet
 from .view_emprunt import EmpruntViewSet
 from .view_vehicule import VehiculeViewSet
+from .view_notification import NotificationViewSet

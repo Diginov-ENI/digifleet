@@ -2,7 +2,7 @@
     <mat-toolbar-row>
          <button mat-button
                 disableRipple
-                routerLink="/Digifleet">
+                routerLink="/Digifleet/liste-emprunt">
                 <h5>Digifleet</h5>
         </button>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
@@ -59,7 +59,7 @@
         
         <span class="navbar-spacer"></span>
         <span>
-
+            <notifications></notifications>
             <button mat-button [matMenuTriggerFor]="auth">
                 <mat-icon>person_outline</mat-icon>
                 <ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom.charAt(0).toUpperCase() + user.Prenom.slice(1)}} {{user.Nom.toUpperCase()}}</ng-template> <ng-template #loading>Chargement..</ng-template>

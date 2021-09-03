@@ -9,8 +9,8 @@ import { Utilisateur } from 'src/app/models/utilisateur';
   styleUrls: ['connexion-form.component.scss'],
 })
 export class ConnexionFormComponent {
-  HOME_ROUTE = '/Digifleet';
-  SECU_ROUTE = this.HOME_ROUTE + '/mon-compte/securite';
+  HOME_ROUTE = '/Digifleet/liste-emprunt';
+  SECU_ROUTE = '/Digifleet/mon-compte/securite';
   private connectedUser: Utilisateur = null;
 
   password = '';
