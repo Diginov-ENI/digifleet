@@ -34,7 +34,7 @@
 9. Se rendre sur `<ip-hôte>:8000` pour vérifier que l'application se lance avec succès
 
 ### Scripts shell
-Les scripts shells permettant la gestion du serveur (sous Linux **uniquement**)
+Les scripts shells permettent la gestion du serveur (sous Linux **uniquement**)
 - `init_docker.sh` - (à usage unique) - permet l'installation des images docker et des contanineurs ainsi que la configuration de la BDD
 - `init_db.sh` - Insert des jeux de données dans l'aplication
 - `sstatus.sh` - Affiche l'état des conteneurs principaux
