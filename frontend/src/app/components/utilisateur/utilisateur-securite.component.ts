@@ -17,6 +17,9 @@ import { Router } from '@angular/router';
 
 export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
   private _destroy$ = new Subject<void>();
+  private _connectedUser: Utilisateur = null;
+
+  EMPRUNT_ROUTE = '/Digifleet/liste-emprunt';
 
   passwordForm = new FormGroup({
     oldPassword: new FormControl('', [
@@ -35,9 +38,7 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
 
   public errors: any;
   public success: any;
-  private _connectedUser: Utilisateur = null;
-  EMPRUNT_ROUTE = '/Digifleet/liste-emprunt';
-
+  
   constructor(
     private _authService: AuthService,
     private _utilisateurBackendService: UtilisateurBackendService,

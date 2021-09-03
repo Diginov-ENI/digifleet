@@ -19,7 +19,7 @@ import { GroupeChips } from './groupe-chips/groupe-chips.component';
 
 export class UtilisateurFormComponent implements OnInit, OnDestroy {
   @ViewChild('groupesChips') groupesChips: GroupeChips;
-  
+
   private _connectedUser: Utilisateur = null;
   private _destroy$ = new Subject<void>();
 
