@@ -36,7 +36,7 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
   public errors: any;
   public success: any;
   private _connectedUser: Utilisateur = null;
-  HOME_ROUTE = '/Digifleet';
+  EMPRUNT_ROUTE = '/Digifleet/liste-emprunt';
 
   constructor(
     private _authService: AuthService,
@@ -99,7 +99,7 @@ export class UtilisateurSecuriteComponent implements OnInit, OnDestroy {
 
     if (this._connectedUser.IsPasswordToChange) {
       this._authService.refreshUserData();
-      this._router.navigate([this.HOME_ROUTE])
+      this._router.navigate([this.EMPRUNT_ROUTE])
       this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Votre mot de passe a bien été modifié.'));
     }
   }
