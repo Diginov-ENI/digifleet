@@ -9,4 +9,4 @@ docker-compose -f ./docker/docker-compose.yml up --build --force-recreate -d
 
 # log result
 printf "\n######## INIT FINISHED ########\n"
-printf "Server available at: http://$localIp:8000/\n"
+printf "Server available at: http://<server-ip>:8000/\n"
