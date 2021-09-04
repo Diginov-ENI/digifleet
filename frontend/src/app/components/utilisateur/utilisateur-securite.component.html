@@ -14,7 +14,7 @@
                 <alert type="success" *ngFor="let message of success">{{this.messageTranslate(message)}}</alert>
             </div>
             <form [formGroup]="passwordForm" (ngSubmit)="onFormPasswordChange()">
-                
+
                 <div>
                     <mat-form-field appearance="fill">
                         <mat-label>Ancien mot de passe</mat-label>

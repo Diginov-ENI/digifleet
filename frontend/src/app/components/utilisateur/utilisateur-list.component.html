@@ -54,7 +54,8 @@
 
         <!-- colonne Username -->
         <ng-container matColumnDef="username">
-          <th [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Username
+          <th [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-header-cell *matHeaderCellDef> Nom
+            d'utilisateur
           </th>
           <td [style.display]="nbColumnsAffiche < 5 ? 'none' : 'table-cell'" mat-cell *matCellDef="let utilisateur">
             {{utilisateur.Username}} </td>
@@ -78,12 +79,12 @@
                 <div *ngIf="connectedUser.Id == utilisateur.Id;then thenBlockActive else elseBlockActive"></div>
                 <ng-template #thenBlockActive>
                   <div matTooltip="Vous ne pouvez pas vous désactiver vous meme.">
-                  <button class="button-list" mat-stroked-button disabled
-                    matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
-                    <span class="mat-button-wrapper">
-                      <span class="material-icons">hourglass_empty</span>
-                    </span>
-                  </button>
+                    <button class="button-list" mat-stroked-button disabled
+                      matTooltip="Passer l'utilisateur en Actif/Inactif" id="btnActifObsoleteUtilisateur">
+                      <span class="mat-button-wrapper">
+                        <span class="material-icons">hourglass_empty</span>
+                      </span>
+                    </button>
                   </div>
                 </ng-template>
                 <ng-template #elseBlockActive>
@@ -148,7 +149,7 @@
       <mat-paginator [hidden]="dataSource?.filteredData?.length == 0" [length]="100" [pageSize]="10"
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
-      
+
       <div *ngIf="dataSource == null || dataSource?.filteredData == null ||dataSource?.filteredData?.length == 0"
         class="bloc-aucune-donnee">
         <p>Aucun utilisateur à afficher.</p>

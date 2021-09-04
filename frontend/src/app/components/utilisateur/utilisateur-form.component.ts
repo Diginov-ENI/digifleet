@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, first, takeUntil } from 'rxjs/operators';
 import { UtilisateurBackendService } from 'src/app/backendservices/utilisateur.backendservice';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
 import { Groupe } from 'src/app/models/groupe';
@@ -16,33 +17,39 @@ import { GroupeChips } from './groupe-chips/groupe-chips.component';
   templateUrl: 'utilisateur-form.component.html',
 })
 
-export class UtilisateurFormComponent implements OnInit {
+export class UtilisateurFormComponent implements OnInit, OnDestroy {
+  @ViewChild('groupesChips') groupesChips: GroupeChips;
+
+  private _connectedUser: Utilisateur = null;
+  private _destroy$ = new Subject<void>();
+
   utilisateur: Utilisateur;
   form;
-  private connectedUser: Utilisateur = null;
   groupeDisabled = false;
   groupeTooltip = null;
 
-  @ViewChild('groupesChips') groupesChips: GroupeChips;
   constructor(
     private _utilisateurBackendService: UtilisateurBackendService,
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private authService: AuthService,
+    private _router: Router,
+    private _formBuilder: FormBuilder,
+    private _route: ActivatedRoute,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
   ) {
-    const utilisateurId = this.route.snapshot.paramMap.get('id');
+    const utilisateurId = this._route.snapshot.paramMap.get('id');
     if (utilisateurId)
       this.chargerUtilisateur(utilisateurId);
   }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user => {
-      this.connectedUser = user
-      this.loadDisabled()
-    });
-    this.form = this.formBuilder.group({
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => {
+        this._connectedUser = utilisateur;
+        this.loadDisabled();
+      });
+
+    this.form = this._formBuilder.group({
       Id: [''],
       Username: ['', Validators.required],
       Email: ['', [Validators.email, Validators.required]],
@@ -54,19 +61,20 @@ export class UtilisateurFormComponent implements OnInit {
     this.form.controls.Username.updateValueAndValidity();
     this.form.controls.Username.setValidators([Validators.required,
     this.noWhitespaceValidator()]);
-    // unique(this.appelBack.utilisateurs$.value, ['LibLoginUse'], this.item.IdUse, ['IdUse'])]);
-    // ToDo validateur unique 
 
     this.form.controls.Prenom.setValidators([Validators.required,
     this.noWhitespaceStartEndValidator()]);
 
     this.form.controls.Nom.setValidators([Validators.required,
     this.noWhitespaceStartEndValidator()]);
+  }
 
+  ngOnDestroy() {
+    this._destroy$.next();
   }
 
   loadDisabled() {
-    this.groupeDisabled = this.connectedUser && typeof this.utilisateur !== 'undefined' && this.utilisateur.Id === this.connectedUser.Id;
+    this.groupeDisabled = this._connectedUser && typeof this.utilisateur !== 'undefined' && this.utilisateur.Id === this._connectedUser.Id;
     if (this.groupeDisabled) {
       this.groupeTooltip = "Vous ne pouvez pas modifier vos groupes."
     } else {
@@ -83,7 +91,7 @@ export class UtilisateurFormComponent implements OnInit {
       this._utilisateurBackendService.addUtilisateur(this.utilisateur).subscribe(res => {
         if (res.IsSuccess) {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur ajouté avec succès.'));
-          this.router.navigate(['Digifleet/liste-utilisateur']);
+          this._router.navigate(['Digifleet/liste-utilisateur']);
         } else {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
         }
@@ -101,12 +109,10 @@ export class UtilisateurFormComponent implements OnInit {
       this._utilisateurBackendService.updateUtilisateur(object).subscribe(res => {
         if (res.IsSuccess) {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Utilisateur modifié avec succès.'));
-          this.authService.getUser().pipe(first()).subscribe(user => {
-            if (res.Data.Id === user.Id) {
-              this.authService.refreshUserData();
-            }
-            this.router.navigate(['Digifleet/liste-utilisateur']);
-          });
+          if (res.Data.Id === this._connectedUser.Id) {
+            this._authService.refreshUserData();
+          }
+          this._router.navigate(['Digifleet/liste-utilisateur']);
         } else {
           this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
         }
@@ -117,7 +123,7 @@ export class UtilisateurFormComponent implements OnInit {
   getSelectedGroupes(): Groupe[] {
     return this.groupesChips.getSelectedGroupes();
   }
-  
+
   chargerUtilisateur(id) {
     this._utilisateurBackendService.getUtilisateur(id).subscribe(res => {
       if (res.IsSuccess) {

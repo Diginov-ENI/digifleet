@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, OnDestroy } from '@angular/core';
 import { EmpruntBackendService } from 'src/app/backendservices/emprunt.backendservice';
 import { VehiculeBackendService } from 'src/app/backendservices/vehicule.backendservice';
 import { Emprunt } from 'src/app/models/emprunt';
@@ -12,6 +12,8 @@ import { Utilisateur } from 'src/app/models/utilisateur';
 import { DialogConfirmComponent } from '../dialog-confirm/dialog-confirm.component';
 import { Vehicule } from 'src/app/models/vehicule';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'emprunt-list',
@@ -19,14 +21,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
   styleUrls: ['emprunt-list.scss'],
 })
 
-export class EmpruntListComponent implements OnInit {
+export class EmpruntListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  private connectedUser: Utilisateur = null;
+  private _connectedUser: Utilisateur = null;
+  private _destroy$ = new Subject<void>();
   emprunts: Emprunt[];
   emprunt: Emprunt;
   availableVehicules: Vehicule[];
-  listeStatut: { [key: string]: string} = {
+  listeStatut: { [key: string]: string } = {
     'DEPOSEE': 'demande déposée',
     'REFUSEE': 'demande refusée',
     'ANNULEE': 'demande annulée',
@@ -37,26 +40,34 @@ export class EmpruntListComponent implements OnInit {
   format: string = 'dd-MM-yyyy';
 
   constructor(
-    private _empruntBackendService: EmpruntBackendService, 
-    private _vehiculeBackendService: VehiculeBackendService, 
-    public matDialog: MatDialog, private authService: AuthService,
+    private _empruntBackendService: EmpruntBackendService,
+    private _vehiculeBackendService: VehiculeBackendService,
+    public matDialog: MatDialog,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
-    ) { }
+  ) { }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user => this.connectedUser = user);
-    if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => this._connectedUser = utilisateur);
+
+    if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
       this.getEmprunts();
-    }else{
-      this.getEmpruntsByOwner(this.connectedUser.Id);
+    } else {
+      this.getEmpruntsByOwner(this._connectedUser.Id);
     }
+  }
+
+  ngOnDestroy() {
+    this._destroy$.next();
   }
 
   getEmprunts = (): void => {
     this._empruntBackendService.getEmprunts().subscribe((response => {
-      if(response.IsSuccess){
+      if (response.IsSuccess) {
         this.emprunts = response.Data;
-      }else{
+      } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     }))
@@ -64,9 +75,9 @@ export class EmpruntListComponent implements OnInit {
 
   getEmpruntsByOwner(idOwner) {
     this._empruntBackendService.getEmpruntsByOwner(idOwner).subscribe((response => {
-      if(response.IsSuccess){
+      if (response.IsSuccess) {
         this.emprunts = response.Data;
-      }else{
+      } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     }))
@@ -74,27 +85,27 @@ export class EmpruntListComponent implements OnInit {
 
   getEmpruntById(id) {
     this._empruntBackendService.getEmprunt(id).subscribe(response => {
-      if(response.IsSuccess){
+      if (response.IsSuccess) {
         this.emprunt = response.Data;
-      }else{
+      } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
   }
-  
-  updateEmpruntsList(emprunts: Emprunt[]){
+
+  updateEmpruntsList(emprunts: Emprunt[]) {
     this.emprunts = emprunts;
   }
 
   updateEmprunt = (emprunt: Emprunt): void => {
     this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe(response => {
-      if(response.IsSuccess){
-        if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+      if (response.IsSuccess) {
+        if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
           this.getEmprunts();
-        }else{
-          this.getEmpruntsByOwner(this.connectedUser.Id);
+        } else {
+          this.getEmpruntsByOwner(this._connectedUser.Id);
         }
-      }else{
+      } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
@@ -102,13 +113,13 @@ export class EmpruntListComponent implements OnInit {
 
   deleteEmprunt(id) {
     this._empruntBackendService.deleteEmprunt(id).subscribe(response => {
-      if(response.IsSuccess){
-        if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+      if (response.IsSuccess) {
+        if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
           this.getEmprunts();
-        }else{
-          this.getEmpruntsByOwner(this.connectedUser.Id);
+        } else {
+          this.getEmpruntsByOwner(this._connectedUser.Id);
         }
-      }else{
+      } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
       }
     })
@@ -160,22 +171,22 @@ export class EmpruntListComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if(result){
-          let vehicule: Vehicule = {'Id': result, 'Immatriculation': undefined, 'Modele': undefined, 'Marque': undefined, 'Couleur': undefined, 'NbPlace': undefined, 'IsActive': undefined, 'Site': undefined};
+        if (result) {
+          let vehicule: Vehicule = { 'Id': result, 'Immatriculation': undefined, 'Modele': undefined, 'Marque': undefined, 'Couleur': undefined, 'NbPlace': undefined, 'IsActive': undefined, 'Site': undefined };
           let object: object = {
-            'Id' : emprunt.Id,
-            'Statut' : 'ATTENTE_CLEF',
-            'Vehicule' : vehicule,
+            'Id': emprunt.Id,
+            'Statut': 'ATTENTE_CLEF',
+            'Vehicule': vehicule,
           }
           this._empruntBackendService.partialUpdateEmprunt(object).subscribe(response => {
-            if(response.IsSuccess){
+            if (response.IsSuccess) {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Emprunt validé avec succès.'));
-              if(this.connectedUser.hasPermissionByCodeName('emprunt_list')){
+              if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
                 this.getEmprunts();
-              }else{
-                this.getEmpruntsByOwner(this.connectedUser.Id);
+              } else {
+                this.getEmpruntsByOwner(this._connectedUser.Id);
               }
-            }else{
+            } else {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
             }
           })
@@ -199,5 +210,3 @@ export class DialogSelectVehicule {
   }
 
 }
-
-

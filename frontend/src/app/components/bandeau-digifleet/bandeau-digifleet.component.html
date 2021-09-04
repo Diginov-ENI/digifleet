@@ -2,8 +2,8 @@
     <mat-toolbar-row>
          <button mat-button
                 disableRipple
-                routerLink="/Digifleet">
-                <h5>Digifleet</h5>
+                routerLink="/Digifleet/liste-emprunt">
+                <img id="bandeau-logo" src="/assets/digifleet.png" />
         </button>
         <div fxFlex fxLayout fxLayoutAlign="flex-end">
             <ul fxLayout fxLayoutGap="20px">
@@ -13,39 +13,39 @@
                     <mat-icon>emoji_transportation</mat-icon>
                     Emprunts
                 </button>
-                <ng-template  [ngIf]="user && ( 
-                    user.hasPermissionByCodeName('vehicule_list') 
-                    || user.hasPermissionByCodeName('site_list') 
-                    || user.hasPermissionByCodeName('utilisateur_list') 
-                    || user.hasPermissionByCodeName('groupe_list')
+                <ng-template  [ngIf]="connectedUser && ( 
+                    connectedUser.hasPermissionByCodeName('vehicule_list') 
+                    || connectedUser.hasPermissionByCodeName('site_list') 
+                    || connectedUser.hasPermissionByCodeName('utilisateur_list') 
+                    || connectedUser.hasPermissionByCodeName('groupe_list')
                     )">
                     <button mat-button [matMenuTriggerFor]="administration">
                         <mat-icon>build</mat-icon>
                         Administration
                     </button>
                     <mat-menu #administration="matMenu">
-                        <ng-template [ngIf]="user && user.hasPermissionByCodeName('vehicule_list')">
+                        <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('vehicule_list')">
                             <button mat-menu-item
                                 routerLink="/Digifleet/liste-vehicule">
                                 <mat-icon>directions_car</mat-icon>
                                 Véhicules
                             </button>
                         </ng-template>
-                        <ng-template [ngIf]="user && user.hasPermissionByCodeName('site_list')">
+                        <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('site_list')">
                             <button mat-menu-item
                                 routerLink="/Digifleet/liste-site">
                                 <mat-icon>location_city</mat-icon>
                                 Sites
                             </button>
                         </ng-template>
-                        <ng-template [ngIf]="user && user.hasPermissionByCodeName('utilisateur_list')">
+                        <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('utilisateur_list')">
                             <button mat-menu-item
                                 routerLink="/Digifleet/liste-utilisateur">
                                 <mat-icon>people</mat-icon>
                                 Utilisateurs
                             </button>
                         </ng-template>
-                        <ng-template [ngIf]="user && user.hasPermissionByCodeName('groupe_list')">
+                        <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('groupe_list')">
                             <button mat-menu-item
                                 routerLink="/Digifleet/liste-groupe">
                                 <mat-icon>groups</mat-icon>
@@ -59,10 +59,10 @@
         
         <span class="navbar-spacer"></span>
         <span>
-
+            <notifications></notifications>
             <button mat-button [matMenuTriggerFor]="auth">
                 <mat-icon>person_outline</mat-icon>
-                <ng-template [ngIf]="user" [ngIfElse]="loading">{{user.Prenom.charAt(0).toUpperCase() + user.Prenom.slice(1)}} {{user.Nom.toUpperCase()}}</ng-template> <ng-template #loading>Chargement..</ng-template>
+                <ng-template [ngIf]="connectedUser" [ngIfElse]="loading">{{connectedUserName}}</ng-template> <ng-template #loading>Chargement..</ng-template>
             </button>
         </span>
 

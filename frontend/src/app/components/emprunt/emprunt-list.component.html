@@ -23,7 +23,7 @@
       >
       </emprunt-filters>
 
-      <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;">
+      <mat-card *ngFor="let emprunt of emprunts" style="margin:15px;" id="emprunt{{emprunt.Id}}">
         <mat-card-title>{{emprunt.Conducteur.Nom}} {{emprunt.Conducteur.Prenom}} </mat-card-title>
         <mat-card-subtitle>
           <mat-chip-list aria-label="dates">
@@ -39,9 +39,9 @@
           <mat-divider></mat-divider>
         <mat-card-content> 
           <mat-expansion-panel style="margin-top:30px;">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header class="emprunt{{emprunt.Id}}-open-header">
               <mat-panel-title>
-                <span>
+                <span id="emprunt{{emprunt.Id}}-open">
                   <mat-icon aria-hidden="false" aria-label="destination">place</mat-icon>
                   Vers {{ emprunt.Destination }} ({{ listeStatut[emprunt.Statut]}})
                 </span>
@@ -138,8 +138,8 @@
         <p>Aucune demande à afficher.</p>
       </div>
       
-      <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
+      <!-- <mat-paginator [hidden]="emprunts?.length < 0" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator> -->
 
     </ion-col>
   </ion-row>

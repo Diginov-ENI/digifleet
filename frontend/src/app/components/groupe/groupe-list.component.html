@@ -8,7 +8,7 @@
         <ion-col class="ion-no-padding">
 
           <div class="button-list-top-container">
-            <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('groupe_create')">
+            <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('groupe_create')">
               <button class="button-list color-accent" mat-stroked-button routerLink="groupe"
                 matTooltip="Ajouert un groupe" id="btnAjoutGroupe">
                 <span class="mat-button-wrapper">
@@ -34,7 +34,7 @@
           <th mat-header-cell *matHeaderCellDef> Actions </th>
           <td mat-cell *matCellDef="let groupe">
             <div class="mat-button-list-container">
-              <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('groupe_update')">
+              <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('groupe_update')">
                 <div *ngIf="connectedUser.isInGroupe(groupe.Id);then thenBlock else elseBlock"></div>
                 <ng-template #thenBlock>
                   <div matTooltip="Vous ne pouvez pas modifier un groupe dans lequel vous êtes.">
@@ -54,7 +54,7 @@
                   </button>
                 </ng-template>
               </ng-template>
-              <ng-template [ngIf]="connectedUser && connectedUser.hasPermissionByCodeName('groupe_destroy')">
+              <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('groupe_destroy')">
                 <div *ngIf="connectedUser.isInGroupe(groupe.Id);then thenBlock else elseBlock"></div>
                 <ng-template #thenBlock>
                   <div matTooltip="Vous ne pouvez pas supprimer un groupe dans lequel vous êtes.">

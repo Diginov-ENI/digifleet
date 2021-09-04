@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { GroupeBackendService } from 'src/app/backendservices/groupe.backendservice';
 import { Groupe } from 'src/app/models/groupe';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastHelperComponent } from '../toast-message/toast-message.component';
 import { ConfigMatsnackbar } from 'src/app/models/digiutils';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'groupe-list',
@@ -16,8 +18,10 @@ import { ConfigMatsnackbar } from 'src/app/models/digiutils';
   styleUrls: ['groupe-list.component.scss'],
 })
 
-export class GroupeListComponent implements OnInit {
+export class GroupeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private _destroy$ = new Subject<void>();
 
   groupes: Groupe[];
   groupe: Groupe;
@@ -29,13 +33,21 @@ export class GroupeListComponent implements OnInit {
   constructor(
     private _groupeBackendService: GroupeBackendService,
     public matDialog: MatDialog,
-    private authService: AuthService,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
-    this.authService.getUser().subscribe(user => this.connectedUser = user);
+    this._authService.utilisateurConnecte$
+      .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
+      .subscribe(utilisateur => this.connectedUser = utilisateur);
+
     this.getGroupes();
+  }
+
+
+  ngOnDestroy() {
+    this._destroy$.next();
   }
 
   getGroupes() {
@@ -58,7 +70,7 @@ export class GroupeListComponent implements OnInit {
       } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
       }
-      
+
     })
   }
 
@@ -76,4 +88,3 @@ export class GroupeListComponent implements OnInit {
     });
   }
 }
-

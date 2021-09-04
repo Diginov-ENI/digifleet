@@ -122,7 +122,7 @@ export const DETAILS_ROUTES: Routes = [
     },
     {
         path: '',
-        redirectTo: 'Digifleet',
+        redirectTo: 'Digifleet/liste-emprunt',
         pathMatch: 'full'
     }
 ];
