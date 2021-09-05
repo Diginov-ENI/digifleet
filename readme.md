@@ -1,5 +1,6 @@
 # Digifleet
 Application de gestion de flotte de véhicules conçue par l'entreprise fictive **Diginov'**
+Développé en Django (python) et Angular (typescript)
 
 ## Fonctionalités Majeures
 * Dépôt de demandes d'emprunts (de véhicules) (choix du site de rattachement, du lieu d'arrivé, des dates de départ/arrivé et des passagers
