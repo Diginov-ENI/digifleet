@@ -11,7 +11,7 @@
                 <button mat-button 
                     routerLink="/Digifleet/liste-emprunt">
                     <mat-icon>emoji_transportation</mat-icon>
-                    Emprunts
+                    <span class="libelle-item-menu">Emprunts</span>
                 </button>
                 <ng-template  [ngIf]="connectedUser && ( 
                     connectedUser.hasPermissionByCodeName('vehicule_list') 
@@ -21,7 +21,7 @@
                     )">
                     <button mat-button [matMenuTriggerFor]="administration">
                         <mat-icon>build</mat-icon>
-                        Administration
+                        <span class="libelle-item-menu">Administration</span>
                     </button>
                     <mat-menu #administration="matMenu">
                         <ng-template [ngIf]="connectedUser?.hasPermissionByCodeName('vehicule_list')">
@@ -62,12 +62,12 @@
             <notifications></notifications>
             <button mat-button [matMenuTriggerFor]="auth">
                 <mat-icon>person_outline</mat-icon>
-                <ng-template [ngIf]="connectedUser" [ngIfElse]="loading">{{connectedUserName}}</ng-template> <ng-template #loading>Chargement..</ng-template>
+                <ng-template class="libelle-item-menu" [ngIf]="connectedUser" [ngIfElse]="loading">{{connectedUserName}}</ng-template> 
+                <ng-template #loading>Chargement..</ng-template>
             </button>
         </span>
 
         <mat-menu #auth="matMenu">
-            
             <button routerLink="/Digifleet/mon-compte/securite" mat-menu-item>
                 <mat-icon>security</mat-icon>
                 <span>Sécurité</span>
