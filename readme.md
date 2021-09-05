@@ -1,3 +1,18 @@
+# Digifleet
+Application de gestion de flotte de véhicule conçu par l'entreprise fictive **Diginov'**
+
+## Fonctionalités Majeures
+* Dépôt de demandes d'emprunts (de véhicules) sur un créneau
+* Suivi et validation des demandes
+* Gestion et Administration des utilisateurs, sites, véhicules et permissions d'accès
+
+Conçu et développé par:
+* [Claire GAUDET](https://github.com/Floue)
+* [Grégory BOUTTE](https://github.com/gboutte)
+* [noobzor](https://github.com/noobzor)
+* [Bastien LELODET](https://github.com/bastienLelodet)
+* [Maxence MILLOT](https://github.com/MaxenceMillot)
+
 # Déploiement de PRODUCTION
 ## Mettre en place le projet
 
