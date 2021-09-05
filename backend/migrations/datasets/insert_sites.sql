@@ -1,4 +1,4 @@
-INSERT INTO backend_site(name)
+INSERT INTO backend_site(libelle)
 VALUES ('ENI Nantes'),
 ('ENI Rennes'),
 ('ENI Niort'),
