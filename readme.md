@@ -1,9 +1,9 @@
 # Digifleet
-Application de gestion de flotte de véhicule conçu par l'entreprise fictive **Diginov'**
+Application de gestion de flotte de véhicules conçue par l'entreprise fictive **Diginov'**
 
 ## Fonctionalités Majeures
-* Dépôt de demandes d'emprunts (de véhicules) sur un créneau
-* Suivi et validation des demandes
+* Dépôt de demandes d'emprunts (de véhicules) (choix du site de rattachement, du lieu d'arrivé, des dates de départ/arrivé et des passagers
+* Suivi et validation des demandes (validation, attribution de véhicule, refus, annulation, suivi des clefs)
 * Gestion et Administration des utilisateurs, sites, véhicules et permissions d'accès
 
 Conçu et développé par:
