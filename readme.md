@@ -11,12 +11,13 @@
 3. Télécharger une des release de Digifleet - https://github.com/Diginov-ENI/digifleet/releases
 4. Se déplacer dans la racine du projet
 5. Exécuter le script suivant : `sudo bash scripts/init_env.sh`
-6. Exécuter le script suivant : `sudo bash scripts/init_docker.sh`
-7. Vérifier le bon fonctionnement des conteneurs : `sudo docker ps`
-8. Exécuter le script suivant : `sudo bash scripts/init_db.sh`
-9. Modifier le fichier `./docker/.env` et dans le champ `FRONT_API_URL` remplacer "localhost" par l'ip du serveur hôte (pour rendre l'appli fonctionelle sur un réseau local)
-10. Configurer Sentry pour les logs (voir ci-dessous)
-11. Se rendre sur `<ip-hôte>:8000` pour vérifier que l'application se lance avec succès
+6. Ouvrir scripts/init_env.sh et remplacer `<server-ip>` par l'adresse de la machine hôte
+7. Exécuter le script suivant : `sudo bash scripts/init_docker.sh`
+8. Vérifier le bon fonctionnement des conteneurs : `sudo docker ps`
+9. Exécuter le script suivant : `sudo bash scripts/init_db.sh`
+10. Modifier le fichier `./docker/.env` et dans le champ `FRONT_API_URL` remplacer "localhost" par l'ip du serveur hôte (pour rendre l'appli fonctionelle sur un réseau local)
+11. Configurer Sentry pour les logs (voir ci-dessous)
+12. Se rendre sur `<ip-hôte>:8000` pour vérifier que l'application se lance avec succès
 
 
 ### Déploiement Windows
