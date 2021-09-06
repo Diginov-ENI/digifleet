@@ -30,7 +30,7 @@ Logiciel disponible ici : https://github.com/Diginov-ENI/digifleet/releases/
 3. Télécharger une des release de Digifleet - https://github.com/Diginov-ENI/digifleet/releases
 4. Se déplacer dans la racine du projet
 5. Exécuter le script suivant : `sudo bash scripts/init_env.sh`
-6. Ouvrir scripts/init_env.sh et remplacer `<server-ip>` par l'adresse de la machine hôte
+6. Ouvrir `config/.env` et remplacer `<server-ip>` par l'adresse de la machine hôte
 7. Exécuter le script suivant : `sudo bash scripts/init_docker.sh`
 8. Vérifier le bon fonctionnement des conteneurs : `sudo docker ps`
 9. Exécuter le script suivant : `sudo bash scripts/init_db.sh`
