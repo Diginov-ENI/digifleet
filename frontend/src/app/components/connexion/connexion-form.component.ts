@@ -47,7 +47,9 @@ export class ConnexionFormComponent {
   }
 
   login(username: string, password: string) {
+    this.errors = [];
     this._authService.login(username, password).subscribe(
+      success => this.handleSuccess(),
       error => this.handleError(error)
     );
   }
@@ -64,7 +66,7 @@ export class ConnexionFormComponent {
     if (this._connectedUser != null && this._connectedUser.IsPasswordToChange) {
       this._router.navigate([this.SECU_ROUTE])
     }
-    else {
+    else if(this._connectedUser != null && this._connectedUser.Id) {
       this._router.navigate([this.HOME_ROUTE]);
     }
   }

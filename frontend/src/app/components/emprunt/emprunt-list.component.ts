@@ -24,7 +24,7 @@ import { Subject } from 'rxjs';
 export class EmpruntListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  private _connectedUser: Utilisateur = null;
+  public connectedUser: Utilisateur = null;
   private _destroy$ = new Subject<void>();
   emprunts: Emprunt[];
   emprunt: Emprunt;
@@ -50,12 +50,12 @@ export class EmpruntListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._authService.utilisateurConnecte$
       .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
-      .subscribe(utilisateur => this._connectedUser = utilisateur);
-
-    if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
+      .subscribe(utilisateur => this.connectedUser = utilisateur);
+    if (this.connectedUser.hasPermissionByCodeName('emprunt_list')) {
       this.getEmprunts();
     } else {
-      this.getEmpruntsByOwner(this._connectedUser.Id);
+      this.getEmpruntsByOwner(this.connectedUser.Id);
+
     }
   }
 
@@ -100,10 +100,10 @@ export class EmpruntListComponent implements OnInit, OnDestroy {
   updateEmprunt = (emprunt: Emprunt): void => {
     this._empruntBackendService.partialUpdateEmprunt(emprunt).subscribe(response => {
       if (response.IsSuccess) {
-        if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
+        if (this.connectedUser.hasPermissionByCodeName('emprunt_list')) {
           this.getEmprunts();
         } else {
-          this.getEmpruntsByOwner(this._connectedUser.Id);
+          this.getEmpruntsByOwner(this.connectedUser.Id);
         }
       } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
@@ -114,10 +114,10 @@ export class EmpruntListComponent implements OnInit, OnDestroy {
   deleteEmprunt(id) {
     this._empruntBackendService.deleteEmprunt(id).subscribe(response => {
       if (response.IsSuccess) {
-        if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
+        if (this.connectedUser.hasPermissionByCodeName('emprunt_list')) {
           this.getEmprunts();
         } else {
-          this.getEmpruntsByOwner(this._connectedUser.Id);
+          this.getEmpruntsByOwner(this.connectedUser.Id);
         }
       } else {
         this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
@@ -181,10 +181,10 @@ export class EmpruntListComponent implements OnInit, OnDestroy {
           this._empruntBackendService.partialUpdateEmprunt(object).subscribe(response => {
             if (response.IsSuccess) {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(false, 'Emprunt validé avec succès.'));
-              if (this._connectedUser.hasPermissionByCodeName('emprunt_list')) {
+              if (this.connectedUser.hasPermissionByCodeName('emprunt_list')) {
                 this.getEmprunts();
               } else {
-                this.getEmpruntsByOwner(this._connectedUser.Id);
+                this.getEmpruntsByOwner(this.connectedUser.Id);
               }
             } else {
               this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, response.LibErreur));
