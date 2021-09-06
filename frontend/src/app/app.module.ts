@@ -131,7 +131,9 @@ export const DATE_FORMAT = {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
-    { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
+    { provide: ErrorHandler, useValue: Sentry.createErrorHandler({
+      showDialog: false,
+    }) },
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT},
     UtilisateurBackendService,

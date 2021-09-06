@@ -44,17 +44,19 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   loadNotifications() {
     let tmpnotifications = []
-    this._notificationsBackendservice.getNotifications().subscribe(res => {
-      if (res.IsSuccess) {
-        res.Data.forEach(notification => {
-          let notif = new Notification(notification);
-          tmpnotifications.push(notif)
-        });
-        this.notifications = tmpnotifications;
-      } else {
-        this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
-      }
-    });
+    if (this.user != null && this.user.Id) {
+      this._notificationsBackendservice.getNotifications().subscribe(res => {
+        if (res.IsSuccess) {
+          res.Data.forEach(notification => {
+            let notif = new Notification(notification);
+            tmpnotifications.push(notif)
+          });
+          this.notifications = tmpnotifications;
+        } else {
+          this._snackBar.openFromComponent(ToastHelperComponent, ConfigMatsnackbar.setToast(true, res.LibErreur));
+        }
+      });
+    }
   }
 
   readNotification(id) {
