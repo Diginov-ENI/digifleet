@@ -15,6 +15,8 @@ Conçu et développé par:
 * [Bastien LELODET](https://github.com/bastienLelodet)
 * [Maxence MILLOT](https://github.com/MaxenceMillot)
 
+Logiciel disponible ici : https://github.com/Diginov-ENI/digifleet/releases/
+
 # Déploiement de PRODUCTION
 ## Mettre en place le projet
 
