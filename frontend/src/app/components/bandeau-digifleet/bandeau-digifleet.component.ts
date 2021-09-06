@@ -14,7 +14,6 @@ export class BandeauDigifleetComponent implements OnDestroy {
     public connectedUser: Utilisateur = null;
     private _destroy$ = new Subject<void>();
     isResizeNeeded: boolean = false;
-
     public get connectedUserName(): string {
         if (this.connectedUser?.Nom || this.connectedUser?.Prenom) {
             let username = '';

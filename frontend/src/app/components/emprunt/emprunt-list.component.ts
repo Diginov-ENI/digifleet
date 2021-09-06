@@ -51,11 +51,11 @@ export class EmpruntListComponent implements OnInit, OnDestroy {
     this._authService.utilisateurConnecte$
       .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
       .subscribe(utilisateur => this.connectedUser = utilisateur);
-
     if (this.connectedUser.hasPermissionByCodeName('emprunt_list')) {
       this.getEmprunts();
     } else {
       this.getEmpruntsByOwner(this.connectedUser.Id);
+
     }
   }
 

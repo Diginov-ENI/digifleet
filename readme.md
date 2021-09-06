@@ -1,4 +1,41 @@
-# Déploiement de DEVELOPPEMENT
+# Digifleet
+Application de gestion de flotte de véhicules conçue par l'entreprise fictive **Diginov'**
+
+Développé en Django (python) et Angular (typescript)
+
+## Fonctionalités Majeures
+* Dépôt de demandes d'emprunts de véhicules (choix du site de rattachement, du lieu d'arrivé, des dates de départ/arrivé et des passagers)
+* Suivi et validation des demandes (validation, attribution de véhicule, refus, annulation, suivi des clefs)
+* Gestion et Administration des utilisateurs, sites, véhicules et permissions d'accès
+
+Conçu et développé par:
+* [Claire GAUDET](https://github.com/Floue)
+* [Grégory BOUTTE](https://github.com/gboutte)
+* [noobzor](https://github.com/noobzor)
+* [Bastien LELODET](https://github.com/bastienLelodet)
+* [Maxence MILLOT](https://github.com/MaxenceMillot)
+
+Logiciel disponible ici : https://github.com/Diginov-ENI/digifleet/releases/
+
+# Déploiement de PRODUCTION
+## Mettre en place le projet
+
+### Déploiement Linux
+1. Installer docker - https://www.docker.com/get-started
+    - `sudo apt install docker.io`
+2. Installer docker-compose
+    - `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
+    - `sudo chmod +x /usr/local/bin/docker-compose`
+    - `sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose`
+3. Télécharger une des release de Digifleet - https://github.com/Diginov-ENI/digifleet/releases
+4. Se déplacer dans la racine du projet
+5. Exécuter le script suivant : `sudo bash scripts/init_env.sh`
+6. Exécuter le script suivant : `sudo bash scripts/init_docker.sh`
+7. Vérifier le bon fonctionnement des conteneurs : `sudo docker ps`
+8. Exécuter le script suivant : `sudo bash scripts/init_db.sh`
+9. Modifier le fichier `./docker/.env` et dans le champ `FRONT_API_URL` remplacer "localhost" par l'ip du serveur hôte (pour rendre l'appli fonctionelle sur un réseau local)
+10. Configurer Sentry pour les logs (voir ci-dessous)
+11. Se rendre sur `<ip-hôte>:8000` pour vérifier que l'application se lance avec succès
 
 ## Mettre en place le projet
 1. Installer docker et le lancer - https://www.docker.com/get-started
