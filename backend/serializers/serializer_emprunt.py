@@ -194,41 +194,41 @@ class EmpruntSerializer(serializers.ModelSerializer):
             conducteur_data = validated_data.pop('conducteur')
             conducteur = get_object_or_404(Utilisateur.objects.all(), pk=conducteur_data['id'])
             instance.conducteur = conducteur
-        passagers = []
-        passagers_data = []
+        
         if validated_data.get('passagers') is not None:
+            passagers = []
             passagers_data = validated_data.get('passagers')
 
-        for passager in passagers_data:
-            passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
+            for passager in passagers_data:
+                passagers.append(get_object_or_404(Utilisateur.objects.all(), pk=passager['id']))
 
-        # ---------- DEBUT VALIDATION ---------- 
-        # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
-        if instance.date_fin < instance.date_debut:
-            raise Exception("La date de début ne peut pas être après la date de fin.")
-        
-        # On récupère tous les passagers sur le meme interval de temps
-        passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
-
-        # --- VALIDATION ---  On vérifie qu'aucun des passagers courants ne soit déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
-        for passager in passagers:
-            for passager_by_interval in passagers_by_interval:
-                if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
-                    raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
-            # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
-            if Emprunt.objects.filter(
-                Q(date_debut__lte=instance.date_fin),
-                Q(date_fin__gte=instance.date_debut),
-                Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
-                Q(conducteur_id=passager.id),
-                ).distinct().exists():
-                raise Exception("L'un des passager déjà conducteur d'une autre demande sur cet interval de temps.")
-
-            #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
-            if passager.id == instance.conducteur.id:
-                raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
+            # ---------- DEBUT VALIDATION ---------- 
+            # --- VALIDATION --- On verifie que la date de fin de l'emprunt est après la date de début
+            if instance.date_fin < instance.date_debut:
+                raise Exception("La date de début ne peut pas être après la date de fin.")
             
-        instance.passagers.set(passagers)
+            # On récupère tous les passagers sur le meme interval de temps
+            passagers_by_interval = self.list_passagers_by_interval(instance.date_fin, instance.date_debut)
+
+            # --- VALIDATION ---  On vérifie qu'aucun des passagers courants ne soit déjà associé à un autre emprunt sur le même interval temporaire en tant que passagers
+            for passager in passagers:
+                for passager_by_interval in passagers_by_interval:
+                    if passager_by_interval and passager_by_interval.filter(pk=passager.id).exists():
+                        raise Exception("L'un des passager est déjà passager d'une autre demande sur cet interval de temps.")
+                # --- VALIDATION ---  On vérifie qu'aucun de nos passagers courants n'est associé à un autre emprunt sur le même interval en tant que conducteur
+                if Emprunt.objects.filter(
+                    Q(date_debut__lte=instance.date_fin),
+                    Q(date_fin__gte=instance.date_debut),
+                    Q(statut__in=['DEPOSEE', 'EN_COURS', 'ATTENTE_CLEF']),
+                    Q(conducteur_id=passager.id),
+                    ).distinct().exists():
+                    raise Exception("L'un des passager déjà conducteur d'une autre demande sur cet interval de temps.")
+
+                #  --- VALIDATION --- On vérifie qu'aucun des passagers courants ne soit conducteur courant
+                if passager.id == instance.conducteur.id:
+                    raise Exception("Le conducteur ne peut pas être passager de sa propre demande.")
+                
+            instance.passagers.set(passagers)
 
         # TODO : Vérification droit de modification du véhicule
         if validated_data.get('vehicule') is not None:

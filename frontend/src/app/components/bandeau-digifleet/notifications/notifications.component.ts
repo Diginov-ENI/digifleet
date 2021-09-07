@@ -32,11 +32,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
   ) {
     this._authService.utilisateurConnecte$
       .pipe(takeUntil(this._destroy$), filter(user => (user !== null && user !== undefined)))
-      .subscribe(utilisateur =>
-        this.user = utilisateur
+      .subscribe(utilisateur =>{
+          this.user = utilisateur;
+
+          this.loadNotifications();
+        }
       );
 
-    this.loadNotifications()
 
     const source = interval(30000);
     this.subscription = source.subscribe(val => this.loadNotifications());

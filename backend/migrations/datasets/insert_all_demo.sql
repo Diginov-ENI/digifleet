@@ -33,70 +33,122 @@ INSERT INTO backend_utilisateur (password,is_superuser,email,username,nom,prenom
 
 -- # INSERT GROUPS
 INSERT INTO auth_group(name)
-VALUES ('administration'),
-('backoffice'),
-('utilisateurs');
+VALUES ('Administrateur'),
+('Backoffice'),
+('Utilisateur');
 
 -- # INSERT GROUPS PERMISSIONS
 INSERT INTO auth_group_permissions(group_id, permission_id)
-VALUES (1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(1, 5),
-(1, 6),
-(1, 7),
-(1, 8),
-(1, 9),
-(1, 10),
-(1, 11),
-(1, 12),
-(1, 13),
-(1, 14),
-(1, 15),
-(1, 16),
-(1, 17),
-(1, 24),
-(1, 25),
-(1, 26),
-(1, 27),
-(1, 28),
-(2, 1),
-(2, 2),
-(2, 3),
-(2, 4),
-(2, 5),
-(2, 6),
-(2, 12),
-(2, 13),
-(2, 14),
-(2, 15),
-(2, 16),
-(2, 17),
-(2, 18),
-(2, 19),
-(2, 20),
-(2, 21),
-(2, 22),
-(2, 23),
-(3, 18),
-(3, 19),
-(3, 20),
-(3, 21),
-(3, 22),
-(3, 23);
+VALUES ((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_create')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_list')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_archive')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_update')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'site_create')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'site_list')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'site_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'site_update')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'site_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_create')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_list')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_archive')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_update')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'vehicule_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'groupe_create')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'groupe_list')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'groupe_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'groupe_update')),
+((SELECT id FROM auth_group WHERE name = 'Administrateur'), (SELECT id from auth_permission WHERE codename = 'utilisateur_permission')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_create')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_list')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_archive')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_update')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'utilisateur_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_create')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_list')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_archive')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_update')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'vehicule_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_create')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_list')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_destroy')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_update')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_update_status')),
+((SELECT id FROM auth_group WHERE name = 'Backoffice'), (SELECT id from auth_permission WHERE codename = 'emprunt_retrieve')),
+((SELECT id FROM auth_group WHERE name = 'Utilisateur'), (SELECT id from auth_permission WHERE codename = 'emprunt_create')),
+((SELECT id FROM auth_group WHERE name = 'Utilisateur'), (SELECT id from auth_permission WHERE codename = 'emprunt_list')),
+((SELECT id FROM auth_group WHERE name = 'Utilisateur'), (SELECT id from auth_permission WHERE codename = 'emprunt_update')),
+((SELECT id FROM auth_group WHERE name = 'Utilisateur'), (SELECT id from auth_permission WHERE codename = 'emprunt_retrieve'));
 
 -- # INSERT SITES
-INSERT INTO backend_site(name)
-VALUES ('ENI Nantes'),
-('ENI Rennes'),
-('ENI Niort'),
-('ENI Quimpert');
+INSERT INTO backend_site(libelle, is_active)
+VALUES ('Nantes', TRUE),
+('Rennes', TRUE),
+('Niort', TRUE),
+('Quimpert', TRUE);
 
 -- # INSERT VEHICULES
-INSERT INTO backend_vehicule (immatriculation, modele, marque, couleur, nb_place, is_active, site_id)
-VALUES ('AV-229-CK', 'Mégane', 'Renault', 'blanc', '5', TRUE, 1),
-('RV-337-TS', '208', 'Peugeot', 'blanc', '5', TRUE, 1),
-('XP-381-KF', '208', 'Peugeot', 'blanc', '5', TRUE, 2);
+insert into backend_vehicule (immatriculation, modele, marque, couleur, nb_place, is_active, site_id)
+values ('AV-229-CK', 'Twingo', 'Renault', 'vert', '4', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('XP-381-KF', '206', 'Peugeot', 'gris', '4', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('FR-652-RP', '308', 'Peugeot', 'Bleu', '5', FALSE, (select id from backend_site where libelle = 'Rennes')),
+('RS-232-JD', '3008', 'Peugeot', 'noir', '5', TRUE, (select id from backend_site where libelle = 'Niort')),
+('RJ-045-TE', 'S', 'Tesla', 'blanc', '5', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('KO-789-AV', 'Vectra', 'Opel', 'bleu', '5', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('MK-101-HL', 'Navara', 'Nissan', 'gris', '5', TRUE, (select id from backend_site where libelle = 'Rennes')),
+('PI-876-KZ', 'Kuga', 'Ford', 'blanc', '5', FALSE, (select id from backend_site where libelle = 'Quimper')),
+('TY-245-CK', 'Puma', 'Ford', 'blanc', '5', TRUE, (select id from backend_site where libelle = 'Niort')),
+('DA-336-CK', 'CLA', 'Mercedes', 'gris métal', '5', TRUE, (select id from backend_site where libelle = 'Rennes')),
+('MI-573-MV', 'Panda', 'Fiat', 'jaune', '4', TRUE, (select id from backend_site where libelle = 'Quimper')),
+('KE-745-FE', 'Prius+', 'Toyota', 'rouge', '5', TRUE, (select id from backend_site where libelle = 'Niort'));
 
 -- # INSERT EMPRUNTS
+-- Enregistrement n°1 : CIBLE
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T14:37', '2021-06-03T07:30', '2021-06-05T20:00', 'DEPOSEE', 'Saint-Malo', 'CIBLE', 'F', 
+	(select id from backend_utilisateur where username = 'abaille'),	
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'lbouvet'));
+-- Enregistrement n°2 : BEFORE
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-16T17:30', '2021-06-01T07:30', '2021-06-02T20:00', 'DEPOSEE', 'Le Mans', 'BEFORE', 'F',
+	(select id from backend_utilisateur where username = 'sartu'),
+	(select id from backend_site where libelle = 'Nantes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'abaille'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'lbouvet'));
+-- Enregistrement n°3 : AFTER
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-29T18:04', '2021-06-08T07:30', '2021-06-10T20:00', 'DEPOSEE', 'Saint-Malo', 'AFTER', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
+-- Enregistrement n°4 : SAME
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T07:30', '2021-06-03T07:30', '2021-06-05T20:00', 'DEPOSEE', 'Saint-Malo', 'SAME', 'F',
+	(select id from backend_utilisateur where username = 'mclaveau'),
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'ochiron'));
+-- Enregistrement n°5 : CONTAINED
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-04T11:32', '2021-06-04T07:30', '2021-06-04T20:00', 'DEPOSEE', 'Saint-Malo', 'CONTAINED', 'F',
+	(select id from backend_utilisateur where username = 'mclaveau'),
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'ochiron'));
+-- Enregistrement n°6 : OVERLAP START
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T07:29', '2021-06-01T07:30', '2021-06-04T20:00', 'DEPOSEE', 'Saint-Malo', 'OVERLAP START', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
+-- Enregistrement n°7 : OVERLAP END
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-04T07:27', '2021-06-04T07:30', '2021-06-07T20:00', 'DEPOSEE', 'Saint-Malo', 'OVERLAP END', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
