@@ -32,9 +32,4 @@ toml==0.10.2
 virtualenv==20.3.1
 virtualenv-clone==0.5.4
 wrapt==1.12.1
-ptvsd==4.3.2 # utilisé pour débuger sous VSCode, à retirer en production
 sentry-sdk==0.10.2
-coverage==5.5
-pytest==6.2.4
-pytest-django==4.3.0
-django-extensions==3.1.3
