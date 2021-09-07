@@ -11,7 +11,7 @@ Développé en Django (python) et Angular (typescript)
 Conçu et développé par:
 * [Claire GAUDET](https://github.com/Floue)
 * [Grégory BOUTTE](https://github.com/gboutte)
-* [noobzor](https://github.com/noobzor)
+* [Fabien BARTHAS](https://github.com/noobzor)
 * [Bastien LELODET](https://github.com/bastienLelodet)
 * [Maxence MILLOT](https://github.com/MaxenceMillot)
 
