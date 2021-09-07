@@ -81,22 +81,74 @@ VALUES (1, 1),
 (2, 23),
 (3, 18),
 (3, 19),
-(3, 20),
 (3, 21),
-(3, 22),
 (3, 23);
 
 -- # INSERT SITES
-INSERT INTO backend_site(name)
-VALUES ('ENI Nantes'),
-('ENI Rennes'),
-('ENI Niort'),
-('ENI Quimpert');
+INSERT INTO backend_site(libelle, is_active)
+VALUES ('Nantes', TRUE),
+('Rennes', TRUE),
+('Niort', TRUE),
+('Quimpert', TRUE);
 
 -- # INSERT VEHICULES
-INSERT INTO backend_vehicule (immatriculation, modele, marque, couleur, nb_place, is_active, site_id)
-VALUES ('AV-229-CK', 'Mégane', 'Renault', 'blanc', '5', TRUE, 1),
-('RV-337-TS', '208', 'Peugeot', 'blanc', '5', TRUE, 1),
-('XP-381-KF', '208', 'Peugeot', 'blanc', '5', TRUE, 2);
+insert into backend_vehicule (immatriculation, modele, marque, couleur, nb_place, is_active, site_id)
+values ('AV-229-CK', 'Twingo', 'Renault', 'vert', '4', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('XP-381-KF', '206', 'Peugeot', 'gris', '4', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('FR-652-RP', '308', 'Peugeot', 'Bleu', '5', FALSE, (select id from backend_site where libelle = 'Rennes')),
+('RS-232-JD', '3008', 'Peugeot', 'noir', '5', TRUE, (select id from backend_site where libelle = 'Niort')),
+('RJ-045-TE', 'S', 'Tesla', 'blanc', '5', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('KO-789-AV', 'Vectra', 'Opel', 'bleu', '5', TRUE, (select id from backend_site where libelle = 'Nantes')),
+('MK-101-HL', 'Navara', 'Nissan', 'gris', '5', TRUE, (select id from backend_site where libelle = 'Rennes')),
+('PI-876-KZ', 'Kuga', 'Ford', 'blanc', '5', FALSE, (select id from backend_site where libelle = 'Quimper')),
+('TY-245-CK', 'Puma', 'Ford', 'blanc', '5', TRUE, (select id from backend_site where libelle = 'Niort')),
+('DA-336-CK', 'CLA', 'Mercedes', 'gris métal', '5', TRUE, (select id from backend_site where libelle = 'Rennes')),
+('MI-573-MV', 'Panda', 'Fiat', 'jaune', '4', TRUE, (select id from backend_site where libelle = 'Quimper')),
+('KE-745-FE', 'Prius+', 'Toyota', 'rouge', '5', TRUE, (select id from backend_site where libelle = 'Niort'));
 
 -- # INSERT EMPRUNTS
+-- Enregistrement n°1 : CIBLE
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T14:37', '2021-06-03T07:30', '2021-06-05T20:00', 'DEPOSEE', 'Saint-Malo', 'CIBLE', 'F', 
+	(select id from backend_utilisateur where username = 'abaille'),	
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'lbouvet'));
+-- Enregistrement n°2 : BEFORE
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-16T17:30', '2021-06-01T07:30', '2021-06-02T20:00', 'DEPOSEE', 'Le Mans', 'BEFORE', 'F',
+	(select id from backend_utilisateur where username = 'sartu'),
+	(select id from backend_site where libelle = 'Nantes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'abaille'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'lbouvet'));
+-- Enregistrement n°3 : AFTER
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-29T18:04', '2021-06-08T07:30', '2021-06-10T20:00', 'DEPOSEE', 'Saint-Malo', 'AFTER', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
+-- Enregistrement n°4 : SAME
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T07:30', '2021-06-03T07:30', '2021-06-05T20:00', 'DEPOSEE', 'Saint-Malo', 'SAME', 'F',
+	(select id from backend_utilisateur where username = 'mclaveau'),
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'ochiron'));
+-- Enregistrement n°5 : CONTAINED
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-05-04T11:32', '2021-06-04T07:30', '2021-06-04T20:00', 'DEPOSEE', 'Saint-Malo', 'CONTAINED', 'F',
+	(select id from backend_utilisateur where username = 'mclaveau'),
+	(select id from backend_site where libelle = 'Rennes'));
+insert into backend_emprunt_passagers (emprunt_id, utilisateur_id)
+values ((SELECT currval(pg_get_serial_sequence('backend_emprunt','id'))), (select id from backend_utilisateur where username = 'ochiron'));
+-- Enregistrement n°6 : OVERLAP START
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-01T07:29', '2021-06-01T07:30', '2021-06-04T20:00', 'DEPOSEE', 'Saint-Malo', 'OVERLAP START', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
+-- Enregistrement n°7 : OVERLAP END
+insert into backend_emprunt (date_demande, date_debut, date_fin, statut, destination, commentaire, type, conducteur_id, site_id)
+values ('2021-06-04T07:27', '2021-06-04T07:30', '2021-06-07T20:00', 'DEPOSEE', 'Saint-Malo', 'OVERLAP END', 'F',
+	(select id from backend_utilisateur where username = 'gbrossier'),
+	(select id from backend_site where libelle = 'Rennes'));
