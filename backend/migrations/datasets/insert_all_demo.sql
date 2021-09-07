@@ -33,9 +33,9 @@ INSERT INTO backend_utilisateur (password,is_superuser,email,username,nom,prenom
 
 -- # INSERT GROUPS
 INSERT INTO auth_group(name)
-VALUES ('administration'),
-('backoffice'),
-('utilisateurs');
+VALUES ('Administrateur'),
+('Backoffice'),
+('Utilisateur');
 
 -- # INSERT GROUPS PERMISSIONS
 INSERT INTO auth_group_permissions(group_id, permission_id)
